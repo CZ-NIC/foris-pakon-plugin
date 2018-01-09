@@ -50,17 +50,30 @@ class PakonPluginPage(ConfigPageMixin, PakonPluginConfigHandler):
         self._prepare_render_args(kwargs)
         return super(PakonPluginPage, self).render(**kwargs)
 
+
     def _prepare_data(self, data):
         return json.loads(data["response_data"])
 
+
     def call_ajax_action(self, action):
-        if action == "perform_query":
+        if action == "eventsource":
+            if bottle.request.method != 'GET':
+                raise bottle.HTTPError(405, "Wrong http method (only GET is allowed).")
+            query_data = bottle.request.GET.get('query', {})
+            data = current_state.backend.perform("pakon", "perform_query", {"query_data": query_data})
+            bottle.response.set_header("Content-Type", "text/event-stream")
+            bottle.response.set_header("Cache-Control", "no-cache")
+            return bottle.template(
+                "pakon/eventsource",
+                results=self._prepare_data(data),
+            )
+
+        elif action == "perform_query":
             if bottle.request.method != 'POST':
-                raise bottle.HTTPError(404, "Wrong http method (only POST is allowed.")
+                raise bottle.HTTPError(405, "Wrong http method (only POST is allowed).")
 
             query_data = bottle.request.POST.get('query', {})
-            data = current_state.backend.perform(
-                "pakon", "perform_query", {"query_data": query_data})
+            data = current_state.backend.perform("pakon", "perform_query", {"query_data": query_data})
             if "text/html" in bottle.request.headers["Accept"]:
                 return bottle.template(
                     "pakon/_results",
