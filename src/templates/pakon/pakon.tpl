@@ -8,6 +8,12 @@
         <ul>
             <li><b>Průběžně aktualizované, ale zatím nezařazené ukazatele:</b></li>
             <li id="n-items">Počet záznamů v databázi: <span>0</span></li>
+            <li id="n-macs">Počet unikátních mac adres: <span>0</span></li>
+            <li id="most-used-remote-services">Počet unikátních mac adres:
+                <ol>
+                    <li></li>
+                </ol>
+            </li>
         </ul>
     </aside>
 

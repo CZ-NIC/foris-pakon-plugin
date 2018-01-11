@@ -47,6 +47,18 @@ $(document).ready(function() {
 
     function refreshDataStructure() {
         document.getElementById('n-items').firstElementChild.textContent = Object.keys(dataStructure).length;
+        const macs = [];
+        const remoteServices = [];
+        for (const i in dataStructure) {
+            macs.push(dataStructure[i][2]);
+            remoteServices[dataStructure[i][3]] = ++remoteServices[dataStructure[i][3]] || 0;
+        }
+        console.log(remoteServices);
+        document.getElementById('n-macs').firstElementChild.textContent = countUnique(macs);
+    }
+
+    function countUnique(iterable) {
+        return new Set(iterable).size;
     }
 
     function getDataStructure() {
