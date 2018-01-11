@@ -11,7 +11,6 @@ Foris.update_pakon_data = function(data_type) {
 
     }).done(function(response, status, xhr) {
         if (xhr.status == 200) {
-            console.log('teď dostávám výsledky');
             $("#pakon-results").replaceWith(response);  // replace the table
         }
     }).fail(function(xhr) {
@@ -45,22 +44,50 @@ Foris.WS["pakon"] = function(msg) {
 };
 
 $(document).ready(function() {
+
+    function refreshDataStructure() {
+        document.getElementById('n-items').firstElementChild.textContent = Object.keys(dataStructure).length;
+    }
+
+    function getDataStructure() {
+        const dataStructure = [];
+        const sourceTable = document.getElementById('pakon-results-table').tBodies[0]; // first tbody
+        rowsLoop:
+        for (let i = 0; i < sourceTable.rows.length; i++) {
+            const cells = sourceTable.rows[i].children;
+            const cellsData = [];
+            cellsLoop:
+            for (let ii = 0; ii < cells.length; ii++) {
+                cellsData.push(cells[ii].textContent);
+            }
+            dataStructure[cellsData.join('')] = cellsData; // @todo : md5(cellsData.join(''))
+        }
+        return dataStructure;
+    }
+
+    const dataStructure = getDataStructure();
+    refreshDataStructure();
+
     const ESUrl = '{{ url("config_ajax", page_name="pakon") }}?action=eventsource'
     + '&query=' + encodeURIComponent(document.getElementById('field-query').value);
 //    + '&csrf_token=' + encodeURIComponent(document.getElementById('csrf-token').value);
 
-    const evtSource = new EventSource(ESUrl);
-    const dataStructure = [];
+    let evtSource = new EventSource(ESUrl);
 
-    evtSource.onmessage = function(event) {
-        console.log('zpráva');
+    function eventMessage(event) {
+        const messageArray = JSON.parse(event.data);
+        dataStructure[messageArray.join()] = messageArray;
+        refreshDataStructure();
+
+        evtSource.close();
+        evtSource = new EventSource(ESUrl + '&timeout=' + Math.round(+new Date()/1000));
+        evtSource.onmessage = eventMessage; // regenerate
     }
-
-
+    evtSource.onmessage = eventMessage;
 
     $("#pakon-query-trigger").click(function(e) {
-        console.log('c');
         e.preventDefault();
         Foris.update_pakon_data("html");
     });
+
 });

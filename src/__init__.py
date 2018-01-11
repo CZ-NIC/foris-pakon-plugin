@@ -50,10 +50,8 @@ class PakonPluginPage(ConfigPageMixin, PakonPluginConfigHandler):
         self._prepare_render_args(kwargs)
         return super(PakonPluginPage, self).render(**kwargs)
 
-
     def _prepare_data(self, data):
         return json.loads(data["response_data"])
-
 
     def call_ajax_action(self, action):
         if action == "eventsource":

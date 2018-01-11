@@ -4,6 +4,13 @@
 <div id="page-pakon-plugin" class="config-page">
     %include("_messages.tpl")
 
+    <aside>
+        <ul>
+            <li><b>Průběžně aktualizované, ale zatím nezařazené ukazatele:</b></li>
+            <li id="n-items">Počet záznamů v databázi: <span>0</span></li>
+        </ul>
+    </aside>
+
     <form action="{{ url("config_action", page_name="pakon", action="perform_query") }}" class="config-form" method="get">
         <div class="row">
             <label for="field-lan_ipaddr">Router IP address</label>
