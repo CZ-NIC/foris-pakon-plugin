@@ -41,10 +41,6 @@ class PakonPluginPage(ConfigPageMixin, PakonPluginConfigHandler):
         args['PLUGIN_STYLES'] = PakonPlugin.PLUGIN_STYLES
         args['PLUGIN_STATIC_SCRIPTS'] = PakonPlugin.PLUGIN_STATIC_SCRIPTS
         args['PLUGIN_DYNAMIC_SCRIPTS'] = PakonPlugin.PLUGIN_DYNAMIC_SCRIPTS
-        args['query'] = json.dumps({})
-        data = current_state.backend.perform(
-            "pakon", "perform_query", {"query_data": args['query']})
-        args['results'] = self._prepare_data(data)
 
     def render(self, **kwargs):
         self._prepare_render_args(kwargs)
