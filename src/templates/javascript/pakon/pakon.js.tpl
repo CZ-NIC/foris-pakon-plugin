@@ -709,6 +709,54 @@ const czNicTurrisPakon = class {
 			},
 		});
 
+
+		/*
+		 * @private
+		 */
+		this._time_units_in_languages = { // for live time view
+			'en': {
+				'preffix': '',
+				'suffix': ' ago',
+				'justNow': 'just now',
+				'plural': null,
+				'long': {
+					s: 'seconds',
+					m: 'minutes',
+					h: 'hours',
+					d: 'days',
+					w: 'weeks',
+				},
+				'short': {
+					s: 's',
+					m: 'm',
+					h: 'h',
+					d: 'd',
+					w: 'w',
+				},
+			},
+			'cs': {
+				'preffix': '',
+				'suffix': '',
+				'justNow': 'nyní',
+				'plural': (n = 0) => { return n===1 ? 0 : ((n>=2 && n<=4) ? 1 : 2) },
+				'long': {
+					s: ['sekunda', 'sekundy', 'sekund'],
+					m: ['minuta', 'minuty', 'minut'],
+					h: ['hodina', 'hodiny', 'hodin'],
+					d: ['den', 'dny', 'dní'],
+					w: ['týden', 'týdny', 'týdnů'],
+				},
+				'short': {
+					s: 's',
+					m: 'min.',
+					h: 'dny',
+					d: 'h.',
+					w: 'týd.',
+				},
+			},
+		},
+
+
 		/*
 		 * @private
 		 */
@@ -767,7 +815,7 @@ const czNicTurrisPakon = class {
 							'textContent': '\u2442', // OCR FORK ⑂
 							'title': 'Filter by this MAC address',
 						},
-						'remove':{
+						'remove': {
 							'textContent': '\u2443', // OCR INVERTED FORK �?
 							'title': 'Remove filter by this MAC address',
 						},
@@ -781,11 +829,17 @@ const czNicTurrisPakon = class {
 							'textContent': '\u2442', // OCR FORK ⑂
 							'title': 'Filter by this MAC address',
 						},
-						'remove':{
+						'remove': {
 							'textContent': '\u2443', // OCR INVERTED FORK �?
 							'title': 'Remove filter by this MAC address',
 						},
 					},
+				},
+				'datetime': {
+					'renewPeriod': 1, // (float) in seconds
+					'liveTime': true,
+					'divider': ' ',
+					'time_diff': 300, // (float) in secs
 				},
 			},
 			'resultsTable': document.getElementById('pakon-results-table'),
@@ -812,7 +866,7 @@ const czNicTurrisPakon = class {
 				20: ['datetime', 'Datetime', null, false],
 				30: ['dur', 'Duration', 'time', false],
 				40: ['srcMAC', 'Source MAC', null, false],
-				50: ['hostname', 'Hostname', null, false],
+				50: ['hostname', 'Hostname', null, false], 
 				60: ['dstPort', 'Destination port', null, false],
 				70: ['proto', 'Application level protocol', null, true],
 				80: ['sent', 'Size of data Sent', 'number', false],
@@ -877,6 +931,42 @@ const czNicTurrisPakon = class {
 		Date.prototype.toTimeInput = function() {
 			return new Date(this.getTime() - (this.getTimezoneOffset() * 60000)).toISOString().split('T')[1].substr(0, 5);
 		};
+
+		Date.prototype.toW3CString = function () {
+			const y = this.getFullYear();
+			let M = this.getMonth()+1;
+			let d = this.getDate();
+			let h = this.getHours();
+			let m = this.getMinutes();
+			let s = this.getSeconds();
+			let offset = -this.getTimezoneOffset();
+			let offsetH = Math.abs(Math.floor(offset / 60));
+			let offsetM = Math.abs(offset) - offsetH * 60;
+			const offsetS = (offset < 0) ? '-' : '+';
+
+			if (M < 10) {
+				M = '0' + M;
+			}
+			if (d < 10) {
+				d = '0' + d;
+			}
+			if (h < 10) {
+				h = '0' + h;
+			}
+			if (m < 10) {
+				m = '0' + m;
+			}
+			if (s < 10) {
+				s = '0' + s;
+			}
+			if (offsetH < 10) {
+				offsetH = '0' + offsetH;
+			}
+			if (offsetM < 10) {
+				offsetM = '0' + offsetM;
+			}
+			return y + '-' + M + '-' + d + 'T' + h + ':' + m + ':' + s + offsetS + offsetH + ':' + offsetM;
+		}
 
 		String.prototype.hashCode = function() { // collision probability is 31^11
 			let hash = 0;
@@ -1059,6 +1149,17 @@ const czNicTurrisPakon = class {
 		return this._CHART_COLORS;
 	}
 
+	//set time_units_in_languages(inObj = {})
+	set time_units_in_languages(inObj)
+	{
+		this._time_units_in_languages = inObj;
+	}
+
+	get time_units_in_languages()
+	{
+		return this._time_units_in_languages;
+	}
+
 	//set dataStructure(inObj = {})
 	set dataStructure(inObj)
 	{
@@ -1163,7 +1264,7 @@ const czNicTurrisPakon = class {
 
 
 	/*
-	 *
+	 * 
 	 * @todo : description
 	 * @returns {Boolean}
 	 */
@@ -1177,7 +1278,7 @@ const czNicTurrisPakon = class {
 		openReq.onsuccess = function() {
 			const db = openReq.result;
 			const tx = db.transaction(this.settings.db_credentials.table_name, 'readwrite'); // IDBTransaction.READ_WRITE is depricated !
-			const store = tx.objectStore(this.settings.db_credentials.table_name);
+			const store = tx.objectStore(this.settings.db_credentials.table_name); 
 			store.index("hostname");
 			store.index("srcMAC");
 			store.index('dstPort');
@@ -1296,7 +1397,7 @@ const czNicTurrisPakon = class {
 		for (const i in formControls) {
 			if (formControls[i] && formControls[i].nodeType === Node.ELEMENT_NODE) {
 				if (false) {
-
+					
 				}
 				let macs = this.settings.eventSource.query.mac;
 				let hostnames = this.settings.eventSource.query.hostname;
@@ -1346,7 +1447,7 @@ const czNicTurrisPakon = class {
 			}
 
 			if (false) { // @todo : eventsource - asynchronous
-				const evtSource = new EventSource(this.settings.eventSource.completeUrl, { withCredentials: true }); // @todo : remove withCredentials after testing
+				const evtSource = new EventSource(this.settings.eventSource.completeUrl, { withCredentials: true }); // @todo : remove withCredentials after testing & also remove 'Access-Control-Allow-Origin' header from backend!
 				evtSource.onmessage = this.eventMessage.bind(this);
 				resolve (true);
 			} else { // fetch - synchronous
@@ -1376,7 +1477,7 @@ const czNicTurrisPakon = class {
 				if (controlForm.hostnameFilter.value || controlForm.srcMACFilter.value) {
 					errorMessage += ' \nUjistěte se, že máte správně nastavené parametry filtrování';
 				}
-				alert(errorMessage);
+				//alert(errorMessage);
 				this.setSyncWorkTo(false);
 			} else {
 				this.repairUserInputs();
@@ -1397,7 +1498,7 @@ const czNicTurrisPakon = class {
 				headers: {
 					'Accept': 'application/json',
 				},
-				credentials: 'include', // @todo : remove after testing
+				credentials: 'include', // @todo : remove after testing & also remove 'Access-Control-Allow-Origin' header from backend!
 			}).then((response) => {
 				if (response.ok && (response.status === 200)) {
 					resolve(response.text());
@@ -1574,7 +1675,21 @@ const czNicTurrisPakon = class {
 							if (!this.settings.tableHeader[ii][3]) {
 								const cell = document.createElement('td');
 								const columnPosition = this.getColumnPositionBy(this.settings.tableHeader[ii][0]);
-								cell.appendChild(document.createTextNode(this.dataStructure[i][columnPosition]));
+								let node = HTMLElement;
+								if (this.settings.tableHeader[ii][0] === 'datetime') {
+									const currentDate = new Date(this.dataStructure[i][columnPosition]);
+									node = document.createElement('time');
+									node.dateTime = currentDate.toW3CString();
+									node.setAttribute('data-raw-date', Number(currentDate) / 1000);
+									node.appendChild(document.createTextNode(
+										currentDate.toLocaleDateString(this.settings.lang).replace(' ', '\u00A0').replace(' ', '\u00A0') // NO-BREAK SPACE // .replace().replace() has better performance than regexp
+										+ ' '
+										+ currentDate.toLocaleTimeString(this.settings.lang).replace(' ', '\u00A0').replace(' ', '\u00A0') // NO-BREAK SPACE // .replace().replace() has better performance than regexp
+									));
+								} else {
+									node = document.createTextNode(this.dataStructure[i][columnPosition]);
+								}
+								cell.appendChild(node);
 								row.appendChild(cell);
 							}
 						} else { // @todo : move it into this.cellFromGroupedDataStructure();
@@ -1604,7 +1719,6 @@ const czNicTurrisPakon = class {
 									intString += ')';
 								}
 								cell.setAttribute('data-percentage', Math.round(( 100 / this.settings.maxInterval ) * interval.interval) );
-
 								cell.appendChild(document.createTextNode(intString));
 							} else if (this.settings.tableHeader[ii][0] === 'hostname') {
 								cell.appendChild(document.createTextNode(i));
@@ -1625,7 +1739,7 @@ const czNicTurrisPakon = class {
 	}
 
 
-	async createFullStatistic() ///
+	async createFullStatistic()
 	{
 		return new Promise((resolve) => {
 
@@ -1980,6 +2094,111 @@ const czNicTurrisPakon = class {
 	}
 
 
+	async renewDateTextContent() { // can be runed periodicly
+		return new Promise((resolve) => { ///
+			const datetimePosition = arguments[0];
+			[...this.settings.resultsTable.tBodies[0].rows].forEach((currentRow) => {
+				const currentCell = (
+					currentRow.children[datetimePosition].firstChild
+					&& currentRow.children[datetimePosition].firstChild.nodeType === Node.ELEMENT_NODE
+					&& currentRow.children[datetimePosition].firstChild.nodeName === 'TIME'
+				)
+					? currentRow.children[datetimePosition].firstChild
+					: currentRow.children[datetimePosition];
+				if (!currentCell.title) {
+					currentCell.title = currentCell.textContent;
+				}
+				const timeDiff = this.getTimeDiff(new Date(Number(currentCell.getAttribute('data-raw-date')) * 1000), new Date(), false, this.settings.lang, 'long');
+				if (timeDiff && timeDiff.length > 1) {
+					currentCell.textContent = timeDiff;
+				}
+			});
+
+			resolve(true);
+		});
+	}
+
+
+	getTimeDiff(timeA = Date, timeB = Date, relative = false, lang = this.settings.lang, type = 'long')
+	{
+		const s = 1 * 1000;
+		const m = 60 * s;
+		const h = 60 * m;
+		const d = 24 * h;
+		const w = 7 * d;
+
+		const justNow = 5 * s;
+		const stop = 4 * w;
+
+		if (relative && (timeA > timeB)) {
+			return false;
+		}
+
+		const inflect = (term, n = 0, pluralFunction = Function) => {
+			if (pluralFunction && Array.isArray(term)) {
+				return term[pluralFunction(n)];
+			}
+
+			return term;
+		}
+
+		const diff = Math.abs(timeA - timeB);
+
+		const rc = (int = 0) => { return Math.floor(int * ((1/this.settings.postRenderImprove.datetime.time_diff) / 1000)); }
+
+		const currentDate = new Date();
+
+		const closerDate = [timeA, timeB].reduce(function(prev, curr) {
+			return (Math.abs(curr - currentDate) < Math.abs(prev - currentDate) ? curr : prev);
+		});
+
+		if (rc(closerDate) === rc(currentDate)) {
+			const comparedDate = (closerDate === timeA) ? timeB : timeA;
+			const yesterdayDate = new Date();
+			yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+			const theDayBeforeYesterdayDayDate = new Date();
+			theDayBeforeYesterdayDayDate.setDate(theDayBeforeYesterdayDayDate.getDate() - 2);
+
+			const comparedShred = String(comparedDate.getDate()) + comparedDate.getMonth() + comparedDate.getFullYear();
+			const todayShred = String(currentDate.getDate()) + currentDate.getMonth() + currentDate.getFullYear();
+			const yesterdayShred = String(yesterdayDate.getDate()) + yesterdayDate.getMonth() + yesterdayDate.getFullYear();
+			const theDayBeforeYesterdayShred = String(theDayBeforeYesterdayDayDate.getDate()) + theDayBeforeYesterdayDayDate.getMonth() + theDayBeforeYesterdayDayDate.getFullYear();
+
+			if (comparedShred === todayShred) {
+				return 'dnes ' + comparedDate.toLocaleTimeString();
+			} else if (comparedShred === yesterdayShred) {
+				return 'včera ' + comparedDate.toLocaleTimeString();
+			} else if (comparedShred === theDayBeforeYesterdayShred) {
+				return 'předevčírem ' + comparedDate.toLocaleTimeString();
+			}
+		}
+/// @todo : refactor from now
+		const UNITS = this.time_units_in_languages;
+		const DIVIDER = this.settings.postRenderImprove.datetime.divider;
+
+		if (diff < justNow) { // no SWITCH… switch() have very bad performance!
+			return UNITS[lang].justNow;
+		} else if (diff < m) {
+			const n = Math.floor(diff / s);
+			return UNITS[lang].preffix + n + DIVIDER + inflect(UNITS[lang][type].s, n, UNITS[lang].plural) + UNITS[lang].suffix;
+		} else if (diff <= h) {
+			const n = Math.floor(diff / m);
+			return UNITS[lang].preffix + n + DIVIDER + inflect(UNITS[lang][type].m, n, UNITS[lang].plural) + UNITS[lang].suffix;
+		} else if (diff < d) {
+			const n = Math.floor(diff / h);
+			return UNITS[lang].preffix + n + DIVIDER + inflect(UNITS[lang][type].h, n, UNITS[lang].plural) + UNITS[lang].suffix;
+		} else if (diff < w) {
+			const n = Math.floor(diff / d);
+			return UNITS[lang].preffix + n + DIVIDER + inflect(UNITS[lang][type].d, n, UNITS[lang].plural) + UNITS[lang].suffix;
+		} else if (diff < stop) {
+			const n = Math.floor(diff / w);
+			return UNITS[lang].preffix + n + DIVIDER + inflect(UNITS[lang][type].w, n, UNITS[lang].plural) + UNITS[lang].suffix;
+		}
+/// @todo : refactor till now
+		return true;
+	}
+
+
 	createSingleTag(textContent = '', inputEventName = '', fakeTrustedDetailString = '')
 	{
 		const USE_SUGGESTIONS = false; // @todo : create suggestions by using input[list="<id>"] and shared datalist[id="<id>"]
@@ -2050,7 +2269,11 @@ const czNicTurrisPakon = class {
 
 	db_init(openReq = IDBOpenDBRequest)
 	{
+		const event = arguments[1];
 		const db = openReq.result;
+		if (event.oldVersion < event.newVersion) {
+			db.deleteObjectStore(this.settings.db_credentials.table_name);
+		}
 		const store = db.createObjectStore(this.settings.db_credentials.table_name, {keyPath: 'id', unique: true, autoIncrement: false});
 		store.createIndex('hostname', 'hostname', {unique: false});
 		store.createIndex('srcMAC', 'srcMAC', {unique: false});
@@ -2107,14 +2330,22 @@ const czNicTurrisPakon = class {
 		this.getMaxDataFrom('recvd'); // sets it into settings and as data-XZY attribute into cell
 		this.getMaxDataFrom('dur'); // sets it into settings and as data-XZY attribute into cell
 
+		const datetimePosition = this.getColumnPositionBy('datetime');
 		const hostnamePosition = this.getColumnPositionBy('hostname');
 		const dstPortPosition = this.getColumnPositionBy('dstPort');
 		const srcMACPosition = this.getColumnPositionBy('srcMAC');
 
+		if (this.settings.postRenderImprove.datetime.liveTime && Number.isInteger(datetimePosition)) {
+			setInterval(
+				this.renewDateTextContent.bind(this, datetimePosition),
+				this.settings.postRenderImprove.datetime.renewPeriod * 1000
+			);
+		}
+
 		const rows = this.settings.resultsTable.tBodies[0].rows;
 		rowsLoop:
 		for (let i = 0; i < rows.length; i++) {
-			if (hostnamePosition) {
+			if (Number.isInteger(hostnamePosition)) {
 				const currentCell = rows[i].children[hostnamePosition];
 				const code = document.createElement('code');
 				code.appendChild(document.createTextNode(currentCell.textContent));
@@ -2171,7 +2402,7 @@ const czNicTurrisPakon = class {
 				currentCell.appendChild(filter);
 				filter.dispatchEvent(new Event('click'));
 			}
-			if (this.settings.postRenderImprove.srcMAC.filter.enable && srcMACPosition) {
+			if (this.settings.postRenderImprove.srcMAC.filter.enable && Number.isInteger(srcMACPosition)) {
 				const currentCell = rows[i].children[srcMACPosition];
 				const code = document.createElement('code');
 				code.appendChild(document.createTextNode(currentCell.textContent));
@@ -2577,7 +2808,7 @@ const czNicTurrisPakon = class {
 
 	showEmptyResponseInfo() // @todo : if filter exist, than create a oprion for drop it. If not show only info for user.
 	{
-		alert('Nejsou žádné výsledky… zkuste vyhodit filtr'); // @ todo : better message
+		//alert('Nejsou žádné výsledky… zkuste vyhodit filtr'); // @ todo : better message
 
 		return true;
 	}
@@ -2709,7 +2940,7 @@ const czNicTurrisPakon = class {
 
 /*
  * Example usage:
- *
+ * 
 	<script src="czNicTurrisPakon.js"></script>
 	<script>
 		const cntp = new czNicTurrisPakon(window);
@@ -2719,6 +2950,7 @@ const czNicTurrisPakon = class {
 		//cs.parentNode.removeChild(cs);
 	</script>
  */
+
 
 
  /*!
