@@ -876,8 +876,8 @@ const czNicTurrisPakon = class
 					50: [ 'hostname', 'Hostname', null, false ],
 					60: [ 'dstPort', 'Destination port', null, false ],
 					70: [ 'proto', 'Application level protocol', null, true ],
-					80: [ 'sent', 'Size of data Sent', 'number', false ],
-					90: [ 'recvd', 'Size of data Received', 'number', false ],
+					80: [ 'sent', 'Sent data', 'number', false ],
+					90: [ 'recvd', 'Received data', 'number', false ],
 				},
 				'statisticsData': {
 					'nHits': 0,
@@ -1013,7 +1013,7 @@ const czNicTurrisPakon = class
 			return this;
 		};
 
-		String.prototype.hms2Secs = function ( lang = this.settings.lang )
+		String.prototype.hms2Secs = function ( lang = 'en' )
 		{
 			const parts = this.replace( '.', ':' ).split( ':' );
 			const hNumber = parseInt( parts[ 0 ] ) * 60 * 60;
@@ -1040,6 +1040,22 @@ const czNicTurrisPakon = class
 			const mString = ( m > 0 ) ? ( m <= 9 ? '0' + m : m ) : '00';
 			const sString = ( s > 0 ) ? ( s <= 9 ? '0' + s : s ) : '00';
 			return hString + HOURS_SEPARATOR + mString + MINUTES_SEPARATOR + sString;
+		};
+
+		Number.prototype.bytesToSize = function ( decimals = 2, lang = 'en' )
+		{
+			const BASE = 1024;
+			const RIDGE = '\u00A0'; // NO-BREAK SPACE
+			const BYTES = {
+				en: 'Bytes',
+				cs: 'Bitů',
+			};
+			const SIZES = [ BYTES[ lang ], 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB' ]; // @todo : add abbr title for units
+			const getMeasurementUnit = Math.floor( Math.log( this ) / Math.log( BASE ) );
+			if ( this === 0 ) {
+				return '0' + RIDGE + BYTES[ lang ];
+			}
+			return parseFloat( ( this / Math.pow( BASE, getMeasurementUnit ) ).toFixed( decimals ) ) + RIDGE + SIZES[ getMeasurementUnit ];
 		};
 
 		Object.defineProperty( Array.prototype, 'frequencyUnique', { // cannot use simple: Array.prototype.frequencyUnique = func…
@@ -1457,12 +1473,17 @@ const czNicTurrisPakon = class
 				this.fetchEventSource().then( ( result ) =>
 				{
 					const resultArray = result.split( '\n\n' );
-					const withoutEmpty = resultArray.filter( String );
-					for ( var i in withoutEmpty ) {
-						const currentRow = JSON.parse( withoutEmpty[ i ].substr( 6 ) ); // remove 'data: ' string and make it array
+					var withoutEmpty = resultArray.filter( String );
+					const sortedNonEmpty = withoutEmpty.sort( function ( a, b )
+					{
+						if ( a < b ) { return 1; }
+						if ( a > b ) { return -1; }
+						return 0;
+					} );
+					for ( var i in sortedNonEmpty ) {
+						const currentRow = JSON.parse( sortedNonEmpty[ i ].substr( 6 ) ); // remove 'data: ' string and make it array
 						this.dataStructure[ currentRow.join().hashCode().toString( 36 ) ] = currentRow.concat( [ false ] ); // add bool 'hidden' column and set default to false
 					}
-					/// @todo : sort
 					this.dataStructure.length = Object.keys( this.dataStructure ).length;
 					this.dataStructure.lengthOfVisible = i;
 					resolve( true );
@@ -1711,6 +1732,8 @@ const czNicTurrisPakon = class
 										+ ' '
 										+ currentDate.toLocaleTimeString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
 									) );
+								} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'dur' ) {
+									node = document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] ).seconds2Hms( this.settings.lang ) );
 								} else {
 									node = document.createTextNode( this.dataStructure[ i ][ columnPosition ] );
 								}
@@ -1760,6 +1783,7 @@ const czNicTurrisPakon = class
 			this.virtualTable = virtualTable;
 
 			resolve( true );
+
 		} );
 	}
 
@@ -2389,6 +2413,8 @@ const czNicTurrisPakon = class
 		const hostnamePosition = this.getColumnPositionBy( 'hostname' );
 		const dstPortPosition = this.getColumnPositionBy( 'dstPort' );
 		const srcMACPosition = this.getColumnPositionBy( 'srcMAC' );
+		const sentPosition = this.getColumnPositionBy( 'sent' );
+		const recvdPosition = this.getColumnPositionBy( 'recvd' );
 
 		if ( this.settings.postRenderImprove.datetime.liveTime && Number.isInteger( datetimePosition ) ) {
 			setInterval(
@@ -2473,6 +2499,14 @@ const czNicTurrisPakon = class
 				currentCell.appendChild( filter );
 				filter.dispatchEvent( new Event( 'click' ) );
 			}
+			if ( Number.isInteger( sentPosition ) ) {
+				const currentCell = rows[ i ].children[ sentPosition ];
+				currentCell.textContent = Number( currentCell.textContent ).bytesToSize();
+			}
+			if ( Number.isInteger( recvdPosition ) ) {
+				const currentCell = rows[ i ].children[ recvdPosition ];
+				currentCell.textContent = Number( currentCell.textContent ).bytesToSize();
+			}
 			const cells = rows[ i ].children;
 			cellsLoop:
 			for ( let i = 0; i < cells.length; i++ ) {
@@ -2530,6 +2564,14 @@ const czNicTurrisPakon = class
 			}
 
 		}
+
+		const nItemsElement = document.createElement( 'p' );
+		nItemsElement.id = 'nItems';
+		nItemsElement.appendChild( document.createTextNode( 'n: ' ) );
+		const innerElement = document.createElement( 'span' );
+		innerElement.appendChild( document.createTextNode( this.dataStructure.lengthOfVisible ) );
+		nItemsElement.appendChild( innerElement );
+		container.appendChild( nItemsElement );
 
 		if ( this.virtualStatistics && this.settings.eventSource.dumpIntoStatistics ) { // can be done after resolve() …
 			const nodes = this.virtualStatistics;
@@ -2909,7 +2951,10 @@ const czNicTurrisPakon = class
 						this.createFullTable().then( () =>
 						{
 							this.flush(); // place virtual DOM elements instead of real site elements
-							this.improveTableUX(); // post render improvement
+							setTimeout( () =>
+							{
+								this.improveTableUX(); // post render improvement
+							}, 1 ); // 1ms winting force browser to redraw website
 							//this.makeTableSortable(); // post render improvement
 						} );
 					} );
@@ -2998,8 +3043,11 @@ const czNicTurrisPakon = class
 						this.createFullTable().then( () =>
 						{
 							this.flush(); // place virtual DOM elements instead of real site elements
-							this.improveTableUX(); // post render improvement
-							this.makeTableSortable(); // post render improvement
+							setTimeout( () =>
+							{
+								this.improveTableUX(); // post render improvement
+								this.makeTableSortable(); // post render improvement
+							}, 1 ); // 1ms winting force browser to redraw website
 						} );
 					} );
 				} );
@@ -3023,7 +3071,6 @@ const czNicTurrisPakon = class
 		//cs.parentNode.removeChild(cs);
 	</script>
  */
-
 
 
 
