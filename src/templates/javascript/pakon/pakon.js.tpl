@@ -1958,6 +1958,8 @@ const czNicTurrisPakon = class
 					if ( filterValues.includes( currentValue ) ) { // remove
 						event.target.textContent = this.settings.postRenderImprove[ key ].filter.remove.textContent;
 						event.target.title = this.settings.postRenderImprove[ key ].filter.remove.title;
+						event.target.classList.add( 'remove', 'filter' );
+						event.target.classList.remove( 'add' ); // it does perfectly sense XD
 						if ( event.isTrusted ) {
 							filterValues = this.settings.eventSource.query[ key ] = filterValues.filter( item => item !== currentValue ); // removes current from array
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
@@ -1976,6 +1978,8 @@ const czNicTurrisPakon = class
 					} else { // add
 						event.target.textContent = this.settings.postRenderImprove[ key ].filter.add.textContent;
 						event.target.title = this.settings.postRenderImprove[ key ].filter.add.title;
+						event.target.classList.add( 'add', 'filter' );
+						event.target.classList.remove( 'remove' );
 						if ( event.isTrusted ) {
 							filterValues.push( currentValue );
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
@@ -2491,7 +2495,7 @@ const czNicTurrisPakon = class
 				currentCell.textContent = '';
 
 				const filter = document.createElement( 'span' );
-				filter.className = this.settings.postRenderImprove.srcMAC.filter.className;
+				filter.className = this.settings.postRenderImprove.srcMAC.filter.className; // @todo : refactor into classList
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'srcMAC' );
 
 				currentCell.appendChild( code );
@@ -3071,6 +3075,7 @@ const czNicTurrisPakon = class
 		//cs.parentNode.removeChild(cs);
 	</script>
  */
+
 
 
 
