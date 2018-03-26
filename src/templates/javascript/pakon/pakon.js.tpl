@@ -13,6 +13,8 @@ const czNicTurrisPakon = class
 		 * @public
 		 */
 		this.window = w;
+		this.cur_sort_fl = 'datetime';
+		this.cur_sort_dir = 'desc';
 
 		this.idb = this.window.indexedDB
 			|| this.window.mozIndexedDB
@@ -719,16 +721,16 @@ const czNicTurrisPakon = class
 				'preffix': '',
 				'suffix': ' ago',
 				'justNow': 'just now',
-				'today': 'today',
-				'yesterday': 'yesterday',
+				'today': 'today ',
+				'yesterday': 'yesterday ',
 				'theDayBeforeYesterday': null,
-				'plural': null,
+				'plural': ( n = 0 ) => { return n === 1 ? 0 : 1 },
 				'long': {
-					s: 'seconds',
-					m: 'minutes',
-					h: 'hours',
-					d: 'days',
-					w: 'weeks',
+					s: [ 'second', 'seconds' ],
+					m: [ 'minute', 'minutes' ],
+					h: [ 'hour', 'hours'],
+					d: [ 'day', 'days'],
+					w: [ 'week', 'weeks'],
 				},
 				'short': {
 					s: 's',
@@ -843,7 +845,7 @@ const czNicTurrisPakon = class
 						},
 					},
 					'datetime': {
-						'renewPeriod': 1, // (float) in seconds
+						'renewPeriod': 5, // (float) in seconds
 						'liveTime': true,
 						'divider': ' ',
 						'time_diff': 300, // (float) in secs
@@ -861,23 +863,23 @@ const czNicTurrisPakon = class
 					'aggregate': document.getElementById( 'aggregate' ),
 					'hostnameFilter': document.getElementById( 'hostname-filter' ),
 					'srcMACFilter': document.getElementById( 'srcMAC-filter' ),
-					'controlFormSubmit': document.getElementById( 'apply-changes' ), // if null changes are applied immediately
+					'controlFormSubmit': null, // if null changes are applied immediately
 				},
 				'timeLimitation': {
 					'from': null,
 					'to': null,
-					'suggestedInterval': 7, // in days
+					'suggestedInterval': 1, // in days
 				},
 				'tableHeader': {
 					10: [ 'id', 'n ID', null, true ],
-					20: [ 'datetime', 'Datetime', null, false ],
+					20: [ 'datetime', 'Date', null, false ],
 					30: [ 'dur', 'Duration', 'time', false ],
-					40: [ 'srcMAC', 'Client MAC address', null, false ],
+					40: [ 'srcMAC', 'Client', null, false ],
 					50: [ 'hostname', 'Hostname', null, false ],
-					60: [ 'dstPort', 'Destination port', null, false ],
+					60: [ 'dstPort', 'Port', null, false ],
 					70: [ 'proto', 'Application level protocol', null, true ],
-					80: [ 'sent', 'Sent data', 'number', false ],
-					90: [ 'recvd', 'Received data', 'number', false ],
+					80: [ 'sent', 'Sent', 'number', false ],
+					90: [ 'recvd', 'Received', 'number', false ],
 				},
 				'statisticsData': {
 					'nHits': 0,
@@ -1727,16 +1729,22 @@ const czNicTurrisPakon = class
 									node = document.createElement( 'time' );
 									node.dateTime = currentDate.toW3CString();
 									node.setAttribute( 'data-raw-date', Number( currentDate ) / 1000 );
+									cell.setAttribute( 'data-order', Number( currentDate ) / 1000 );
 									node.appendChild( document.createTextNode(
 										currentDate.toLocaleDateString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
 										+ ' '
 										+ currentDate.toLocaleTimeString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
 									) );
 								} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'dur' ) {
+									cell.setAttribute( 'data-order', Number( this.dataStructure[ i ][ columnPosition ] ));
 									node = document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] ).seconds2Hms( this.settings.lang ) );
+								} else if ( ( this.settings.tableHeader[ ii ][ 0 ] === 'sent' ) || ( this.settings.tableHeader[ ii ][ 0 ] === 'recvd' ) ) {
+									cell.setAttribute( 'data-order', Number( this.dataStructure[ i ][ columnPosition ] ));
+									node = document.createTextNode( Number(this.dataStructure[ i ][ columnPosition ]).bytesToSize() );
 								} else {
 									node = document.createTextNode( this.dataStructure[ i ][ columnPosition ] );
 								}
+								cell.classList.add( this.settings.tableHeader[ ii ][ 0 ] );
 								cell.appendChild( node );
 								row.appendChild( cell );
 							}
@@ -1768,11 +1776,18 @@ const czNicTurrisPakon = class
 								}
 								cell.setAttribute( 'data-percentage', Math.round( ( 100 / this.settings.maxInterval ) * interval.interval ) );
 								cell.appendChild( document.createTextNode( intString ) );
+							} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'dur' ) {
+								cell.setAttribute( 'data-order', Number( this.dataStructure[ i ][ columnPosition ] ));
+								cell.appendChild( document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] ).seconds2Hms( this.settings.lang ) ));
+							} else if ( ( this.settings.tableHeader[ ii ][ 0 ] === 'sent' ) || ( this.settings.tableHeader[ ii ][ 0 ] === 'recvd' ) ) {
+								cell.setAttribute( 'data-order', Number( this.dataStructure[ i ][ columnPosition ] ));
+								cell.appendChild( document.createTextNode( Number(this.dataStructure[ i ][ columnPosition ]).bytesToSize() ));
 							} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'hostname' ) {
 								cell.appendChild( document.createTextNode( i ) );
 							} else {
 								cell.appendChild( document.createTextNode( this.dataStructure[ i ][ this.settings.tableHeader[ ii ][ 0 ] ] ) );
 							}
+							cell.classList.add( this.settings.tableHeader[ ii ][ 0 ] );
 							row.appendChild( cell );
 						} // @todo : … end
 					}
@@ -1826,6 +1841,7 @@ const czNicTurrisPakon = class
 						if ( completedPartsSum === list.length ) {
 							afterAsyncGraphs.forEach( ( item ) =>
 							{
+								$('#spinner').hide();
 								// @todo : get data & place them into dataStore
 							} );
 							resolve( true );
@@ -2104,7 +2120,7 @@ const czNicTurrisPakon = class
 
 		const getCellValue = function ( tr = HTMLTableRowElement, columnPosition = 0 )
 		{
-			return ( tr.children[ columnPosition ].innerText || tr.children[ columnPosition ].textContent );
+			return ( tr.children[ columnPosition ].getAttribute('data-order') || tr.children[ columnPosition ].innerText || tr.children[ columnPosition ].textContent );
 		};
 
 		const comparer = function ( columnPosition = 0, asc = false )
@@ -2121,6 +2137,7 @@ const czNicTurrisPakon = class
 
 		const sortTable = function ( th = HTMLTableCellElement )
 		{
+			$('#spinner').show();
 			const ORDER_ATTRIBUTE = 'data-order';
 			let table = th.parentNode.parentNode;
 			let skipN = 1;
@@ -2128,8 +2145,15 @@ const czNicTurrisPakon = class
 				table = table.nextElementSibling;
 				skipN = 0;
 			}
-
+			th.parentNode.childNodes.forEach(function(item){
+				item.classList.remove( ORDER.ASC );
+				item.classList.remove( ORDER.DESC );
+				if(item != th) {
+					item.removeAttribute( ORDER_ATTRIBUTE );
+				}
+			});
 			th.setAttribute( ORDER_ATTRIBUTE, ( th.getAttribute( ORDER_ATTRIBUTE ) === ORDER.ASC ) ? ORDER.DESC : ORDER.ASC );
+			th.classList.add( th.getAttribute( ORDER_ATTRIBUTE ) );
 
 			[ ...table.querySelectorAll( 'tr:nth-child(n+' + ( skipN + 1 ) + ')' ) ].sort(
 				comparer( [ ...th.parentNode.children ].indexOf( th ), th.getAttribute( ORDER_ATTRIBUTE ) === ORDER.ASC ? true : false )
@@ -2138,6 +2162,7 @@ const czNicTurrisPakon = class
 				table.appendChild( tr ); // place existing rows, but in different order
 			} );
 
+			$('#spinner').hide();
 			return true;
 		};
 
@@ -2409,10 +2434,6 @@ const czNicTurrisPakon = class
 
 	improveTableUX () // post render improvement
 	{
-		this.getMaxDataFrom( 'sent' ); // sets it into settings and as data-XZY attribute into cell
-		this.getMaxDataFrom( 'recvd' ); // sets it into settings and as data-XZY attribute into cell
-		this.getMaxDataFrom( 'dur' ); // sets it into settings and as data-XZY attribute into cell
-
 		const datetimePosition = this.getColumnPositionBy( 'datetime' );
 		const hostnamePosition = this.getColumnPositionBy( 'hostname' );
 		const dstPortPosition = this.getColumnPositionBy( 'dstPort' );
@@ -2470,20 +2491,6 @@ const czNicTurrisPakon = class
 				filter.className = this.settings.postRenderImprove.hostname.filter.className;
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'hostname' );
 
-				const part = code.textContent.split( '.' );
-				const index = Math.max(
-					this.brandColors.indexOf( part[ 0 ] ),
-					this.brandColors.indexOf( 'www.' + part[ 0 ] ),
-					this.brandColors.indexOf( part[ 1 ] ), // example: from 'api.soundclound.com' take 'soundcloud' part
-					( part[ 2 ] ) ? this.brandColors.indexOf( part[ 2 ] ) : -1,
-					( part[ 3 ] ) ? this.brandColors.indexOf( part[ 3 ] ) : -1,
-				);
-				if ( index !== -1 ) {
-					const square = document.createElement( 'span' );
-					square.classList.add( 'bc-background-' + this.brandColors[ index ] );
-					currentCell.appendChild( square );
-				}
-
 				currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
 				currentCell.appendChild( filter );
 				filter.dispatchEvent( new Event( 'click' ) );
@@ -2503,28 +2510,8 @@ const czNicTurrisPakon = class
 				currentCell.appendChild( filter );
 				filter.dispatchEvent( new Event( 'click' ) );
 			}
-			if ( Number.isInteger( sentPosition ) ) {
-				const currentCell = rows[ i ].children[ sentPosition ];
-				currentCell.textContent = Number( currentCell.textContent ).bytesToSize();
-			}
-			if ( Number.isInteger( recvdPosition ) ) {
-				const currentCell = rows[ i ].children[ recvdPosition ];
-				currentCell.textContent = Number( currentCell.textContent ).bytesToSize();
-			}
 			const cells = rows[ i ].children;
-			cellsLoop:
-			for ( let i = 0; i < cells.length; i++ ) {
-				this.percentageFromRaw( cells[ i ], [ 'dur', 'sent', 'recvd' ] ); // faster then autodetection from 'data-raw-content-' attribute prefix
-
-				if ( cells[ i ].getAttribute( 'data-percentage' ) ) {
-					if ( cells[ i ].getAttribute( 'data-percentage' ) > 0 ) {
-						cells[ i ].style.backgroundSize = cells[ i ].getAttribute( 'data-percentage' ) + '% 0.2em';
-					}
-					cells[ i ].removeAttribute( 'data-percentage' );
-				}
-			}
 		}
-
 		return true;
 	}
 
@@ -2569,13 +2556,7 @@ const czNicTurrisPakon = class
 
 		}
 
-		const nItemsElement = document.createElement( 'p' );
-		nItemsElement.id = 'nItems';
-		nItemsElement.appendChild( document.createTextNode( 'n: ' ) );
-		const innerElement = document.createElement( 'span' );
-		innerElement.appendChild( document.createTextNode( this.dataStructure.lengthOfVisible ) );
-		nItemsElement.appendChild( innerElement );
-		container.appendChild( nItemsElement );
+		$('#h_res').text('Results (' + this.dataStructure.lengthOfVisible + ' records):');
 
 		if ( this.virtualStatistics && this.settings.eventSource.dumpIntoStatistics ) { // can be done after resolve() …
 			const nodes = this.virtualStatistics;
@@ -2611,7 +2592,7 @@ const czNicTurrisPakon = class
 				const color = this.CHART_COLORS.lightness400;
 				const canvasElement = document.createElement( CANVAS_TAG_NAME.toLowerCase() );
 				statisticParts[ i ].appendChild( canvasElement );
-				const chart = new Chart( canvasElement.getContext( '2d' ), {
+				const chart = new Chart(  canvasElement.getContext( '2d' ), {
 					type: this.settings.statisticsData.graphs.type,
 					data: {
 						labels: labels,
@@ -2621,9 +2602,12 @@ const czNicTurrisPakon = class
 						} ]
 					},
 					options: {
+						legend: {
+							position: 'left'
+						},
 						title: {
 							display: true,
-							fontSize: 20, // in px
+							fontSize: 15, // in px
 							text: ( items.length === this.settings.statisticsData.graphs.maxItems ) ?
 								statisticParts[ i ].firstChild.textContent + ' [' + items.length + this.settings.statisticsData.graphs.mostFrequentTextContent + ']' :
 								statisticParts[ i ].firstChild.textContent,
@@ -2636,7 +2620,6 @@ const czNicTurrisPakon = class
 					}
 					statisticParts[ i ].removeChild( statisticParts[ i ].firstChild );
 				}
-				statisticParts[ i ].appendChild( document.createElement( 'br' ) );
 			}
 		}
 
@@ -2753,6 +2736,10 @@ const czNicTurrisPakon = class
 				cell.appendChild( document.createTextNode( this.settings.tableHeader[ i ][ 1 ] ) );
 				if ( this.settings.tableHeader[ i ][ 2 ] ) {
 					cell.className = this.settings.tableHeader[ i ][ 2 ];
+				}
+				if ( this.settings.tableHeader[ i ][ 0 ] === this.cur_sort_fl ) {
+					cell.setAttribute('data-order',this.cur_sort_dir);
+					cell.classList.add(this.cur_sort_dir);
 				}
 				row.appendChild( cell );
 			}

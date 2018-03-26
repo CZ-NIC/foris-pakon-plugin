@@ -4,70 +4,281 @@
 <div id="page-pakon-plugin" class="config-page">
     %include("_messages.tpl")
 
-    <!--
-    <form action="{{ url("config_action", page_name="pakon", action="perform_query") }}" class="config-form" method="post">
-        <div class="row">
-        <label for="field-lan_ipaddr">Router IP address</label>
-        <input name="query" value="{{ query }}" type="text" id="field-query"/>
-        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}" id="csrf-token">
-        </div>
-        <div class="row">
-        <button type="submit" name="action" id="pakon-query-trigger" value="query-trigger" class="button">{{ trans("Query") }}</button>
-        </div>
-    </form>
-    -->
+<style>
+.clickable {
+  text-decoration: none;
+  font-size: : 2em;
+  color: black;
+}
+.asc, .desc {
+  text-decoration: underline;
+}
 
-    <fieldset>
-        <legend>{{ trans("Data view - settings") }}:</legend>
-        <label for="date-from">
-            {{ trans("Date From") }}:
+.asc:before,
+.desc:before{
+  content: ' ';
+  position: relative;
+  margin-right: 0.5em;
+  border: 0.5em solid transparent;
+}
+.desc:before{
+  top: 0.9em;
+  border-top-color: black;
+}
+.asc:before{
+  bottom: 0.8em;
+  border-bottom-color: black;
+}
+.asc,
+.desc{
+  padding-right: 1em;
+}
+
+td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+tbody td:nth-child(3) {
+    text-align: left;
+}
+
+.filtering td, p {
+  padding: 5px;
+}
+
+.filtering textarea {
+  height: 2em;
+  width: 40em;
+}
+
+.tags {
+    display: none;
+}
+
+.chart {
+  width: 400px;
+  display: inline-block;
+}
+
+#pakon-results-statistics {
+  width: 1250px;
+}
+</style>
+
+<style>
+#spinner {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -50px;
+  margin-top: -50px;
+}
+
+.sk-fading-circle {
+  width: 100px;
+  height: 100px;
+}
+
+.sk-fading-circle .sk-circle {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.sk-fading-circle .sk-circle:before {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  width: 15%;
+  height: 15%;
+  background-color: #333;
+  border-radius: 100%;
+  -webkit-animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
+          animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
+}
+.sk-fading-circle .sk-circle2 {
+  -webkit-transform: rotate(30deg);
+      -ms-transform: rotate(30deg);
+          transform: rotate(30deg);
+}
+.sk-fading-circle .sk-circle3 {
+  -webkit-transform: rotate(60deg);
+      -ms-transform: rotate(60deg);
+          transform: rotate(60deg);
+}
+.sk-fading-circle .sk-circle4 {
+  -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+.sk-fading-circle .sk-circle5 {
+  -webkit-transform: rotate(120deg);
+      -ms-transform: rotate(120deg);
+          transform: rotate(120deg);
+}
+.sk-fading-circle .sk-circle6 {
+  -webkit-transform: rotate(150deg);
+      -ms-transform: rotate(150deg);
+          transform: rotate(150deg);
+}
+.sk-fading-circle .sk-circle7 {
+  -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.sk-fading-circle .sk-circle8 {
+  -webkit-transform: rotate(210deg);
+      -ms-transform: rotate(210deg);
+          transform: rotate(210deg);
+}
+.sk-fading-circle .sk-circle9 {
+  -webkit-transform: rotate(240deg);
+      -ms-transform: rotate(240deg);
+          transform: rotate(240deg);
+}
+.sk-fading-circle .sk-circle10 {
+  -webkit-transform: rotate(270deg);
+      -ms-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+.sk-fading-circle .sk-circle11 {
+  -webkit-transform: rotate(300deg);
+      -ms-transform: rotate(300deg);
+          transform: rotate(300deg); 
+}
+.sk-fading-circle .sk-circle12 {
+  -webkit-transform: rotate(330deg);
+      -ms-transform: rotate(330deg);
+          transform: rotate(330deg); 
+}
+.sk-fading-circle .sk-circle2:before {
+  -webkit-animation-delay: -1.1s;
+          animation-delay: -1.1s; 
+}
+.sk-fading-circle .sk-circle3:before {
+  -webkit-animation-delay: -1s;
+          animation-delay: -1s; 
+}
+.sk-fading-circle .sk-circle4:before {
+  -webkit-animation-delay: -0.9s;
+          animation-delay: -0.9s; 
+}
+.sk-fading-circle .sk-circle5:before {
+  -webkit-animation-delay: -0.8s;
+          animation-delay: -0.8s; 
+}
+.sk-fading-circle .sk-circle6:before {
+  -webkit-animation-delay: -0.7s;
+          animation-delay: -0.7s; 
+}
+.sk-fading-circle .sk-circle7:before {
+  -webkit-animation-delay: -0.6s;
+          animation-delay: -0.6s; 
+}
+.sk-fading-circle .sk-circle8:before {
+  -webkit-animation-delay: -0.5s;
+          animation-delay: -0.5s; 
+}
+.sk-fading-circle .sk-circle9:before {
+  -webkit-animation-delay: -0.4s;
+          animation-delay: -0.4s;
+}
+.sk-fading-circle .sk-circle10:before {
+  -webkit-animation-delay: -0.3s;
+          animation-delay: -0.3s;
+}
+.sk-fading-circle .sk-circle11:before {
+  -webkit-animation-delay: -0.2s;
+          animation-delay: -0.2s;
+}
+.sk-fading-circle .sk-circle12:before {
+  -webkit-animation-delay: -0.1s;
+          animation-delay: -0.1s;
+}
+
+@-webkit-keyframes sk-circleFadeDelay {
+  0%, 39%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+@keyframes sk-circleFadeDelay {
+  0%, 39%, 100% { opacity: 0; }
+  40% { opacity: 1; } 
+}
+</style>
+
+<div id="spinner" class="sk-fading-circle">
+  <div class="sk-circle1 sk-circle"></div>
+  <div class="sk-circle2 sk-circle"></div>
+  <div class="sk-circle3 sk-circle"></div>
+  <div class="sk-circle4 sk-circle"></div>
+  <div class="sk-circle5 sk-circle"></div>
+  <div class="sk-circle6 sk-circle"></div>
+  <div class="sk-circle7 sk-circle"></div>
+  <div class="sk-circle8 sk-circle"></div>
+  <div class="sk-circle9 sk-circle"></div>
+  <div class="sk-circle10 sk-circle"></div>
+  <div class="sk-circle11 sk-circle"></div>
+  <div class="sk-circle12 sk-circle"></div>
+</div>
+
+    <h3 id="h_filt">{{ trans("Filtering") }}</h3>
+    <div class="filtering">
+    <table>
+    <tr>
+        <td>
+            {{ trans("From") }}:
+        </td>
+        <td>
             <input type="date" name="date-from" id="date-from">
-        </label>
-        <label for="time-from">
-            {{ trans("Time") }}:
+        </td>
+        <td>
             <input type="time" name="time-from" id="time-from" title="{{ trans("Time From") }}">
-        </label>
-        <br>
-        <label for="date-to">
-            {{ trans("Date To") }}:
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{ trans("To") }}:
+        </td>
+        <td>
             <input type="date" name="date-to" id="date-to">
-        </label>
-        <label for="time-to">
-            {{ trans("Time") }}:
+        </td>
+        <td>
             <input type="time" name="time-to" id="time-to" title="{{ trans("Time To") }}">
-        </label>
-        <hr>
-        <label for="aggregate">
-            {{ trans("Aggregation - by hostname") }}:
-            <input type="checkbox" name="aggregate" id="aggregate" checked>
-        </label>
-        <hr>
-        <label for="hostname-filter">
+        </td>
+    </tr>
+    </table><p>
+            {{ trans("Aggregation by hostname") }}:
+            <input type="checkbox" name="aggregate" id="aggregate" checked></p>
+    <table>
+    <tr>
+        <td>
             {{ trans("Only following hostnames") }}:
-            <br>
-            <textarea name="hostname-filter" id="hostname-filter"></textarea>
-            <br>
-            <small>{{ trans("(All hostnames if empty)") }}</small>
-        </label>
-        <hr>
-        <label for="srcMAC-filter">
-            {{ trans("Only following MAC addresses") }}:
-            <br>
-            <textarea name="srcMAC-filter" id="srcMAC-filter"></textarea>
-            <br>
-            <small>{{ trans("(All MAC adresses if empty)") }}</small>
-        </label>
-        <hr>
-        <label for="apply-changes">
-            <input type="submit" id="apply-changes" value="aplikovat změny" disabled>
-        </label>
-    </fieldset>
+        </td>
+        <td>
+            <textarea name="hostname-filter" id="hostname-filter"
+            placeholder="{{ trans("All hostnames if empty") }}"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{ trans("Only following clients") }}:
+        </td>
+        <td>
+            <textarea name="srcMAC-filter" id="srcMAC-filter"
+            placeholder="{{ trans("All clients if empty") }}"></textarea>
+        </td>
+    </tr>
+    </table>
+    </div>
 
-    <h3>{{ trans("Statistics") }}</h3>
+    <h3 id="h_stats">{{ trans("Statistics") }}</h3>
     <div id="pakon-results-statistics"></div>
 
-    <h3>{{ trans("Results") }}</h3>
-    %include("pakon/_results.tpl", results=results)
+    <h3 id="h_res">{{ trans("Results") }}</h3>
+    %include("pakon/_results.tpl")
 </div>
 
 <script>
