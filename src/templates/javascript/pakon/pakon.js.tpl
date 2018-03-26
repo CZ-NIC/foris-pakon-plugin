@@ -2985,7 +2985,7 @@ const czNicTurrisPakon = class
 	}
 
 
-	applyFilters () // @ depricated … soon :)
+	applyFilters () // @ depricated … soon :)
 	{
 		if ( !this.settings.filterBy )
 		{
