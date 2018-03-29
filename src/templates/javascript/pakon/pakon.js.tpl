@@ -1,15 +1,18 @@
 'use strict';
 
+/** @typedef {function(): true} Chart - export from library Chart.js */
+var Chart;
+
 const czNicTurrisPakon = class
 {
 
-	/*
+	/**
 	 * @constructor
 	 * @param {Window} w - root website object
 	 */
 	constructor ( w = window )
 	{
-		/*
+		/**
 		 * @public
 		 */
 		this.window = w;
@@ -20,7 +23,7 @@ const czNicTurrisPakon = class
 			|| this.window[ 'msIndexedDB' ]
 			|| this.window[ 'shimIndexedDB' ]; // This works on all devices/browsers, and uses IndexedDBShim as a final fallback
 
-		/*
+		/**
 		 * @public
 		 */
 		this.brandColors = Object.freeze( [
@@ -631,7 +634,7 @@ const czNicTurrisPakon = class
 		] );
 
 
-		/*
+		/**
 		 * @private
 		 */
 		this._SORT_BY_OPTIONS = Object.freeze( {
@@ -641,7 +644,7 @@ const czNicTurrisPakon = class
 			DATA_SUM_RECVD: 4, // feature suggestion
 		} );
 
-		/*
+		/**
 		 * @private
 		 */
 		this._GROUP_BY_OPTIONS = Object.freeze( {
@@ -651,7 +654,7 @@ const czNicTurrisPakon = class
 			DATA_SUM: 3, // feature suggestion
 		} );
 
-		/*
+		/**
 		 * @private
 		 */
 		this._FILTER_BY_OPTIONS = Object.freeze( {
@@ -662,7 +665,7 @@ const czNicTurrisPakon = class
 			RECVD: 5, // @todo : add more possible sorting options
 		} );
 
-		/*
+		/**
 		 * @private
 		 */
 		this._CHART_COLORS = Object.freeze( { // from pallete https://www.materialui.co/colors
@@ -711,7 +714,7 @@ const czNicTurrisPakon = class
 		} );
 
 
-		/*
+		/**
 		 * @private
 		 */
 		this._time_units_in_languages = { // for live time view
@@ -764,7 +767,7 @@ const czNicTurrisPakon = class
 		},
 
 
-			/*
+			/**
 			 * @private
 			 */
 			this._settings = {
@@ -866,7 +869,7 @@ const czNicTurrisPakon = class
 				'timeLimitation': {
 					'from': null,
 					'to': null,
-					'suggestedInterval': 7, // in days
+					'suggestedInterval': 1, // in days
 				},
 				'tableHeader': {
 					10: [ 'id', 'n ID', null, true ],
@@ -916,17 +919,17 @@ const czNicTurrisPakon = class
 				},
 			};
 
-		/*
+		/**
 		 * @private
 		 */
 		this._dataStructure = {};
 
-		/*
+		/**
 		 * @private
 		 */
 		this._virtualTable = null;
 
-		/*
+		/**
 		 * @private
 		 */
 		this._virtualStatistics = null;
@@ -1098,12 +1101,10 @@ const czNicTurrisPakon = class
 
 	}
 
-	/*
+	/**
 	 * Set settings for whole class
-	 * @param {Object} variables
-	 * @returns {Boolean}
 	 */
-	set settings ( /** @type {{}} */ variables )
+	set settings ( variables )
 	{
 		level1:
 		for ( const i in variables ) {
@@ -1131,36 +1132,32 @@ const czNicTurrisPakon = class
 		Object.assign( this._settings, variables );
 	}
 
-	/*
+	/**
 	 * Get settings for whole class
-	 * @returns {Object}
 	 */
 	get settings ()
 	{
 		return this._settings;
 	}
 
-	/*
+	/**
 	 * Get GROUP_BY_OPTIONS
-	 * @returns {Object}
 	 */
 	get GROUP_BY_OPTIONS ()
 	{
 		return this._GROUP_BY_OPTIONS;
 	}
 
-	/*
+	/**
 	 * Get SORT_BY_OPTIONS
-	 * @returns {Object}
 	 */
 	get SORT_BY_OPTIONS ()
 	{
 		return this._SORT_BY_OPTIONS;
 	}
 
-	/*
+	/**
 	 * Get FILTER_BY_OPTIONS
-	 * @returns {Object}
 	 */
 	get FILTER_BY_OPTIONS ()
 	{
@@ -1187,9 +1184,8 @@ const czNicTurrisPakon = class
 		this._dataStructure = inObj;
 	}
 
-	/*
+	/**
 	 * Get statistics data
-	 * @returns {Object}
 	 */
 	get dataStructure ()
 	{
@@ -1198,8 +1194,8 @@ const czNicTurrisPakon = class
 
 	set timeLimitation ( /** @type {{ from: Date, to: Date }} */ input )
 	{
-		this.settings[ 'timeLimitation' ].from = input.from;
-		this.settings[ 'timeLimitation' ].to = input.to;
+		this.settings.timeLimitation.from = input.from;
+		this.settings.timeLimitation.to = input.to;
 	}
 
 	set virtualTable ( /** @type {HTMLTableElement} */ table )
@@ -1225,11 +1221,11 @@ const czNicTurrisPakon = class
 
 	createSourceUrl ()
 	{
-		const query = this.settings[ 'eventSource' ].query;
-		query.start = this.settings[ 'timeLimitation' ].from / 1000; // to unix timestamp
-		query.end = this.settings[ 'timeLimitation' ].to / 1000; // to unix timestamp
+		const query = this.settings.eventSource.query;
+		query.start = this.settings.timeLimitation.from / 1000; // to unix timestamp
+		query.end = this.settings.timeLimitation.to / 1000; // to unix timestamp
 
-		if ( new Date() < this.settings[ 'timeLimitation' ].to ) {
+		if ( new Date() < this.settings.timeLimitation.to ) {
 			delete query.end;
 		}
 
@@ -1245,13 +1241,13 @@ const czNicTurrisPakon = class
 			delete query.aggregate;
 		}
 
-		const url = this.settings[ 'eventSource' ].baseUrl;
+		const url = this.settings.eventSource.baseUrl;
 		url.searchParams.set( 'action', 'eventsource' );
 		url.searchParams.set( 'query', JSON.stringify( query ) );
 
-		this.settings[ 'eventSource' ].completeUrl = url;
+		this.settings.eventSource.completeUrl = url;
 
-		if ( this.settings[ 'eventSource' ].dumpIntoStatistics ) {
+		if ( this.settings.eventSource.dumpIntoStatistics ) {
 			const container = document.createElement( 'div' );
 
 			const urlDumpRoot = document.createElement( 'div' );
@@ -1281,15 +1277,14 @@ const czNicTurrisPakon = class
 	}
 
 
-	/*
-	 *
+	/**
 	 * @todo : description
 	 * @returns {Boolean}
 	 */
 	storeHitsToIndexedDB ()
 	{
 
-		const openReq = this.idb.open( this.settings[ 'db_credentials' ].db_name, this.settings[ 'db_credentials' ].version );
+		const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 
 		openReq.onupgradeneeded = this.db_init.bind( this, openReq );
 
@@ -1327,10 +1322,12 @@ const czNicTurrisPakon = class
 			};
 		}.bind( this );
 
+		return true;
+
 	}
 
 
-	combinatedSorting ( inArray = [], by = this.settings[ 'sortBy' ] )
+	combinatedSorting ( inArray = [], by = this.settings.sortBy )
 	{
 		let sortedUniqueHostnameKeys = []
 		if ( by === this.SORT_BY_OPTIONS[ 'N_HITS' ] ) { // sort by number of values
@@ -1347,7 +1344,7 @@ const czNicTurrisPakon = class
 	}
 
 
-	groupSortData ( inArray = [], group = this.settings[ 'grupBy' ], sort = this.settings[ 'sortBy' ] )
+	groupSortData ( inArray = [], group = this.settings.grupBy, sort = this.settings.sortBy )
 	{
 		const sortedUniqueHostnameKeys = this.combinatedSorting( inArray, sort );
 		const summedUniqueHostnameKeys = [];
@@ -1389,8 +1386,8 @@ const czNicTurrisPakon = class
 				sum[ 'recvd' ] += parseInt( rowData.value[ ii ].recvd );
 			}
 			sum[ 'datetime' ].interval = ( ( sum[ 'datetime' ].to.getTime() - sum[ 'datetime' ].from.getTime() ) / 1000 );
-			if ( this.settings[ 'maxInterval' ] < sum[ 'datetime' ].interval ) {
-				this.settings[ 'maxInterval' ] = sum[ 'datetime' ].interval;
+			if ( this.settings.maxInterval < sum[ 'datetime' ].interval ) {
+				this.settings.maxInterval = sum[ 'datetime' ].interval;
 			}
 			summedUniqueHostnameKeys[ sortedUniqueHostnameKeys[ i ].key ] = {
 				'order': order++, // prevent loosing original information
@@ -1399,9 +1396,9 @@ const czNicTurrisPakon = class
 				'length': sortedUniqueHostnameKeys[ i ].value.length, // counting now for performance reasons
 				'datetime': sum[ 'datetime' ],
 				'dur': sum[ 'dur' ][ this.seconds2Hms ](),
-				'srcMAC': sum[ 'srcMAC' ][ this.frequencyUnique ]().join( ', ' )[ this.truncate ]( this.settings[ 'strLen' ] ),
-				'dstPort': sum[ 'dstPort' ][ this.frequencyUnique ]().join( ', ' )[ this.truncate ]( this.settings[ 'strLen' ] ),
-				'proto': sum[ 'proto' ][ this.frequencyUnique ]().join( ', ' )[ this.truncate ]( this.settings[ 'strLen' ] ),
+				'srcMAC': sum[ 'srcMAC' ][ this.frequencyUnique ]().join( ', ' )[ this.truncate ]( this.settings.strLen ),
+				'dstPort': sum[ 'dstPort' ][ this.frequencyUnique ]().join( ', ' )[ this.truncate ]( this.settings.strLen ),
+				'proto': sum[ 'proto' ][ this.frequencyUnique ]().join( ', ' )[ this.truncate ]( this.settings.strLen ),
 				'sent': sum[ 'sent' ].toLocaleString(),
 				'recvd': sum[ 'recvd' ].toLocaleString(),
 			}
@@ -1412,15 +1409,14 @@ const czNicTurrisPakon = class
 
 	repairUserInputs ()
 	{
-		const formControls = this.settings[ 'controlForm' ];
-
+		const formControls = this.settings.controlForm;
 		for ( const i in formControls ) {
 			if ( formControls[ i ] && formControls[ i ].nodeType === Node.ELEMENT_NODE ) {
 				if ( false ) {
 
 				}
-				let macs = this.settings[ 'eventSource' ].query.mac;
-				let hostnames = this.settings[ 'eventSource' ].query.hostname;
+				let macs = this.settings.eventSource.query.mac;
+				let hostnames = this.settings.eventSource.query.hostname;
 				if ( i === 'srcMACFilter' && macs ) {
 					for ( const i in macs ) {
 						const regex = new RegExp( '^("?[A-Za-z ]+"? ?:? ?)|(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))$', 'u' ); // some redundant (but possible) text OR MAC address as is defined in IEEE 802
@@ -1428,8 +1424,10 @@ const czNicTurrisPakon = class
 							delete macs[ i ];
 						}
 					}
-					macs = this.settings[ 'eventSource' ].query.mac = macs.filter( String ); // remove empty items after deleting
-					this.settings[ 'controlForm' ].srcMACFilter.value = macs.join( this.settings[ 'textareaSeparator' ] ); // this will NOT trigger a change event!!!
+					macs = this.settings.eventSource.query.mac = macs.filter( String ); // remove empty items after deleting
+					/** @type {HTMLTextAreaElement} */
+					const textarea = ( this.settings.controlForm.srcMACFilter );
+					textarea.value = macs.join( this.settings.textareaSeparator ); // this will NOT trigger a change event!!!
 				} else if ( i === 'hostnameFilter' && hostnames ) {
 					// @todo : …
 				}
@@ -1453,9 +1451,9 @@ const czNicTurrisPakon = class
 	}
 
 
-	/*
+	/**
 	 * @todo : description
-	 * @returns {Boolean}
+	 * @returns {Promise<Boolean>}
 	 */
 	async loadFreshHits ()
 	{
@@ -1468,7 +1466,7 @@ const czNicTurrisPakon = class
 			}
 
 			if ( false ) { // @todo : eventsource - asynchronous
-				const evtSource = new EventSource( this.settings[ 'eventSource' ].completeUrl, { withCredentials: true } ); // @todo : remove withCredentials after testing & also remove 'Access-Control-Allow-Origin' header from backend!
+				const evtSource = new EventSource( this.settings.eventSource.completeUrl, { withCredentials: true } ); // @todo : remove withCredentials after testing & also remove 'Access-Control-Allow-Origin' header from backend!
 				evtSource.onmessage = this.eventMessage.bind( this );
 				resolve( true );
 			} else { // fetch - synchronous
@@ -1501,9 +1499,13 @@ const czNicTurrisPakon = class
 		{
 			const repeatedCalls = arguments[ 0 ]; // bool value
 			if ( repeatedCalls ) {
-				const controlForm = this.settings[ 'controlForm' ];
+				const controlForm = this.settings.controlForm;
 				let errorMessage = 'Chyba. Nepodařilo se načíst data';
-				if ( controlForm.hostnameFilter.value || controlForm.srcMACFilter.value ) {
+				/** @type {HTMLTextAreaElement} */
+				const hostnameTextarea = ( controlForm.hostnameFilter );
+				/** @type {HTMLTextAreaElement} */
+				const srcMACTextarea = ( controlForm.srcMACFilter );
+				if ( hostnameTextarea.value || srcMACTextarea.value ) {
 					errorMessage += ' \nUjistěte se, že máte správně nastavené parametry filtrování';
 				}
 				//alert(errorMessage);
@@ -1524,7 +1526,7 @@ const czNicTurrisPakon = class
 	{
 		return new Promise( ( resolve ) =>
 		{
-			fetch( this.settings[ 'eventSource' ].completeUrl, {
+			fetch( this.settings.eventSource.completeUrl, {
 				method: 'GET',
 				headers: {
 					'Accept': 'application/json',
@@ -1579,7 +1581,7 @@ const czNicTurrisPakon = class
 	{
 		return new Promise( ( resolve ) =>
 		{
-			const openReq = this.idb.open( this.settings[ 'db_credentials' ].db_name, this.settings[ 'db_credentials' ].version );
+			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 
 			openReq.onsuccess = function ()
 			{
@@ -1612,7 +1614,7 @@ const czNicTurrisPakon = class
 	{
 		return new Promise( ( resolve ) =>
 		{
-			if ( this.settings[ 'groupBy' ] === this.GROUP_BY_OPTIONS[ 'DISABLED' ] ) {
+			if ( this.settings.groupBy === this.GROUP_BY_OPTIONS[ 'DISABLED' ] ) {
 				let lengthOfVisible = 0;
 				for ( const i in this.dataStructure ) {
 					if ( Array.isArray( this.dataStructure[ i ] ) ) {
@@ -1627,7 +1629,7 @@ const czNicTurrisPakon = class
 				this.dataStructure[ 'length' ] = Object.keys( this.dataStructure ).length;
 				this.dataStructure[ 'lengthOfVisible' ] = lengthOfVisible;
 				resolve( this.dataStructure );
-			} else if ( this.settings[ 'groupBy' ] === this.GROUP_BY_OPTIONS[ 'HOSTNAME_COUNT' ] ) {
+			} else if ( this.settings.groupBy === this.GROUP_BY_OPTIONS[ 'HOSTNAME_COUNT' ] ) {
 				this.mostUsedHostnames().then( ( result ) =>
 				{
 					this.dataStructure = result;
@@ -1646,7 +1648,7 @@ const czNicTurrisPakon = class
 	{
 		return new Promise( ( resolve ) =>
 		{
-			const openReq = this.idb.open( this.settings[ 'db_credentials' ].db_name, this.settings[ 'db_credentials' ].version );
+			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 			openReq.onsuccess = function ()
 			{
 				const db = openReq.result;
@@ -1691,7 +1693,8 @@ const czNicTurrisPakon = class
 	{
 		return new Promise( ( resolve ) =>
 		{
-			const resultsTable = this.settings[ 'resultsTable' ];
+			/** @type {HTMLTableElement} */
+			const resultsTable = ( this.settings.resultsTable );
 			const virtualTable = document.createElement( 'table' );
 			let tHead = null;
 			if ( resultsTable ) {
@@ -1715,27 +1718,27 @@ const czNicTurrisPakon = class
 					continue;
 				}
 				if ( !( this.dataStructure[ i ].hidden || this.dataStructure[ i ][ 9 ] ) && this.dataStructure[ i ] ) {
-					const tableHeaderLength = Object.keys( this.settings[ 'tableHeader' ] ).length;
+					const tableHeaderLength = Object.keys( this.settings.tableHeader ).length;
 					const row = document.createElement( 'tr' );
 					cellsLoop:
-					for ( const ii in this.settings[ 'tableHeader' ] ) { // tbody works aginst thead
-						if ( this.settings[ 'groupBy' ] === this.GROUP_BY_OPTIONS[ 'DISABLED' ] ) {
-							if ( !this.settings[ 'tableHeader' ][ ii ][ 3 ] ) {
+					for ( const ii in this.settings.tableHeader ) { // tbody works aginst thead
+						if ( this.settings.groupBy === this.GROUP_BY_OPTIONS[ 'DISABLED' ] ) {
+							if ( !this.settings.tableHeader[ ii ][ 3 ] ) {
 								const cell = document.createElement( 'td' );
-								const columnPosition = this.getColumnPositionBy( this.settings[ 'tableHeader' ][ ii ][ 0 ] );
+								const columnPosition = this.getColumnPositionBy( this.settings.tableHeader[ ii ][ 0 ] );
 								let node;
-								if ( this.settings[ 'tableHeader' ][ ii ][ 0 ] === 'datetime' ) {
+								if ( this.settings.tableHeader[ ii ][ 0 ] === 'datetime' ) {
 									const currentDate = new Date( this.dataStructure[ i ][ columnPosition ] );
 									cell.setAttribute( 'data-raw-content', String( Number( currentDate ) / 1000 ) );
 									node = document.createElement( 'time' );
 									node.dateTime = currentDate[ this.toW3CString ]();
 									node.appendChild( document.createTextNode(
-										currentDate.toLocaleDateString( this.settings[ 'lang' ] ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
+										currentDate.toLocaleDateString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
 										+ ' '
-										+ currentDate.toLocaleTimeString( this.settings[ 'lang' ] ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
+										+ currentDate.toLocaleTimeString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
 									) );
-								} else if ( this.settings[ 'tableHeader' ][ ii ][ 0 ] === 'dur' ) {
-									node = document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] )[ this.seconds2Hms ]( this.settings[ 'lang' ] ) );
+								} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'dur' ) {
+									node = document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] )[ this.seconds2Hms ]( this.settings.lang ) );
 								} else {
 									node = document.createTextNode( this.dataStructure[ i ][ columnPosition ] );
 								}
@@ -1744,15 +1747,15 @@ const czNicTurrisPakon = class
 							}
 						} else { // @todo : move it into this.cellFromGroupedDataStructure();
 							const cell = document.createElement( 'td' );
-							if ( this.settings[ 'tableHeader' ][ ii ][ 0 ] === 'id' ) { // it's already time for switch() ?
+							if ( this.settings.tableHeader[ ii ][ 0 ] === 'id' ) { // it's already time for switch() ?
 								if ( this.dataStructure[ i ][ 'ids' ].length < 9 ) {
-									cell.title = '[' + this.dataStructure[ i ][ 'ids' ].join( ', ' )[ this.truncate ]( this.settings[ 'strLen' ] ) + ']';
+									cell.title = '[' + this.dataStructure[ i ][ 'ids' ].join( ', ' )[ this.truncate ]( this.settings.strLen ) + ']';
 								}
 								const idText = this.dataStructure[ i ][ 'ids' ].length + '\u00A0\u00D7'; // NO-BREAK SPACE and MULTIPLICATION SIGN
 								cell.appendChild( document.createTextNode( idText ) );
-							} else if ( this.settings[ 'tableHeader' ][ ii ][ 0 ] === 'datetime' ) {
-								const interval = this.dataStructure[ i ][ this.settings[ 'tableHeader' ][ ii ][ 0 ] ];
-								const lang = this.settings[ 'lang' ];
+							} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'datetime' ) {
+								const interval = this.dataStructure[ i ][ this.settings.tableHeader[ ii ][ 0 ] ];
+								const lang = this.settings.lang;
 								let intString = '';
 								if ( interval.from.toLocaleDateString( lang ) === interval.to.toLocaleDateString( lang ) ) {
 									intString += interval.to.toLocaleDateString( lang )
@@ -1768,12 +1771,12 @@ const czNicTurrisPakon = class
 								if ( interval.from.toLocaleDateString( lang ) === interval.to.toLocaleDateString( lang ) ) {
 									intString += ')';
 								}
-								cell.setAttribute( 'data-percentage', String( Math.round( ( 100 / this.settings[ 'maxInterval' ] ) * interval.interval ) ) );
+								cell.setAttribute( 'data-percentage', String( Math.round( ( 100 / this.settings.maxInterval ) * interval.interval ) ) );
 								cell.appendChild( document.createTextNode( intString ) );
-							} else if ( this.settings[ 'tableHeader' ][ ii ][ 0 ] === 'hostname' ) {
+							} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'hostname' ) {
 								cell.appendChild( document.createTextNode( i ) );
 							} else {
-								cell.appendChild( document.createTextNode( this.dataStructure[ i ][ this.settings[ 'tableHeader' ][ ii ][ 0 ] ] ) );
+								cell.appendChild( document.createTextNode( this.dataStructure[ i ][ this.settings.tableHeader[ ii ][ 0 ] ] ) );
 							}
 							row.appendChild( cell );
 						} // @todo : … end
@@ -1797,12 +1800,12 @@ const czNicTurrisPakon = class
 
 			this.countHits().then( ( result ) =>
 			{
-				this.settings[ 'statisticsData' ].nHits = result;
+				this.settings.statisticsData.nHits = result;
 			} );
 
-			//			this.settings['statisticsData'].nAggregatedHits = this.dataStructure.length;
+			//			this.settings.statisticsData.nAggregatedHits = this.dataStructure.length;
 
-			const list = this.settings[ 'statisticsData' ].graphs.createFor;
+			const list = this.settings.statisticsData.graphs.createFor;
 			if ( list.length ) {
 				list.length = Object.keys( list ).length - 1;
 			} else {
@@ -1810,7 +1813,7 @@ const czNicTurrisPakon = class
 			}
 
 			const existingColumns = [];
-			const theader = this.settings[ 'tableHeader' ];
+			const theader = this.settings.tableHeader;
 			for ( const i in theader ) {
 				existingColumns.push( theader[ i ][ 0 ] );
 			}
@@ -1844,26 +1847,36 @@ const czNicTurrisPakon = class
 	}
 
 
-	async fillTimeLimitationForm () // from this.settings['timeLimitation']
+	/**
+	 * @todo : description
+	 * @returns {Promise<Boolean>}
+	 */
+	async fillTimeLimitationForm () // from this.settings.timeLimitation
 	{
 		return new Promise( ( resolve ) =>
 		{
-			const inp = this.settings[ 'controlForm' ].timeLimitationInputs;
-
-			if ( inp.dateFrom && inp.timeFrom && this.settings[ 'timeLimitation' ].from ) {
-				if ( !inp.dateFrom.value ) {
-					inp.dateFrom.value = this.settings[ 'timeLimitation' ].from[ this.toDateInput ]();
+			/** @type {HTMLInputElement} */
+			const dateFrom = ( this.settings.controlForm.timeLimitationInputs.dateFrom );
+			/** @type {HTMLInputElement} */
+			const timeFrom = ( this.settings.controlForm.timeLimitationInputs.timeFrom );
+			/** @type {HTMLInputElement} */
+			const dateTo = ( this.settings.controlForm.timeLimitationInputs.dateTo );
+			/** @type {HTMLInputElement} */
+			const timeTo = ( this.settings.controlForm.timeLimitationInputs.timeTo );
+			if ( dateFrom && timeFrom && this.settings.timeLimitation.from ) {
+				if ( !dateFrom.value ) {
+					dateFrom.value = this.settings.timeLimitation.from[ this.toDateInput ]();
 				}
-				if ( !inp.timeFrom.value ) {
-					inp.timeFrom.value = this.settings[ 'timeLimitation' ].from[ this.toTimeInput ]();
+				if ( !timeFrom.value ) {
+					timeFrom.value = this.settings.timeLimitation.from[ this.toTimeInput ]();
 				}
 			}
-			if ( inp.dateTo && inp.timeTo && this.settings[ 'timeLimitation' ].to ) {
-				if ( !inp.dateTo.value ) {
-					inp.dateTo.value = this.settings[ 'timeLimitation' ].to[ this.toDateInput ]();
+			if ( dateTo && timeTo && this.settings.timeLimitation.to ) {
+				if ( !dateTo.value ) {
+					dateTo.value = this.settings.timeLimitation.to[ this.toDateInput ]();
 				}
-				if ( !inp.timeTo.value ) {
-					inp.timeTo.value = this.settings[ 'timeLimitation' ].to[ this.toTimeInput ]();
+				if ( !timeTo.value ) {
+					timeTo.value = this.settings.timeLimitation.to[ this.toTimeInput ]();
 				}
 			}
 			resolve( true );
@@ -1871,14 +1884,18 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @returns {Promise<Boolean>}
+	 */
 	async setSyncWorkTo ( status = false, triggeredByEvent = false )
 	{
 		return new Promise( ( resolve ) =>
 		{
-			const submitButton = this.settings[ 'controlForm' ].controlFormSubmit;
+			const submitButton = this.settings.controlForm.controlFormSubmit;
 			const safeStatus = status ? ( submitButton ? false : true ) : false;
 
-			const formControls = this.settings[ 'controlForm' ];
+			const formControls = this.settings.controlForm;
 
 			for ( const i in formControls ) {
 				if ( formControls[ i ] && formControls[ i ].nodeType === Node.ELEMENT_NODE ) {
@@ -1914,7 +1931,7 @@ const czNicTurrisPakon = class
 		return new Promise( ( resolve ) =>
 		{
 
-			const openReq = this.idb.open( this.settings[ 'db_credentials' ].db_name, this.settings[ 'db_credentials' ].version );
+			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 
 			openReq.onsuccess = function ()
 			{
@@ -1953,22 +1970,22 @@ const czNicTurrisPakon = class
 				const CHANGE_EVENT_NAME = 'change';
 				const FILTER_ELEMENT_SUFFIX = 'Filter';
 				const INPUT_EVENT_NAME = 'input';
-				let filterValues = this.settings[ 'eventSource' ].query[ key ] = this.readFromTextarea( this.settings[ 'controlForm' ][ key + FILTER_ELEMENT_SUFFIX ] );
+				let filterValues = this.settings.eventSource.query[ key ] = this.readFromTextarea( this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ] );
 				/** @type {HTMLElement} */
 				const eventTarget = ( event.target );
 				/** @type {HTMLTableCellElement} */
 				const currnetCell = ( eventTarget.parentNode );
 				const currentValue = currnetCell.firstElementChild.textContent;
 				if ( Array.isArray( filterValues ) ) {
-					const currentControlFormElement = this.settings[ 'controlForm' ][ key + FILTER_ELEMENT_SUFFIX ];
+					const currentControlFormElement = this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ];
 					if ( filterValues.includes( currentValue ) ) { // remove
-						eventTarget.textContent = this.settings[ 'postRenderImprove' ][ key ].filter.remove.textContent;
-						eventTarget.title = this.settings[ 'postRenderImprove' ][ key ].filter.remove.title;
+						eventTarget.textContent = this.settings.postRenderImprove[ key ].filter.remove.textContent;
+						eventTarget.title = this.settings.postRenderImprove[ key ].filter.remove.title;
 						eventTarget.classList.add( 'remove', 'filter' );
 						eventTarget.classList.remove( 'add' ); // it does perfectly sense XD
 						if ( event.isTrusted ) {
-							filterValues = this.settings[ 'eventSource' ].query[ key ] = filterValues.filter( item => item !== currentValue ); // removes current from array
-							currentControlFormElement.value = filterValues.join( this.settings[ 'textareaSeparator' ] );
+							filterValues = this.settings.eventSource.query[ key ] = filterValues.filter( item => item !== currentValue ); // removes current from array
+							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
 							/*
 							if (
 								currentControlFormElement.parentNode.nextElementSibling
@@ -1982,13 +1999,13 @@ const czNicTurrisPakon = class
 							currentControlFormElement.dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
 						}
 					} else { // add
-						eventTarget.textContent = this.settings[ 'postRenderImprove' ][ key ].filter.add.textContent;
-						eventTarget.title = this.settings[ 'postRenderImprove' ][ key ].filter.add.title;
+						eventTarget.textContent = this.settings.postRenderImprove[ key ].filter.add.textContent;
+						eventTarget.title = this.settings.postRenderImprove[ key ].filter.add.title;
 						eventTarget.classList.add( 'add', 'filter' );
 						eventTarget.classList.remove( 'remove' );
 						if ( event.isTrusted ) {
 							filterValues.push( currentValue );
-							currentControlFormElement.value = filterValues.join( this.settings[ 'textareaSeparator' ] );
+							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
 							if (
 								currentControlFormElement.parentNode.nextElementSibling
 								&& currentControlFormElement.parentNode.nextElementSibling.nodeType === Node.ELEMENT_NODE
@@ -2007,6 +2024,10 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @returns {Promise<Boolean>}
+	 */
 	async improveControlFormTextareas ()
 	{
 		return new Promise( ( resolve ) =>
@@ -2023,7 +2044,7 @@ const czNicTurrisPakon = class
 					'srcMAC-filter': 'srcMACFilter',
 				},
 			} );
-			const controlForm = this.settings[ 'controlForm' ];
+			const controlForm = this.settings.controlForm;
 			for ( const i in controlForm ) {
 				if ( controlForm[ i ] && controlForm[ i ].nodeType === Node.ELEMENT_NODE && controlForm[ i ].type === 'textarea' ) {
 					controlForm[ i ].parentNode.hidden = true;
@@ -2046,16 +2067,16 @@ const czNicTurrisPakon = class
 									const clearedItem = item.textContent.replace( regexp, '' );
 									if ( clearedItem ) {
 										const tag = this.createSingleTag( clearedItem, INPUT_EVENT_NAME, FAKE_TRUSTED_DETAIL_STRING );
-										eventTarget.insertBefore( document.createTextNode( this.settings[ 'textareaSeparator' ] ), item );
+										eventTarget.insertBefore( document.createTextNode( this.settings.textareaSeparator ), item );
 										eventTarget.replaceChild( tag, item );
 										this.setCursorAtTheEndOf( eventTarget );
-										eventTarget.appendChild( document.createTextNode( this.settings[ 'textareaSeparator' ] ) );
+										eventTarget.appendChild( document.createTextNode( this.settings.textareaSeparator ) );
 									}
 								}
 							} );
-							const values = this.settings[ 'eventSource' ].query[ eventSourceKey ] = this.readFromEditableElement( eventTarget );
-							this.settings[ 'controlForm' ][ controlFormKey ].value = values.join( this.settings[ 'textareaSeparator' ] );
-							if ( ( eventTarget.firstChild ) && ( eventTarget.firstChild.textContent === this.settings[ 'textareaSeparator' ] ) ) {
+							const values = this.settings.eventSource.query[ eventSourceKey ] = this.readFromEditableElement( eventTarget );
+							this.settings.controlForm[ controlFormKey ].value = values.join( this.settings.textareaSeparator );
+							if ( ( eventTarget.firstChild ) && ( eventTarget.firstChild.textContent === this.settings.textareaSeparator ) ) {
 								eventTarget.removeChild( eventTarget.firstChild );
 							}
 							if ( eventTarget.lastChild ) {
@@ -2067,20 +2088,22 @@ const czNicTurrisPakon = class
 									eventTarget.lastChild.previousSibling[ 'textNode' ] += eventTarget.lastChild[ 'textNode' ];
 									eventTarget.removeChild( eventTarget.lastChild );
 								}
-								if ( eventTarget.lastChild.textContent !== this.settings[ 'textareaSeparator' ] ) {
-									eventTarget.appendChild( document.createTextNode( this.settings[ 'textareaSeparator' ] ) );
+								if ( eventTarget.lastChild.textContent !== this.settings.textareaSeparator ) {
+									eventTarget.appendChild( document.createTextNode( this.settings.textareaSeparator ) );
 								}
 							}
-							if ( this.settings[ 'controlForm' ].controlFormSubmit ) {
-								this.settings[ 'controlForm' ].controlFormSubmit.disabled = false;
+							/** @type {HTMLInputElement} */
+							const submitButton = ( this.settings.controlForm.controlFormSubmit );
+							if ( submitButton ) {
+								submitButton.disabled = false;
 							}
 						} else {
-							const currentEventKey = this.settings[ 'eventSource' ].query[ eventSourceKey ] = this.readFromTextarea( this.settings[ 'controlForm' ][ controlFormKey ] );
+							const currentEventKey = this.settings.eventSource.query[ eventSourceKey ] = this.readFromTextarea( this.settings.controlForm[ controlFormKey ] );
 							for ( const i in currentEventKey ) {
 								const tag = this.createSingleTag( currentEventKey[ i ], INPUT_EVENT_NAME, FAKE_TRUSTED_DETAIL_STRING );
 								tagsRoot.appendChild( tag );
 								//if (currentEventKey[Number(i) + 1]) {
-								tagsRoot.appendChild( document.createTextNode( this.settings[ 'textareaSeparator' ] ) );
+								tagsRoot.appendChild( document.createTextNode( this.settings.textareaSeparator ) );
 								//}
 							}
 						}
@@ -2109,6 +2132,7 @@ const czNicTurrisPakon = class
 			'DESC': 'desc',
 		} );
 
+		/** @method */
 		const getCellValue = (/** @type {HTMLTableRowElement} */ tr, columnPosition = 0 ) =>
 		{
 			/** @type {HTMLTableCellElement} */
@@ -2116,6 +2140,7 @@ const czNicTurrisPakon = class
 			return ( currentCell.innerText || currentCell.textContent );
 		};
 
+		/** @method */
 		const comparer = function ( columnPosition = 0, asc = false )
 		{ /// better in top?
 			return function ( a, b )
@@ -2128,6 +2153,7 @@ const czNicTurrisPakon = class
 			}
 		};
 
+		/** @method */
 		const sortTable = function ( /** @type {HTMLTableCellElement} */ th )
 		{
 			const ORDER_ATTRIBUTE = 'data-order';
@@ -2170,12 +2196,16 @@ const czNicTurrisPakon = class
 					) {
 						event.stopPropagation();
 						event.preventDefault();
-						return sortTable( event.target );
+						/** @type {HTMLTableCellElement} */
+						const eventTarget = ( event.target );
+						return sortTable( eventTarget );
 					}
 				} );
 				th.addEventListener( 'click', ( /** @type {MouseEvent} */ event ) =>
 				{
-					return sortTable( event.target );
+					/** @type {HTMLTableCellElement} */
+					const eventTarget = ( event.target );
+					return sortTable( eventTarget );
 				}, false );
 			} );
 
@@ -2189,19 +2219,24 @@ const czNicTurrisPakon = class
 		return new Promise( ( resolve ) =>
 		{
 			const datetimePosition = arguments[ 0 ];
-			[ ...this.settings[ 'resultsTable' ].tBodies[ 0 ].rows ].forEach( ( currentRow ) =>
+			/** @type {HTMLTableElement} */
+			const table = ( this.settings.resultsTable );
+			[ ...table.tBodies[ 0 ].rows ].forEach( ( /** @type {HTMLTableRowElement} */ currentRow ) =>
 			{
-				const currentCell = (
+				/** @type {HTMLElement} */
+				const currentCell = ( (
 					currentRow.children[ datetimePosition ].firstChild
 					&& currentRow.children[ datetimePosition ].firstChild.nodeType === Node.ELEMENT_NODE
 					&& currentRow.children[ datetimePosition ].firstChild.nodeName === 'TIME'
 				)
 					? currentRow.children[ datetimePosition ].firstChild
-					: currentRow.children[ datetimePosition ];
+					: currentRow.children[ datetimePosition ] );
 				if ( !currentCell.title ) {
 					currentCell.title = currentCell.textContent;
 				}
-				const timeDiff = this.getTimeDiff( new Date( Number( currentCell.parentNode.getAttribute( 'data-raw-content' ) ) * 1000 ), new Date(), false, this.settings[ 'lang' ], 'long' );
+				/** @type {HTMLTableCellElement} */
+				const td = ( currentCell.parentNode );
+				const timeDiff = this.getTimeDiff( new Date( Number( td.getAttribute( 'data-raw-content' ) ) * 1000 ), new Date(), false, this.settings.lang, 'long' );
 				if ( timeDiff && timeDiff.length > 1 ) {
 					currentCell.textContent = timeDiff;
 				}
@@ -2212,7 +2247,7 @@ const czNicTurrisPakon = class
 	}
 
 
-	getTimeDiff ( /** @type {Date} */ timeA, /** @type {Date} */ timeB, relative = false, lang = this.settings[ 'lang' ], type = 'long' )
+	getTimeDiff ( /** @type {Date} */ timeA, /** @type {Date} */ timeB, relative = false, lang = this.settings.lang, type = 'long' )
 	{
 		const s = 1 * 1000;
 		const m = 60 * s;
@@ -2227,7 +2262,7 @@ const czNicTurrisPakon = class
 			return false;
 		}
 
-		const inflect = ( term, n = 0, pluralFunction = Function ) =>
+		const inflect = ( /** @type { String | Array } */ term, /** @type {Number} */ n = 0, /** @type {Function} */ pluralFunction ) =>
 		{
 			if ( pluralFunction && Array.isArray( term ) ) {
 				return term[ pluralFunction( n ) ];
@@ -2238,7 +2273,10 @@ const czNicTurrisPakon = class
 
 		const diff = Math.abs( Number( timeA ) - Number( timeB ) );
 
-		const rc = ( int = 0 ) => { return Math.floor( int * ( ( 1 / this.settings[ 'postRenderImprove' ].datetime.time_diff ) / 1000 ) ); }
+		const rc = ( int = 0 ) =>
+		{
+			return Math.floor( int * ( ( 1 / this.settings.postRenderImprove.datetime.time_diff ) / 1000 ) );
+		}
 
 		const currentDate = new Date();
 
@@ -2248,9 +2286,9 @@ const czNicTurrisPakon = class
 		} );
 
 		const UNITS = this.time_units_in_languages; // @todo : refactor this
-		const DIVIDER = this.settings[ 'postRenderImprove' ].datetime.divider; // @todo : refactor this
+		const DIVIDER = this.settings.postRenderImprove.datetime.divider; // @todo : refactor this
 
-		if ( rc( closerDate ) === rc( currentDate ) ) {
+		if ( rc( Number( closerDate ) ) === rc( Number( currentDate ) ) ) {
 			const comparedDate = ( closerDate === timeA ) ? timeB : timeA;
 			const yesterdayDate = new Date();
 			yesterdayDate.setDate( yesterdayDate.getDate() - 1 );
@@ -2327,8 +2365,8 @@ const czNicTurrisPakon = class
 		const range = document.createRange();
 		const sel = this.window.getSelection();
 
-		if ( element.textContent.slice( -this.settings[ 'textareaSeparator' ].length ) === this.settings[ 'textareaSeparator' ] ) {
-			range.setStart( element.lastChild, this.settings[ 'textareaSeparator' ].length );
+		if ( element.textContent.slice( -this.settings.textareaSeparator.length ) === this.settings.textareaSeparator ) {
+			range.setStart( element.lastChild, this.settings.textareaSeparator.length );
 		} else if ( element.lastElementChild ) {
 			range.setStart( element.lastElementChild, 1 );
 		}
@@ -2352,9 +2390,11 @@ const czNicTurrisPakon = class
 			event.stopPropagation();
 			event.preventDefault();
 			if ( event.shiftKey && controlFormKey ) {
-				this.settings[ 'controlForm' ][ controlFormKey ].dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
+				this.settings.controlForm[ controlFormKey ].dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
 			} else {
-				this.setCursorAtTheEndOf( event.target );
+				/** @type {HTMLDivElement} */
+				const eventTarget = ( event.target );
+				this.setCursorAtTheEndOf( eventTarget );
 			}
 		}
 
@@ -2367,9 +2407,9 @@ const czNicTurrisPakon = class
 		const event = arguments[ 1 ];
 		const db = openReq.result;
 		if ( event.oldVersion > 0 && event.oldVersion < event.newVersion ) {
-			db.deleteObjectStore( this.settings[ 'db_credentials' ].table_name );
+			db.deleteObjectStore( this.settings.db_credentials.table_name );
 		}
-		const store = db.createObjectStore( this.settings[ 'db_credentials' ].table_name, { keyPath: 'id', unique: true, autoIncrement: false } );
+		const store = db.createObjectStore( this.settings.db_credentials.table_name, { keyPath: 'id', unique: true, autoIncrement: false } );
 		store.createIndex( 'hostname', 'hostname', { unique: false } );
 		store.createIndex( 'srcMAC', 'srcMAC', { unique: false } );
 		store.createIndex( 'dstPort', 'dstPort', { unique: false } );
@@ -2395,7 +2435,7 @@ const czNicTurrisPakon = class
 
 	makeObsoleteStatisticsData ()
 	{
-		const graphs = this.settings[ 'statisticsData' ].graphs.createFor;
+		const graphs = this.settings.statisticsData.graphs.createFor;
 		for ( const i in graphs ) {
 			delete graphs[ i ].dataStore;
 		}
@@ -2404,12 +2444,12 @@ const czNicTurrisPakon = class
 	}
 
 
-	percentageFromRaw ( currentCell = null, suffixes = [] )
+	percentageFromRaw ( /** @type {HTMLTableCellElement } */ currentCell, suffixes = [] )
 	{
 		for ( const i in suffixes ) {
 			if ( currentCell.getAttribute( 'data-raw-content-' + suffixes[ i ] ) ) {
 				currentCell.setAttribute( 'data-percentage',
-					Math.round( ( 100 / this.settings[ 'max' + suffixes[ i ][ this.capitalize ]() ] ) * currentCell.getAttribute( 'data-raw-content-' + suffixes[ i ] ) )
+					String( Math.round( ( 100 / this.settings[ 'max' + suffixes[ i ][ this.capitalize ]() ] ) * Number( currentCell.getAttribute( 'data-raw-content-' + suffixes[ i ] ) ) ) )
 				);
 				//currentCell.removeAttribute( 'data-raw-content-' + suffixes[ i ] ); // now it's used for sorting
 				break; // one cell can have just one data-raw-…
@@ -2432,14 +2472,15 @@ const czNicTurrisPakon = class
 		const sentPosition = this.getColumnPositionBy( 'sent' );
 		const recvdPosition = this.getColumnPositionBy( 'recvd' );
 
-		if ( this.settings[ 'postRenderImprove' ].datetime.liveTime && Number.isInteger( datetimePosition ) ) {
+		if ( this.settings.postRenderImprove.datetime.liveTime && Number.isInteger( datetimePosition ) ) {
 			setInterval(
 				this.renewDateTextContent.bind( this, datetimePosition ),
-				this.settings[ 'postRenderImprove' ].datetime.renewPeriod * 1000
+				this.settings.postRenderImprove.datetime.renewPeriod * 1000
 			);
 		}
-
-		const rows = this.settings[ 'resultsTable' ].tBodies[ 0 ].rows;
+		/** @type {HTMLTableElement} */
+		const table = ( this.settings.resultsTable );
+		const rows = table.tBodies[ 0 ].rows;
 		rowsLoop:
 		for ( let i = 0; i < rows.length; i++ ) {
 			if ( Number.isInteger( hostnamePosition ) ) {
@@ -2448,11 +2489,11 @@ const czNicTurrisPakon = class
 				code.appendChild( document.createTextNode( currentCell.textContent ) );
 				currentCell.textContent = '';
 
-				if ( this.settings[ 'postRenderImprove' ].hostname.link.openLink ) {
+				if ( this.settings.postRenderImprove.hostname.link.openLink ) {
 					const link = document.createElement( 'a' );
 					let currentScheme = null;
 					const possibleSchemes = rows[ i ].children[ dstPortPosition ].textContent.split( ', ' );
-					const schemesPriority = this.settings[ 'postRenderImprove' ].hostname.link.schemesPriority;
+					const schemesPriority = this.settings.postRenderImprove.hostname.link.schemesPriority;
 					for ( const i in schemesPriority ) {
 						if ( possibleSchemes.includes( schemesPriority[ i ] ) ) {
 							currentScheme = schemesPriority[ i ];
@@ -2465,21 +2506,23 @@ const czNicTurrisPakon = class
 						currentScheme = '//'; // protocol relative
 					}
 					link.href = currentScheme + code.textContent;
-					link.title = this.settings[ 'postRenderImprove' ].hostname.link.title;
-					if ( this.settings[ 'postRenderImprove' ].hostname.link.newWindow ) {
-						link.onclick = function ()
+					link.title = this.settings.postRenderImprove.hostname.link.title;
+					if ( this.settings.postRenderImprove.hostname.link.newWindow ) {
+						link.onclick = function () // do NOT bind this in here!
 						{
-							return !window.open( this.href );
+							/** @type {HTMLAnchorElement} */
+							const self = ( this );
+							return !window.open( self.href );
 						};
 					}
-					link.appendChild( document.createTextNode( this.settings[ 'postRenderImprove' ].hostname.link.textContent ) );
+					link.appendChild( document.createTextNode( this.settings.postRenderImprove.hostname.link.textContent ) );
 
 					currentCell.appendChild( code );
 					currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
 					currentCell.appendChild( link );
 				}
 				const filter = document.createElement( 'span' );
-				filter.className = this.settings[ 'postRenderImprove' ].hostname.filter.className;
+				filter.className = this.settings.postRenderImprove.hostname.filter.className;
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'hostname' );
 
 				const part = code.textContent.split( '.' );
@@ -2500,14 +2543,14 @@ const czNicTurrisPakon = class
 				currentCell.appendChild( filter );
 				filter.dispatchEvent( new Event( 'click' ) );
 			}
-			if ( this.settings[ 'postRenderImprove' ].srcMAC.filter.enable && Number.isInteger( srcMACPosition ) ) {
+			if ( this.settings.postRenderImprove.srcMAC.filter.enable && Number.isInteger( srcMACPosition ) ) {
 				const currentCell = rows[ i ].children[ srcMACPosition ];
 				const code = document.createElement( 'code' );
 				code.appendChild( document.createTextNode( currentCell.textContent ) );
 				currentCell.textContent = '';
 
 				const filter = document.createElement( 'span' );
-				filter.className = this.settings[ 'postRenderImprove' ].srcMAC.filter.className; // @todo : refactor into classList
+				filter.className = this.settings.postRenderImprove.srcMAC.filter.className; // @todo : refactor into classList
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'srcMAC' );
 
 				currentCell.appendChild( code );
@@ -2523,16 +2566,19 @@ const czNicTurrisPakon = class
 				const currentCell = rows[ i ].children[ recvdPosition ];
 				currentCell.textContent = Number( currentCell.textContent )[ this.bytesToSize ]();
 			}
-			const cells = rows[ i ].children;
+			/** @type {HTMLCollection} */
+			const cells = ( rows[ i ].children );
 			cellsLoop:
 			for ( let i = 0; i < cells.length; i++ ) {
-				this.percentageFromRaw( cells[ i ], [ 'dur', 'sent', 'recvd' ] ); // faster then autodetection from 'data-raw-content-' attribute prefix
+				/** @type {HTMLTableCellElement} */
+				const td = ( cells[ i ] );
+				this.percentageFromRaw( td, [ 'dur', 'sent', 'recvd' ] ); // faster then autodetection from 'data-raw-content-' attribute prefix
 
-				if ( cells[ i ].getAttribute( 'data-percentage' ) ) {
-					if ( cells[ i ].getAttribute( 'data-percentage' ) > 0 ) {
-						cells[ i ].style.backgroundSize = cells[ i ].getAttribute( 'data-percentage' ) + '% 0.2em';
+				if ( td.getAttribute( 'data-percentage' ) ) {
+					if ( Number( td.getAttribute( 'data-percentage' ) ) > 0 ) {
+						td.style.backgroundSize = td.getAttribute( 'data-percentage' ) + '% 0.2em';
 					}
-					cells[ i ].removeAttribute( 'data-percentage' );
+					td.removeAttribute( 'data-percentage' );
 				}
 			}
 		}
@@ -2545,7 +2591,7 @@ const czNicTurrisPakon = class
 	{
 		const container = document.createElement( 'div' );
 
-		const list = this.settings[ 'statisticsData' ].graphs.createFor;
+		const list = this.settings.statisticsData.graphs.createFor;
 		for ( const i in list ) { // @todo : refactor… better names then protoXYZ (reference to proto column)
 
 			if ( list[ i ].dataStore ) {
@@ -2560,12 +2606,12 @@ const czNicTurrisPakon = class
 					if ( i === 'length' ) {
 						continue;
 					}
-					const percentage = Math.round( ( 100 / this.settings[ 'statisticsData' ].nHits ) * singleItem[ i ].length );
+					const percentage = Math.round( ( 100 / this.settings.statisticsData.nHits ) * singleItem[ i ].length );
 					const protoItem = document.createElement( 'li' );
 					protoItem.style.width = percentage + '%';
 					protoItem.appendChild( document.createTextNode( i + ': ' ) );
 					const protoVal = document.createElement( 'span' );
-					protoVal.appendChild( document.createTextNode( singleItem[ i ].length + this.settings[ 'itemsTextContent' ] ) );
+					protoVal.appendChild( document.createTextNode( singleItem[ i ].length + this.settings.itemsTextContent ) );
 					protoItem.appendChild( protoVal );
 					const protoPercentage = document.createElement( 'span' );
 					protoPercentage.appendChild( document.createTextNode( ' (' + percentage + '\u00A0%)' ) ); // NO-BREAK SPACE
@@ -2589,7 +2635,7 @@ const czNicTurrisPakon = class
 		nItemsElement.appendChild( innerElement );
 		container.appendChild( nItemsElement );
 
-		if ( this.virtualStatistics && this.settings[ 'eventSource' ].dumpIntoStatistics ) { // can be done after resolve() …
+		if ( this.virtualStatistics && this.settings.eventSource.dumpIntoStatistics ) { // can be done after resolve() …
 			const nodes = this.virtualStatistics;
 			while ( nodes.firstChild ) { // node is deleted automatically after append
 				container.appendChild( nodes.firstChild );
@@ -2606,11 +2652,11 @@ const czNicTurrisPakon = class
 		if ( !( Chart instanceof Function ) ) { // Chart.js library is missing
 			return false;
 		}
-		if ( !this.settings[ 'statisticsElement' ] ) { // nothing to do
+		if ( !this.settings.statisticsElement ) { // nothing to do
 			return true;
 		}
 		const CANVAS_TAG_NAME = 'CANVAS';
-		const statisticParts = this.settings[ 'statisticsElement' ].children; // real already-drawed element
+		const statisticParts = this.settings.statisticsElement.children; // real already-drawed element
 		for ( let i = 0; i < statisticParts.length; i++ ) {
 			if ( statisticParts[ i ].classList.contains( 'chart' ) ) {
 				const labels = [];
@@ -2618,13 +2664,14 @@ const czNicTurrisPakon = class
 				const items = statisticParts[ i ].firstElementChild.children;
 				for ( let i = 0; i < items.length; i++ ) {
 					labels.push( items[ i ].childNodes[ 0 ].textContent + items[ i ].childNodes[ 2 ].textContent );
-					data.push( items[ i ].childNodes[ 1 ].textContent.replace( this.settings[ 'itemsTextContent' ], '' ) );
+					data.push( items[ i ].childNodes[ 1 ].textContent.replace( this.settings.itemsTextContent, '' ) );
 				}
 				const color = this.CHART_COLORS.lightness400;
-				const canvasElement = document.createElement( CANVAS_TAG_NAME.toLowerCase() );
+				/** @type {HTMLCanvasElement} */
+				const canvasElement = ( document.createElement( CANVAS_TAG_NAME.toLowerCase() ) );
 				statisticParts[ i ].appendChild( canvasElement );
 				const chart = new Chart( canvasElement.getContext( '2d' ), {
-					type: this.settings[ 'statisticsData' ].graphs.type,
+					type: this.settings.statisticsData.graphs.type,
 					data: {
 						labels: labels,
 						datasets: [ {
@@ -2636,8 +2683,8 @@ const czNicTurrisPakon = class
 						title: {
 							display: true,
 							fontSize: 20, // in px
-							text: ( items.length === this.settings[ 'statisticsData' ].graphs.maxItems ) ?
-								statisticParts[ i ].firstChild.textContent + ' [' + items.length + this.settings[ 'statisticsData' ].graphs.mostFrequentTextContent + ']' :
+							text: ( items.length === this.settings.statisticsData.graphs.maxItems ) ?
+								statisticParts[ i ].firstChild.textContent + ' [' + items.length + this.settings.statisticsData.graphs.mostFrequentTextContent + ']' :
 								statisticParts[ i ].firstChild.textContent,
 						}
 					}
@@ -2663,7 +2710,7 @@ const czNicTurrisPakon = class
 		const base = ( Object.keys( color ).length < 36 ) ? Object.keys( color ).length : 36;
 		for ( const i in labels ) {
 			const labelParts = labels[ i ].split( ': ' );
-			const knownColors = this.settings[ 'statisticsData' ].graphs.knownColors;
+			const knownColors = this.settings.statisticsData.graphs.knownColors;
 			let currentColor;
 			if ( Object.keys( knownColors ).includes( labelParts[ 0 ] ) ) { // known colors
 				currentColor = color[ knownColors[ labelParts[ 0 ] ] ];
@@ -2692,9 +2739,11 @@ const czNicTurrisPakon = class
 
 	getColumnPositionBy ( key = '' )
 	{
-		const tHeadElements = ( this.settings[ 'resultsTable' ].tHead ) ? this.settings[ 'resultsTable' ].tHead.firstElementChild.children : null;
+		/** @type {HTMLTableElement} */
+		const table = ( this.settings.resultsTable );
+		const tHeadElements = ( table.tHead ) ? table.tHead.firstElementChild.children : null;
 		if ( tHeadElements ) { // real already-drawed table
-			let columnPosition = false;
+			let columnPosition = -1;
 			for ( let i = 0; i < tHeadElements.length; i++ ) {
 				if ( tHeadElements[ i ].textContent === this.getColumnNameBy( key ) ) {
 					columnPosition = i;
@@ -2705,21 +2754,22 @@ const czNicTurrisPakon = class
 			return columnPosition;
 		} else { // take from settings
 			let n = 0;
-			for ( const i in this.settings[ 'tableHeader' ] ) {
-				if ( this.settings[ 'tableHeader' ][ i ][ 0 ] === key ) {
+			for ( const i in this.settings.tableHeader ) {
+				if ( this.settings.tableHeader[ i ][ 0 ] === key ) {
 					return n;
 				}
 				n++;
 			}
-			return false;
 		}
+
+		return -1;
 
 	}
 
 
 	getColumnNameBy ( key = '' )
 	{
-		const sth = this.settings[ 'tableHeader' ];
+		const sth = this.settings.tableHeader;
 		for ( let i = 0; i < Object.keys( sth ).length; i++ ) {
 			if ( sth[ Object.keys( sth )[ i ] ][ 0 ] === key ) {
 				return sth[ Object.keys( sth )[ i ] ][ 1 ];
@@ -2732,17 +2782,18 @@ const czNicTurrisPakon = class
 
 	getMaxDataFrom ( col = '' ) // from visible results table
 	{
-		const tBodies = this.settings[ 'resultsTable' ].tBodies;
-		if ( tBodies.length ) {
+		/** @type {HTMLTableElement} */
+		const table = ( this.settings.resultsTable );
+		if ( table.tBodies.length ) {
 			const columnPosition = this.getColumnPositionBy( col );
 			if ( columnPosition ) {
-				const rows = tBodies[ 0 ].rows;
+				const rows = table.tBodies[ 0 ].rows;
 				for ( let i = 0; i < rows.length; i++ ) {
 					let rawContent = Number( rows[ i ].children[ columnPosition ].textContent[ this.fromLocaleString ]() );
-					if ( rawContent === false ) { // @todo : after js aggregation when parsing number failed
-						rawContent = Number( rows[ i ].children[ columnPosition ].textContent[ this.hms2Secs ]( this.settings[ 'lang' ] ) ); // @todo : test it!
+					if ( rawContent === -1 ) { // @todo : after js aggregation when parsing number failed
+						rawContent = Number( rows[ i ].children[ columnPosition ].textContent[ this.hms2Secs ]( this.settings.lang ) ); // @todo : test it!
 					}
-					rows[ i ].children[ columnPosition ].setAttribute( 'data-raw-content-' + col, rawContent );
+					rows[ i ].children[ columnPosition ].setAttribute( 'data-raw-content-' + col, String( rawContent ) );
 					if ( rawContent > this.settings[ 'max' + col[ this.capitalize ]() ] ) {
 						this.settings[ 'max' + col[ this.capitalize ]() ] = rawContent;
 					}
@@ -2759,12 +2810,12 @@ const czNicTurrisPakon = class
 		const thead = document.createElement( 'thead' );
 		const row = document.createElement( 'tr' );
 		// @todo : sort this.settings['tableHeader'] by item keys
-		for ( const i in this.settings[ 'tableHeader' ] ) {
-			if ( !this.settings[ 'tableHeader' ][ i ][ 3 ] ) {
+		for ( const i in this.settings.tableHeader ) {
+			if ( !this.settings.tableHeader[ i ][ 3 ] ) {
 				const cell = document.createElement( 'th' );
-				cell.appendChild( document.createTextNode( this.settings[ 'tableHeader' ][ i ][ 1 ] ) );
-				if ( this.settings[ 'tableHeader' ][ i ][ 2 ] ) {
-					cell.className = this.settings[ 'tableHeader' ][ i ][ 2 ];
+				cell.appendChild( document.createTextNode( this.settings.tableHeader[ i ][ 1 ] ) );
+				if ( this.settings.tableHeader[ i ][ 2 ] ) {
+					cell.className = this.settings.tableHeader[ i ][ 2 ];
 				}
 				row.appendChild( cell );
 			}
@@ -2776,18 +2827,18 @@ const czNicTurrisPakon = class
 
 	applyFilters () // @ depricated … soon :)
 	{
-		if ( !this.settings[ 'filterBy' ] ) {
+		if ( !this.settings.filterBy ) {
 			return true;
 		}
-		if ( this.settings[ 'filterBy' ] === this.FILTER_BY_OPTIONS[ 'DATETIME' ] ) {
+		if ( this.settings.filterBy === this.FILTER_BY_OPTIONS[ 'DATETIME' ] ) {
 			const ds = this.dataStructure;
 			for ( const i in ds ) {
 				ds[ i ].hidden = false;
-				if ( ds[ i ].datetime.from < this.settings[ 'timeLimitation' ].from ) {
+				if ( ds[ i ].datetime.from < this.settings.timeLimitation.from ) {
 					ds[ i ].hidden = true;
 					continue;
 				}
-				if ( ds[ i ].datetime.to > this.settings[ 'timeLimitation' ].to ) {
+				if ( ds[ i ].datetime.to > this.settings.timeLimitation.to ) {
 					ds[ i ].hidden = true;
 					continue;
 				}
@@ -2800,32 +2851,39 @@ const czNicTurrisPakon = class
 
 	readTimeLimitationForm ()
 	{
+		/** @type {HTMLInputElement} */
+		const dateFrom = ( this.settings.controlForm.timeLimitationInputs.dateFrom );
+		/** @type {HTMLInputElement} */
+		const timeFrom = ( this.settings.controlForm.timeLimitationInputs.timeFrom );
+		/** @type {HTMLInputElement} */
+		const dateTo = ( this.settings.controlForm.timeLimitationInputs.dateTo );
+		/** @type {HTMLInputElement} */
+		const timeTo = ( this.settings.controlForm.timeLimitationInputs.timeTo );
 		let fromString = '';
 		let toString = '';
-		const inp = this.settings[ 'controlForm' ].timeLimitationInputs;
 		const d = new Date();
-		if ( inp.dateTo && inp.dateTo.value ) {
-			const part1 = inp.dateTo.value.substr( 0, 4 );
-			const part2 = inp.dateTo.value.substr( 5 );
+		if ( dateTo && dateTo.value ) {
+			const part1 = dateTo.value.substr( 0, 4 );
+			const part2 = dateTo.value.substr( 5 );
 			toString += part2.replace( '-', ', ' ) + ', ' + part1 + ', ';
 		} else {
 			toString += ( d.getMonth() + 1 ) + ', ' + d.getDate() + ', ' + d.getFullYear() + ', ';
 		}
-		if ( inp.timeFrom && inp.timeFrom.value ) {
-			toString += inp.timeTo.value;
+		if ( timeFrom && timeFrom.value ) {
+			toString += timeTo.value;
 		} else {
 			toString += '23:59:59';
 		}
-		if ( inp.dateFrom && inp.dateFrom.value ) {
-			const part1 = inp.dateFrom.value.substr( 0, 4 );
-			const part2 = inp.dateFrom.value.substr( 5 );
+		if ( dateFrom && dateFrom.value ) {
+			const part1 = dateFrom.value.substr( 0, 4 );
+			const part2 = dateFrom.value.substr( 5 );
 			fromString += part2.replace( '-', ', ' ) + ', ' + part1 + ', ';
 		} else {
-			d.setDate( d.getDate() - this.settings[ 'timeLimitation' ].suggestedInterval );
+			d.setDate( d.getDate() - this.settings.timeLimitation.suggestedInterval );
 			fromString += ( d.getMonth() + 1 ) + ', ' + d.getDate() + ', ' + d.getFullYear() + ', ';
 		}
-		if ( inp.timeFrom && inp.timeFrom.value ) {
-			fromString += inp.timeFrom.value;
+		if ( timeFrom && timeFrom.value ) {
+			fromString += timeFrom.value;
 		} else {
 			fromString += '00:00:00';
 		}
@@ -2843,7 +2901,8 @@ const czNicTurrisPakon = class
 
 	readAggregation ()
 	{
-		const element = this.settings[ 'controlForm' ].aggregate;
+		/** @type {HTMLInputElement} */
+		const element = ( this.settings.controlForm.aggregate );
 		if ( element && element.nodeType === Node.ELEMENT_NODE ) {
 			return element.checked;
 		}
@@ -2884,37 +2943,37 @@ const czNicTurrisPakon = class
 	readAndSetControlForm () // set into settings
 	{
 		this.timeLimitation = this.readTimeLimitationForm(); // special setter into settings
-		this.settings[ 'eventSource' ].query.aggregate = this.readAggregation();
-		this.settings[ 'eventSource' ].query.hostname = this.readFromTextarea( this.settings[ 'controlForm' ].hostnameFilter );
-		this.settings[ 'eventSource' ].query.mac = this.readFromTextarea( this.settings[ 'controlForm' ].srcMACFilter );
+		this.settings.eventSource.query.aggregate = this.readAggregation();
+		this.settings.eventSource.query.hostname = this.readFromTextarea( this.settings.controlForm.hostnameFilter );
+		this.settings.eventSource.query.mac = this.readFromTextarea( this.settings.controlForm.srcMACFilter );
 
 		return true;
 	}
 
 
-	/*
+	/**
 	 * Make real elements from virtual DOM (table and statistics)
 	 * @returns {Boolean}
 	 */
 	flush () // @todo : future request : argument to draw only table or only statistics
 	{
-		if ( this.virtualTable && this.settings[ 'resultsTable' ] ) {
-			const resultsTable = this.settings[ 'resultsTable' ];
+		if ( this.virtualTable && this.settings.resultsTable ) {
+			const resultsTable = this.settings.resultsTable;
 			for ( let i = 0; i < resultsTable.attributes.length; i++ ) {
 				this.virtualTable.setAttribute( resultsTable.attributes[ i ].nodeName, resultsTable.attributes[ i ].value );
 			}
 			resultsTable.parentNode.replaceChild( this.virtualTable, resultsTable );
-			this.settings[ 'resultsTable' ] = this.virtualTable;
+			this.settings.resultsTable = this.virtualTable;
 			//this.settings['eventSource'].currentlyDrawed.table = this.settings['eventSource'].completeUrl; // @todo : future request … not in use actually
 		}
 
-		if ( this.virtualStatistics && this.settings[ 'statisticsElement' ] ) {
-			const resultsElement = this.settings[ 'statisticsElement' ];
+		if ( this.virtualStatistics && this.settings.statisticsElement ) {
+			const resultsElement = this.settings.statisticsElement;
 			for ( let i = 0; i < resultsElement.attributes.length; i++ ) {
 				this.virtualStatistics.setAttribute( resultsElement.attributes[ i ].nodeName, resultsElement.attributes[ i ].value );
 			}
 			resultsElement.parentNode.replaceChild( this.virtualStatistics, resultsElement );
-			this.settings[ 'statisticsElement' ] = this.virtualStatistics;
+			this.settings.statisticsElement = this.virtualStatistics;
 			//this.settings['eventSource'].currentlyDrawed.statistics = this.settings['eventSource'].completeUrl; // @todo : future request … not in use actually
 		}
 
@@ -2950,7 +3009,7 @@ const czNicTurrisPakon = class
 						this.showEmptyResponseInfo();
 						return true;
 					}
-					if ( this.settings[ 'controlForm' ].controlFormSubmit && event.isTrusted ) {
+					if ( this.settings.controlForm.controlFormSubmit && event.isTrusted ) {
 						return true;
 					}
 					this.storeHitsToIndexedDB();
@@ -2987,7 +3046,7 @@ const czNicTurrisPakon = class
 		const CHANGE_EVENT_NAME = 'change';
 		const CLICK_EVENT_NAME = 'click';
 		const KEYUP_EVENT_NAME = 'keyup';
-		const inputs = this.settings[ 'controlForm' ];
+		const inputs = this.settings.controlForm;
 		for ( const i in inputs ) {
 			if ( inputs[ i ] && inputs[ i ].nodeType ) {
 				if ( inputs[ i ].type === 'submit' ) {
@@ -3002,7 +3061,7 @@ const czNicTurrisPakon = class
 					inputs[ i ].addEventListener( CHANGE_EVENT_NAME, this.universalFormHook.bind( this ), false );
 					inputs[ i ].addEventListener( KEYUP_EVENT_NAME, () =>
 					{
-						this.settings[ 'controlForm' ].controlFormSubmit[ 'disabled' ] = false;
+						this.settings.controlForm.controlFormSubmit[ 'disabled' ] = false;
 					}, false );
 				}
 			} else {
@@ -3011,7 +3070,7 @@ const czNicTurrisPakon = class
 						inputs[ i ][ ii ].addEventListener( CHANGE_EVENT_NAME, this.universalFormHook.bind( this ), false );
 						inputs[ i ][ ii ].addEventListener( CHANGE_EVENT_NAME, () =>
 						{
-							this.settings[ 'filterBy' ] = this.FILTER_BY_OPTIONS[ 'DATETIME' ]; // change settings of current filter
+							this.settings.filterBy = this.FILTER_BY_OPTIONS[ 'DATETIME' ]; // change settings of current filter
 							this.fillTimeLimitationForm().then(); // from this.settings.timeLimitation
 						}, false );
 					}
@@ -3023,7 +3082,7 @@ const czNicTurrisPakon = class
 	}
 
 
-	/*
+	/**
 	 * @todo : description
 	 * @returns {Boolean}
 	 */
@@ -3087,7 +3146,6 @@ const czNicTurrisPakon = class
 		//cs.parentNode.removeChild(cs);
 	</script>
  */
-
 
 
  /*!
