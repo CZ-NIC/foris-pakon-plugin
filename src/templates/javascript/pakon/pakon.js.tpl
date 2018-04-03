@@ -1,9 +1,9 @@
 'use strict';
 
-/** @typedef {function(): true} Chart - export from library Chart.js */
+/** @typedef {function(): true} Chart - global Chart export from library Chart.js */
 var Chart;
 
-const czNicTurrisPakon = class
+const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 {
 
 	/**
@@ -748,7 +748,7 @@ const czNicTurrisPakon = class
 				'today': 'dnes',
 				'yesterday': 'včera',
 				'theDayBeforeYesterday': null,
-				'plural': ( n = 0 ) => { return n === 1 ? 0 : ( ( n >= 2 && n <= 4 ) ? 1 : 2 ) },
+				'plural': ( n = 0 ) => { return n === 1 ? 0 : ( ( n >= 2 && n <= 4 ) ? 1 : 2 ); },
 				'long': {
 					s: [ 'sekunda', 'sekundy', 'sekund' ],
 					m: [ 'minuta', 'minuty', 'minut' ],
@@ -764,160 +764,160 @@ const czNicTurrisPakon = class
 					w: 'týd.',
 				},
 			},
-		},
+		};
 
 
-			/**
-			 * @private
-			 */
-			this._settings = {
-				db_credentials: {
-					db_name: 'PakonLive',
-					table_name: 'hits',
-					version: 2,
+		/**
+		 * @private
+		 */
+		this._settings = {
+			db_credentials: {
+				db_name: 'PakonLive',
+				table_name: 'hits',
+				version: 2,
+			},
+			'eventSource': {
+				'baseUrl': null,
+				'completeUrl': null,
+				'dumpIntoStatistics': false,
+				'query': { // all possible options
+					'start': 0,
+					'end': 0,
+					'mac': [],
+					'hostname': [],
+					'aggregate': false,
 				},
-				'eventSource': {
-					'baseUrl': null,
-					'completeUrl': null,
-					'dumpIntoStatistics': false,
-					'query': { // all possible options
-						'start': 0,
-						'end': 0,
-						'mac': [],
-						'hostname': [],
-						'aggregate': false,
-					},
-					/*
-					'currentlyDrawed': { // @todo : future request … not in use actually
-						'table': null,
-						'statistics': null,
-					},
-					*/
+				/*
+				'currentlyDrawed': { // @todo : future request … not in use actually
+					'table': null,
+					'statistics': null,
 				},
-				'lang': 'en',
-				'strLen': 80, // max string length for table cells
-				'groupBy': this.GROUP_BY_OPTIONS[ 'DISABLED' ], // HOSTNAME_COUNT
-				'sortBy': this.SORT_BY_OPTIONS[ 'DATETIME' ],
-				'filterBy': null, // @refactor later
-				'itemsTextContent': ' Items',
-				'textareaSeparator': ', ',
-				'maxInterval': 0,
-				'maxDur': 0,
-				'maxSent': 0,
-				'maxRecvd': 0,
-				'postRenderImprove': {
-					'hostname': {
-						link: {
-							'openLink': true,
-							'newWindow': true,
-							'schemesPriority': [ // just name, without '://' string
-								'https',
-								'http',
-								'ftp',
-							],
-							'textContent': '\u29C9', // TWO JOINED SQUARES ⧉
-							'title': 'Open this hostname as URL in new window',
+				*/
+			},
+			'lang': 'en',
+			'strLen': 80, // max string length for table cells
+			'groupBy': this.GROUP_BY_OPTIONS[ 'DISABLED' ], // HOSTNAME_COUNT
+			'sortBy': this.SORT_BY_OPTIONS[ 'DATETIME' ],
+			'filterBy': null, // @refactor later
+			'itemsTextContent': ' Items',
+			'textareaSeparator': ', ',
+			'maxInterval': 0,
+			'maxDur': 0,
+			'maxSent': 0,
+			'maxRecvd': 0,
+			'postRenderImprove': {
+				'hostname': {
+					link: {
+						'openLink': true,
+						'newWindow': true,
+						'schemesPriority': [ // just name, without '://' string
+							'https',
+							'http',
+							'ftp',
+						],
+						'textContent': '\u29C9', // TWO JOINED SQUARES ⧉
+						'title': 'Open this hostname as URL in new window',
+					},
+					filter: {
+						'enable': true,
+						'className': 'clickable',
+						'add': {
+							'textContent': '\u2442', // OCR FORK ⑂
+							'title': 'Filter by this MAC address',
 						},
-						filter: {
-							'enable': true,
-							'className': 'clickable',
-							'add': {
-								'textContent': '\u2442', // OCR FORK ⑂
-								'title': 'Filter by this MAC address',
-							},
-							'remove': {
-								'textContent': '\u2443', // OCR INVERTED FORK �?
-								'title': 'Remove filter by this MAC address',
-							},
-						},
-					},
-					'srcMAC': {
-						filter: {
-							'enable': true,
-							'className': 'clickable',
-							'add': {
-								'textContent': '\u2442', // OCR FORK ⑂
-								'title': 'Filter by this MAC address',
-							},
-							'remove': {
-								'textContent': '\u2443', // OCR INVERTED FORK �?
-								'title': 'Remove filter by this MAC address',
-							},
-						},
-					},
-					'datetime': {
-						'renewPeriod': 1, // (float) in seconds
-						'liveTime': true,
-						'divider': ' ',
-						'time_diff': 300, // (float) in secs
-					},
-				},
-				'resultsTable': document.getElementById( 'pakon-results-table' ),
-				'statisticsElement': document.getElementById( 'pakon-results-statistics' ),
-				'controlForm': {
-					'timeLimitationInputs': {
-						'dateFrom': document.getElementById( 'date-from' ),
-						'dateTo': document.getElementById( 'date-to' ),
-						'timeFrom': document.getElementById( 'time-from' ),
-						'timeTo': document.getElementById( 'time-to' ),
-					},
-					'aggregate': document.getElementById( 'aggregate' ),
-					'hostnameFilter': document.getElementById( 'hostname-filter' ),
-					'srcMACFilter': document.getElementById( 'srcMAC-filter' ),
-					'controlFormSubmit': document.getElementById( 'apply-changes' ), // if null changes are applied immediately
-				},
-				'timeLimitation': {
-					'from': null,
-					'to': null,
-					'suggestedInterval': 1, // in days
-				},
-				'tableHeader': {
-					10: [ 'id', 'n ID', null, true ],
-					20: [ 'datetime', 'Datetime', null, false ],
-					30: [ 'dur', 'Duration', 'time', false ],
-					40: [ 'srcMAC', 'Client MAC address', null, false ],
-					50: [ 'hostname', 'Hostname', null, false ],
-					60: [ 'dstPort', 'Destination port', null, false ],
-					70: [ 'proto', 'Application level protocol', null, true ],
-					80: [ 'sent', 'Sent data', 'number', false ],
-					90: [ 'recvd', 'Received data', 'number', false ],
-				},
-				'statisticsData': {
-					'nHits': 0,
-					'nAggregatedHits': 0,
-					'protoElement': document.getElementById( 'proto' ),
-					'graphs': {
-						'type': 'pie',
-						'maxItems': 6,
-						'mostFrequentTextContent': ' most frequent',
-						'createFor': {
-							'srcMAC': {
-								'type': 'pie',
-								'aggregationType': 'frequency',
-							},
-							'hostname': {
-								'aggregationType': 'frequency',
-							},
-							'dstPort': {
-								'aggregationType': 'frequency',
-							},
-							/* @todo
-							'recvd': {
-								'aggregationType': 'frequency',
-							},
-							*/
-							'sendVsRecieved': {
-								'aggregationType': 'sum',
-							},
-						},
-						'knownColors': {
-							'tls': 'lightGreen',
-							'http': 'red',
-							'https': 'green',
+						'remove': {
+							'textContent': '\u2443', // OCR INVERTED FORK �?
+							'title': 'Remove filter by this MAC address',
 						},
 					},
 				},
-			};
+				'srcMAC': {
+					filter: {
+						'enable': true,
+						'className': 'clickable',
+						'add': {
+							'textContent': '\u2442', // OCR FORK ⑂
+							'title': 'Filter by this MAC address',
+						},
+						'remove': {
+							'textContent': '\u2443', // OCR INVERTED FORK �?
+							'title': 'Remove filter by this MAC address',
+						},
+					},
+				},
+				'datetime': {
+					'renewPeriod': 1, // (float) in seconds
+					'liveTime': true,
+					'divider': ' ',
+					'time_diff': 300, // (float) in secs
+				},
+			},
+			'resultsTable': document.getElementById( 'pakon-results-table' ),
+			'statisticsElement': document.getElementById( 'pakon-results-statistics' ),
+			'controlForm': {
+				'timeLimitationInputs': {
+					'dateFrom': document.getElementById( 'date-from' ),
+					'dateTo': document.getElementById( 'date-to' ),
+					'timeFrom': document.getElementById( 'time-from' ),
+					'timeTo': document.getElementById( 'time-to' ),
+				},
+				'aggregate': document.getElementById( 'aggregate' ),
+				'hostnameFilter': document.getElementById( 'hostname-filter' ),
+				'srcMACFilter': document.getElementById( 'srcMAC-filter' ),
+				'controlFormSubmit': document.getElementById( 'apply-changes' ), // if null changes are applied immediately
+			},
+			'timeLimitation': {
+				'from': null,
+				'to': null,
+				'suggestedInterval': 1, // in days
+			},
+			'tableHeader': {
+				10: [ 'id', 'n ID', null, true ],
+				20: [ 'datetime', 'Datetime', null, false ],
+				30: [ 'dur', 'Duration', 'time', false ],
+				40: [ 'srcMAC', 'Client MAC address', null, false ],
+				50: [ 'hostname', 'Hostname', null, false ],
+				60: [ 'dstPort', 'Destination port', null, false ],
+				70: [ 'proto', 'Application level protocol', null, true ],
+				80: [ 'sent', 'Sent data', 'number', false ],
+				90: [ 'recvd', 'Received data', 'number', false ],
+			},
+			'statisticsData': {
+				'nHits': 0,
+				'nAggregatedHits': 0,
+				'protoElement': document.getElementById( 'proto' ),
+				'graphs': {
+					'type': 'pie',
+					'maxItems': 6,
+					'mostFrequentTextContent': ' most frequent',
+					'createFor': {
+						'srcMAC': {
+							'type': 'pie',
+							'aggregationType': 'frequency',
+						},
+						'hostname': {
+							'aggregationType': 'frequency',
+						},
+						'dstPort': {
+							'aggregationType': 'frequency',
+						},
+						/* @todo
+						'recvd': {
+							'aggregationType': 'frequency',
+						},
+						*/
+						'sendVsRecieved': {
+							'aggregationType': 'sum',
+						},
+					},
+					'knownColors': {
+						'tls': 'lightGreen',
+						'http': 'red',
+						'https': 'green',
+					},
+				},
+			},
+		};
 
 		/**
 		 * @private
@@ -1003,8 +1003,8 @@ const czNicTurrisPakon = class
 		};
 
 		this.truncate = Symbol( 'czNic::String' );
-		String.prototype[ this.truncate ] = function ( maxLen = 1, append = '\u2026', clever = false )
-		{ // \u2026 is HORIZONTAL ELLIPSIS ( … )
+		String.prototype[ this.truncate ] = function ( maxLen = 1, append = '\u2026', clever = false ) // \u2026 is HORIZONTAL ELLIPSIS ( … )
+		{
 			if ( this.length > maxLen ) {
 				const regular = new RegExp( '^.{1,' + maxLen + '}(?=[\\s !-\\/:-@\\[-`\\{-¿])', 'u' ); // eats a lot of resources :(
 				let parts = [];
@@ -1023,7 +1023,7 @@ const czNicTurrisPakon = class
 		};
 
 		this.hms2Secs = Symbol( 'czNic::String' );
-		String.prototype[ this.hms2Secs ] = function ( /** @type {String=} */ lang = 'en' )
+		String.prototype[ this.hms2Secs ] = function ( /** @type {String=} */ lang = 'en' )  // eslint-disable-line no-unused-vars
 		{
 			const parts = this.replace( '.', ':' ).split( ':' );
 			const hNumber = parseInt( parts[ 0 ] ) * 60 * 60;
@@ -1106,16 +1106,16 @@ const czNicTurrisPakon = class
 	 */
 	set settings ( variables )
 	{
-		level1:
+		level1: // eslint-disable-line no-unused-labels
 		for ( const i in variables ) {
 			if ( typeof variables[ i ] === 'object'
 				&& variables[ i ].constructor.name === 'Object'
 				&& typeof this._settings[ i ] !== 'undefined'
 			) {
-				level2:
+				level2: // eslint-disable-line no-unused-labels
 				for ( const ii in variables[ i ] ) {
 					if ( typeof variables[ i ][ ii ] === 'object' && variables[ i ][ ii ].constructor.name === 'Object' ) {
-						level3:
+						level3: // eslint-disable-line no-unused-labels
 						for ( const iii in variables[ i ][ ii ] ) {
 							if ( typeof variables[ i ][ ii ][ iii ] === 'object' && variables[ i ][ ii ][ iii ].constructor.name === 'Object' ) {
 								delete variables[ i ][ ii ][ iii ];
@@ -1192,7 +1192,7 @@ const czNicTurrisPakon = class
 		return this._dataStructure;
 	}
 
-	set timeLimitation ( /** @type {{ from: Date, to: Date }} */ input )
+	set timeLimitation ( /** @type { { from: Date, to: Date } } */ input )
 	{
 		this.settings.timeLimitation.from = input.from;
 		this.settings.timeLimitation.to = input.to;
@@ -1293,8 +1293,8 @@ const czNicTurrisPakon = class
 			const db = openReq.result;
 			const tx = db.transaction( this.settings.db_credentials.table_name, 'readwrite' ); // IDBTransaction.READ_WRITE is depricated !
 			const store = tx.objectStore( this.settings.db_credentials.table_name );
-			store.index( "hostname" );
-			store.index( "srcMAC" );
+			store.index( 'hostname' );
+			store.index( 'srcMAC' );
 			store.index( 'dstPort' );
 			store.index( 'recvd' );
 
@@ -1329,7 +1329,7 @@ const czNicTurrisPakon = class
 
 	combinatedSorting ( inArray = [], by = this.settings.sortBy )
 	{
-		let sortedUniqueHostnameKeys = []
+		let sortedUniqueHostnameKeys = [];
 		if ( by === this.SORT_BY_OPTIONS[ 'N_HITS' ] ) { // sort by number of values
 			sortedUniqueHostnameKeys = Object.keys( inArray )
 				.map( function ( k ) { return { key: k, value: inArray[ k ] }; } )
@@ -1337,19 +1337,21 @@ const czNicTurrisPakon = class
 		} else if ( by === this.SORT_BY_OPTIONS[ 'DATETIME' ] ) {
 			// @todo …
 			sortedUniqueHostnameKeys = inArray;
-		} else if ( false ) { // @todo : another sorting method (like service name, date, …) not implemented yet
-			sortedUniqueHostnameKeys = [ '…' ]; // @todo
+			/*
+			} else if ( false ) { // @todo : another sorting method (like service name, date, …) not implemented yet
+				sortedUniqueHostnameKeys = [ '…' ]; // @todo
+			*/
 		} // some sorting methods cannot be done here and must be done after aggregation
 		return sortedUniqueHostnameKeys;
 	}
 
 
-	groupSortData ( inArray = [], group = this.settings.grupBy, sort = this.settings.sortBy )
+	groupSortData ( inArray = [], group = this.settings.grupBy, sort = this.settings.sortBy ) // eslint-disable-line no-unused-vars
 	{
 		const sortedUniqueHostnameKeys = this.combinatedSorting( inArray, sort );
 		const summedUniqueHostnameKeys = [];
 		let order = 0;
-		hostnamesLoop:
+		hostnamesLoop: // eslint-disable-line no-unused-labels
 		for ( const i in sortedUniqueHostnameKeys ) {
 			const rowData = sortedUniqueHostnameKeys[ i ];
 			const sum = { // inicialize with empty values
@@ -1366,7 +1368,7 @@ const czNicTurrisPakon = class
 				'sent': 0,
 				'recvd': 0,
 			};
-			sumDataLoop:
+			sumDataLoop: // eslint-disable-line no-unused-labels
 			for ( const ii in rowData.value ) {
 				const currentLoopDate = new Date( rowData.value[ ii ].datetime );
 
@@ -1401,7 +1403,7 @@ const czNicTurrisPakon = class
 				'proto': sum[ 'proto' ][ this.frequencyUnique ]().join( ', ' )[ this.truncate ]( this.settings.strLen ),
 				'sent': sum[ 'sent' ].toLocaleString(),
 				'recvd': sum[ 'recvd' ].toLocaleString(),
-			}
+			};
 		}
 		return summedUniqueHostnameKeys;
 	}
@@ -1412,9 +1414,6 @@ const czNicTurrisPakon = class
 		const formControls = this.settings.controlForm;
 		for ( const i in formControls ) {
 			if ( formControls[ i ] && formControls[ i ].nodeType === Node.ELEMENT_NODE ) {
-				if ( false ) {
-
-				}
 				let macs = this.settings.eventSource.query.mac;
 				let hostnames = this.settings.eventSource.query.hostname;
 				if ( i === 'srcMACFilter' && macs ) {
@@ -1432,12 +1431,13 @@ const czNicTurrisPakon = class
 					// @todo : …
 				}
 			} else {
-				continue; // @todo : delete later
+				/*
 				for ( const ii in formControls[ i ] ) {
 					if ( formControls[ i ][ ii ] ) {
 						// @todo : …
 					}
 				}
+				*/
 			}
 		}
 
@@ -1445,7 +1445,7 @@ const czNicTurrisPakon = class
 	}
 
 
-	cellFromGroupedDataStructure ( headerItem, currentDataStructureItem )
+	cellFromGroupedDataStructure ( headerItem, currentDataStructureItem ) // eslint-disable-line no-unused-vars
 	{
 		// @todo : …
 	}
@@ -1453,11 +1453,12 @@ const czNicTurrisPakon = class
 
 	/**
 	 * @todo : description
+	 * @async
 	 * @returns {Promise<Boolean>}
 	 */
 	async loadFreshHits ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( resolve ) => // eslint-disable-line no-unused-vars
 		{
 			this.createSourceUrl(); // set into settings
 
@@ -1465,7 +1466,8 @@ const czNicTurrisPakon = class
 				this.dataStructure = [];
 			}
 
-			if ( false ) { // @todo : eventsource - asynchronous
+			if ( false ) { // eslint-disable-line no-constant-condition
+				// @todo : eventsource - asynchronous
 				const evtSource = new EventSource( this.settings.eventSource.completeUrl, { withCredentials: true } ); // @todo : remove withCredentials after testing & also remove 'Access-Control-Allow-Origin' header from backend!
 				evtSource.onmessage = this.eventMessage.bind( this );
 				resolve( true );
@@ -1493,6 +1495,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async fetchEventSourceError ()
 	{
 		return new Promise( ( resolve ) =>
@@ -1508,7 +1515,7 @@ const czNicTurrisPakon = class
 				if ( hostnameTextarea.value || srcMACTextarea.value ) {
 					errorMessage += ' \nUjistěte se, že máte správně nastavené parametry filtrování';
 				}
-				//alert(errorMessage);
+				alert( errorMessage );
 				this.setSyncWorkTo( false );
 			} else {
 				this.repairUserInputs();
@@ -1522,6 +1529,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<String>}
+	 */
 	async fetchEventSource ( repeatedCalls = false )
 	{
 		return new Promise( ( resolve ) =>
@@ -1553,6 +1565,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async countHits ()
 	{
 		return new Promise( ( resolve ) =>
@@ -1577,6 +1594,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async mostUsedHostnames ()
 	{
 		return new Promise( ( resolve ) =>
@@ -1610,6 +1632,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async groupData ()
 	{
 		return new Promise( ( resolve ) =>
@@ -1637,13 +1664,20 @@ const czNicTurrisPakon = class
 					this.dataStructure[ 'lengthOfVisible' ] = '@todo : count this!';
 					resolve( result );
 				} );
-			} else if ( false ) { // @todo : add more grouping methods
-				// …
+				/*
+				} else if ( false ) { // @todo : add more grouping methods
+					// …
+				*/
 			}
 		} );
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async getDataFrom ( column = '' )
 	{
 		return new Promise( ( resolve ) =>
@@ -1689,6 +1723,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async createFullTable ()
 	{
 		return new Promise( ( resolve ) =>
@@ -1712,15 +1751,15 @@ const czNicTurrisPakon = class
 			}
 			const tbody = document.createElement( 'tbody' );
 			// @todo : sort this.settings.tableHeader by item keys
-			rowsLoop:
+			rowsLoop: // eslint-disable-line no-unused-labels
 			for ( const i in this.dataStructure ) {
 				if ( i === 'length' || i === 'lengthOfVisible' ) {
 					continue;
 				}
 				if ( !( this.dataStructure[ i ].hidden || this.dataStructure[ i ][ 9 ] ) && this.dataStructure[ i ] ) {
-					const tableHeaderLength = Object.keys( this.settings.tableHeader ).length;
+					//const tableHeaderLength = Object.keys( this.settings.tableHeader ).length;
 					const row = document.createElement( 'tr' );
-					cellsLoop:
+					cellsLoop: // eslint-disable-line no-unused-labels
 					for ( const ii in this.settings.tableHeader ) { // tbody works aginst thead
 						if ( this.settings.groupBy === this.GROUP_BY_OPTIONS[ 'DISABLED' ] ) {
 							if ( !this.settings.tableHeader[ ii ][ 3 ] ) {
@@ -1793,6 +1832,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async createFullStatistic ()
 	{
 		return new Promise( ( resolve ) =>
@@ -1800,7 +1844,7 @@ const czNicTurrisPakon = class
 
 			this.countHits().then( ( result ) =>
 			{
-				this.settings.statisticsData.nHits = result;
+				this.settings.statisticsData.nHits = Number( result );
 			} );
 
 			//			this.settings.statisticsData.nAggregatedHits = this.dataStructure.length;
@@ -1829,7 +1873,7 @@ const czNicTurrisPakon = class
 						list[ i ].dataStore = result; // set into settings
 						completedPartsSum++;
 						if ( completedPartsSum === list.length ) {
-							afterAsyncGraphs.forEach( ( item ) =>
+							afterAsyncGraphs.forEach( () =>
 							{
 								// @todo : get data & place them into dataStore
 							} );
@@ -1849,6 +1893,7 @@ const czNicTurrisPakon = class
 
 	/**
 	 * @todo : description
+	 * @async
 	 * @returns {Promise<Boolean>}
 	 */
 	async fillTimeLimitationForm () // from this.settings.timeLimitation
@@ -1886,6 +1931,7 @@ const czNicTurrisPakon = class
 
 	/**
 	 * @todo : description
+	 * @async
 	 * @returns {Promise<Boolean>}
 	 */
 	async setSyncWorkTo ( status = false, triggeredByEvent = false )
@@ -1926,6 +1972,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async makeObsoleteItemsInIndexedDB ()
 	{
 		return new Promise( ( resolve ) =>
@@ -1962,6 +2013,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async filterClickHandlerFor ( key = '', /** @type { Event | MouseEvent } */ event )
 	{
 		return new Promise( ( resolve ) =>
@@ -2026,6 +2082,7 @@ const czNicTurrisPakon = class
 
 	/**
 	 * @todo : description
+	 * @async
 	 * @returns {Promise<Boolean>}
 	 */
 	async improveControlFormTextareas ()
@@ -2125,6 +2182,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async makeTableSortable ()
 	{
 		const ORDER = Object.freeze( {
@@ -2136,13 +2198,20 @@ const czNicTurrisPakon = class
 		const getCellValue = (/** @type {HTMLTableRowElement} */ tr, columnPosition = 0 ) =>
 		{
 			/** @type {HTMLTableCellElement} */
-			const currentCell = ( tr.children[ columnPosition ] ); ///// here?
+			const currentCell = ( tr.children[ columnPosition ] );
+
+			for ( let i = 0; i < currentCell.attributes.length; i++ ) {
+				if ( currentCell.attributes[ i ].nodeName.substr( 0, 16 ) === 'data-raw-content' ) {
+					return currentCell.attributes[ i ].nodeValue;
+				}
+			}
+
 			return ( currentCell.innerText || currentCell.textContent );
 		};
 
 		/** @method */
 		const comparer = function ( columnPosition = 0, asc = false )
-		{ /// better in top?
+		{
 			return function ( a, b )
 			{
 				const v1 = getCellValue( asc ? a : b, columnPosition );
@@ -2150,7 +2219,7 @@ const czNicTurrisPakon = class
 				return ( v1 !== '' && v2 !== '' && !isNaN( Number( v1 ) ) && !isNaN( Number( v2 ) ) )
 					? ( Number( v1 ) - Number( v2 ) )
 					: v1.toString().localeCompare( v2 );
-			}
+			};
 		};
 
 		/** @method */
@@ -2188,6 +2257,10 @@ const czNicTurrisPakon = class
 				const SPACE_NAME = ' ';
 				th.tabIndex = 0; // focusable with TAB, but low priority
 				th.className = 'clickable';
+				console.log(th.textContent);
+				if ( th.textContent === 'Sent data' || th.textContent === 'Received data' ) { // @todo : refactor -> use real names from table headers OR event better, place option for headers to sort reversable
+					th.setAttribute( 'data-order', 'asc' );
+				}
 				th.addEventListener( 'keydown', ( /** @type {KeyboardEvent} */ event ) =>
 				{
 					if (
@@ -2214,6 +2287,11 @@ const czNicTurrisPakon = class
 	}
 
 
+	/**
+	 * @todo : description
+	 * @async
+	 * @returns {Promise<Boolean>}
+	 */
 	async renewDateTextContent ()
 	{ // can be runed periodicly
 		return new Promise( ( resolve ) =>
@@ -2269,14 +2347,14 @@ const czNicTurrisPakon = class
 			}
 
 			return term;
-		}
+		};
 
 		const diff = Math.abs( Number( timeA ) - Number( timeB ) );
 
 		const rc = ( int = 0 ) =>
 		{
 			return Math.floor( int * ( ( 1 / this.settings.postRenderImprove.datetime.time_diff ) / 1000 ) );
-		}
+		};
 
 		const currentDate = new Date();
 
@@ -2360,7 +2438,7 @@ const czNicTurrisPakon = class
 	}
 
 
-	setCursorAtTheEndOf ( /** @type {HTMLElement} and it's descendants  */ element )
+	setCursorAtTheEndOf ( /** @type {HTMLElement} and it's descendants */ element )
 	{
 		const range = document.createRange();
 		const sel = this.window.getSelection();
@@ -2481,7 +2559,7 @@ const czNicTurrisPakon = class
 		/** @type {HTMLTableElement} */
 		const table = ( this.settings.resultsTable );
 		const rows = table.tBodies[ 0 ].rows;
-		rowsLoop:
+		rowsLoop: // eslint-disable-line no-unused-labels
 		for ( let i = 0; i < rows.length; i++ ) {
 			if ( Number.isInteger( hostnamePosition ) ) {
 				const currentCell = rows[ i ].children[ hostnamePosition ];
@@ -2568,7 +2646,7 @@ const czNicTurrisPakon = class
 			}
 			/** @type {HTMLCollection} */
 			const cells = ( rows[ i ].children );
-			cellsLoop:
+			cellsLoop: // eslint-disable-line no-unused-labels
 			for ( let i = 0; i < cells.length; i++ ) {
 				/** @type {HTMLTableCellElement} */
 				const td = ( cells[ i ] );
@@ -2666,11 +2744,10 @@ const czNicTurrisPakon = class
 					labels.push( items[ i ].childNodes[ 0 ].textContent + items[ i ].childNodes[ 2 ].textContent );
 					data.push( items[ i ].childNodes[ 1 ].textContent.replace( this.settings.itemsTextContent, '' ) );
 				}
-				const color = this.CHART_COLORS.lightness400;
 				/** @type {HTMLCanvasElement} */
 				const canvasElement = ( document.createElement( CANVAS_TAG_NAME.toLowerCase() ) );
 				statisticParts[ i ].appendChild( canvasElement );
-				const chart = new Chart( canvasElement.getContext( '2d' ), {
+				/*const chart = */new Chart( canvasElement.getContext( '2d' ), {
 					type: this.settings.statisticsData.graphs.type,
 					data: {
 						labels: labels,
@@ -2825,7 +2902,7 @@ const czNicTurrisPakon = class
 	}
 
 
-	applyFilters () // @ depricated … soon :)
+	applyFilters () // @depricated ... soon
 	{
 		if ( !this.settings.filterBy ) {
 			return true;
@@ -2930,7 +3007,6 @@ const czNicTurrisPakon = class
 			const withoutEmptyItems = [];
 			[ ...element.children ].forEach( ( child ) =>
 			{
-				;
 				withoutEmptyItems.push( child.textContent );
 			} );
 			return [ ...new Set( withoutEmptyItems ) ]; // this make [] unique
