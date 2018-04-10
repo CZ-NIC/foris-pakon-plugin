@@ -1,3 +1,8 @@
 <div id="pakon-results">
-    <table id="pakon-results-table"></table>
+    %if reversed(results):
+    <table id="pakon-results-table" class="sortable"></table>
+
+    %else:
+    <p>{{ trans("No results found.") }}</p>
+    %end
 </div>
