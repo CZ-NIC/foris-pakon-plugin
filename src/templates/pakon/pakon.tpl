@@ -43,7 +43,7 @@
         </label>
         <br>
         <label for="apply-changes">
-            <input type="submit" id="apply-changes" value="aplikovat změny" disabled>
+            <input type="submit" id="apply-changes" value="{{ trans("Apply changes") }}" disabled>
         </label>
     </fieldset>
 
