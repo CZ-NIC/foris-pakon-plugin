@@ -2,7 +2,6 @@
   td, th
     padding: 0.3em 0.8em
     border-bottom: 1px solid #fff
-    white-space: nowrap
   tr:first-child td
     padding-top: 0.5em
   tbody tr
@@ -14,9 +13,13 @@
     font-weight: bold
     border-bottom: 1px solid #ddd
     margin-bottom: 2px
+    position: relative
+    color: #000
+    padding-left: 1.4rem
+    text-align: left
 
 tbody td
-  &:nth-child(2), &:nth-child(6), &:nth-child(7)
+  &:nth-child(1), &:nth-child(2), &:nth-child(6), &:nth-child(7)
     text-align: right
 
 td[style]
@@ -36,6 +39,7 @@ tbody td:nth-child(4) span:not(.clickable)
   font-size: 1.2em
   color: blue
   text-decoration: underline
+  user-select: none
 
 .improved
   display: none
@@ -66,47 +70,81 @@ div[contenteditable]
   padding: 0.5em
   min-height: 1.6em
 
-tbody td
-  &:nth-child(3), &:nth-child(8), &:nth-child(9)
-    text-align: right
-
 .chart
   display: inline-block
   padding-left: 0
   list-style-type: none
   font-size: 0
-  width: 400px
-  max-width: 400px
+  width: 395px
+  max-width: 395px
   > li
     background: #aaa
     font-size: 1rem
     overflow: visible
     white-space: nowrap
 
-<<<<<<< HEAD
-.clickable.filter
-  position: relative
-  display: inline-block
-  font-size: 0
-  width: 0.8rem
-  height: 0.8rem
-  background: url(../img/filter-add.svg)
+.clickable
+  &.filter
+    position: relative
+    display: inline-block
+    font-size: 0
+    top: -0.8rem
+    width: 0.8rem
+    height: 0.8rem
+    background: url(filter-add.svg)
+  &.current::before
+    content: ''
+    display: block
+    position: absolute
+    margin-left: -1.1rem
+    margin-right: 0.5rem
+    border: 0.5rem solid transparent
 
-/*****
-||||||| merged common ancestors
-/******/
-=======
-.clickable.filter
-  position: relative
-  display: inline-block
-  font-size: 0
-  top: -0.8rem
-  width: 0.8rem
-  height: 0.8rem
-  background: url(filter-add.svg)
+[data-order="asc"].current::before
+  border-bottom-color: black
 
-/*****
->>>>>>> 2fb5382a1843d2a4e67afea21a0b4ec0eeb5ca21
+[data-order="desc"].current::before
+  margin-top: 0.5rem
+  border-top-color: black
+
+label
+  &[for="date-from"] span, &[for="date-to"] span
+    display: inline-block
+    position: relative
+    min-width: 80px
+    padding-right: 2rem
+  &[for="date-from"] span::after, &[for="date-to"] span::after
+    content: '\1f4c5'
+    /* 📅
+    position: absolute
+    display: inline-block
+    right: 0
+  &[for="time-from"] span, &[for="time-to"] span
+    position: absolute
+    font-size: 0
+  &[for="time-from"] span::after, &[for="time-to"] span::after
+    content: '\25f7'
+    /* ◷
+    position: absolute
+    display: inline-block
+    font-size: 1rem
+    margin-left: 1rem
+  &[for="time-from"] input, &[for="time-to"] input
+    margin-left: 2rem
+
+.placeholder
+  color: #666
+
+#pakon-results-statistics
+  width: 1250px
+
+.redundant
+  color: #ddd
+
+#pakon-results-statistics
+  width: 1250px
+
+/******
 
 .bc-background-500px, .bc-background-500px-1
   background-color: #0099e5
@@ -6613,10 +6651,10 @@ tbody td
   color: #a1a1a4
 
 .bc-background-pac-12-7
-  background-color: #d3c4a
+  background-color: #d3c4aa
 
 .bc-color-pac-12-7
-  color: #d3c4a
+  color: #d3c4aa
 
 .bc-background-panasonic, .bc-background-panasonic-1
   background-color: #0f58a8
