@@ -725,13 +725,13 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				'today': 'today',
 				'yesterday': 'yesterday',
 				'theDayBeforeYesterday': null,
-				'plural': null,
+				'plural': ( n = 0 ) => { return n === 1 ? 0 : 1; },
 				'long': {
-					s: 'seconds',
-					m: 'minutes',
-					h: 'hours',
-					d: 'days',
-					w: 'weeks',
+					s: [ 'second', 'seconds' ],
+					m: [ 'minute', 'minutes' ],
+					h: [ 'hour', 'hours' ],
+					d: [ 'day', 'days' ],
+					w: [ 'week', 'weeks' ],
 				},
 				'short': {
 					s: 's',
@@ -795,7 +795,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				*/
 			},
 			'lang': 'en',
-			'strLen': 80, // max string length for table cells
+			'strLen': 60, // max string length for table cells
 			'groupBy': this.GROUP_BY_OPTIONS[ 'DISABLED' ], // HOSTNAME_COUNT
 			'sortBy': this.SORT_BY_OPTIONS[ 'DATETIME' ],
 			'filterBy': null, // @refactor later
@@ -826,7 +826,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							'title': 'Filter by this MAC address',
 						},
 						'remove': {
-							'textContent': '\u2443', // OCR INVERTED FORK �?
+							'textContent': '\u2443', // OCR INVERTED FORK ⑃
 							'title': 'Remove filter by this MAC address',
 						},
 					},
@@ -840,18 +840,20 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							'title': 'Filter by this MAC address',
 						},
 						'remove': {
-							'textContent': '\u2443', // OCR INVERTED FORK �?
+							'textContent': '\u2443', // OCR INVERTED FORK ⑃
 							'title': 'Remove filter by this MAC address',
 						},
 					},
 				},
 				'datetime': {
-					'renewPeriod': 1, // (float) in seconds
+					'renewPeriod': 15, // (float) in seconds
 					'liveTime': true,
 					'divider': ' ',
 					'time_diff': 300, // (float) in secs
 				},
 			},
+			'nItemsPrefix': 'Results ', // with space in the end
+			'nItemsElement': document.getElementById( 'pakon-results-table' ).parentNode[ 'previousElementSibling' ],
 			'resultsTable': document.getElementById( 'pakon-results-table' ),
 			'statisticsElement': document.getElementById( 'pakon-results-statistics' ),
 			'controlForm': {
@@ -871,16 +873,70 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				'to': null,
 				'suggestedInterval': 1, // in days
 			},
-			'tableHeader': {
-				10: [ 'id', 'n ID', null, true ],
-				20: [ 'datetime', 'Datetime', null, false ],
-				30: [ 'dur', 'Duration', 'time', false ],
-				40: [ 'srcMAC', 'Client MAC address', null, false ],
-				50: [ 'hostname', 'Hostname', null, false ],
-				60: [ 'dstPort', 'Destination port', null, false ],
-				70: [ 'proto', 'Application level protocol', null, true ],
-				80: [ 'sent', 'Sent data', 'number', false ],
-				90: [ 'recvd', 'Received data', 'number', false ],
+			'refactoringTableHeader': { // @todo : refactoring in use
+				'id': {
+					'order': 10, // int, smaller first, bigger last
+					'caption': 'n ID',
+					'title': 'Number of ID',
+					'dataType': null,
+					'hidden': true,
+				},
+				'datetime': {
+					'order': 20, // int, smaller first, bigger last
+					'caption': 'Date',
+					'title': 'Date and time the hostname was accessed',
+					'dataType': null,
+					'hidden': false,
+				},
+				'dur': {
+					'order': 30, // int, smaller first, bigger last
+					'caption': 'Duration',
+					'title': 'Duration for which the given hostname was accessed',
+					'dataType': 'time',
+					'hidden': false,
+				},
+				'srcMAC': {
+					'order': 40, // int, smaller first, bigger last
+					'caption': 'Client',
+					'title': 'Source MAC address or the MAC address of the device, which was used to access the hostname',
+					'dataType': null,
+					'hidden': false,
+				},
+				'hostname': {
+					'order': 50, // int, smaller first, bigger last
+					'caption': 'Hostname',
+					'title': null,
+					'dataType': null,
+					'hidden': false,
+				},
+				'dstPort': {
+					'order': 60, // int, smaller first, bigger last
+					'caption': 'Port',
+					'title': 'Destination port (for well-known services this is shown as service name)',
+					'dataType': null,
+					'hidden': false,
+				},
+				'proto': {
+					'order': 70, // int, smaller first, bigger last
+					'caption': 'Port',
+					'title': 'Application level protocol as detected by Suricata',
+					'dataType': null,
+					'hidden': true,
+				},
+				'sent': {
+					'order': 80, // int, smaller first, bigger last
+					'caption': 'Sent',
+					'title': 'Size of data sent',
+					'dataType': 'number',
+					'hidden': false,
+				},
+				'recvd': {
+					'order': 90, // int, smaller first, bigger last
+					'caption': 'Received',
+					'title': 'Size of data received',
+					'dataType': 'number',
+					'hidden': false,
+				},
 			},
 			'statisticsData': {
 				'nHits': 0,
@@ -1750,7 +1806,13 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				virtualTable.appendChild( this.createTHead() );
 			}
 			const tbody = document.createElement( 'tbody' );
-			// @todo : sort this.settings.tableHeader by item keys
+			const tableHeader = this.settings.refactoringTableHeader;
+			const tableHeaderArray = [];
+			for ( const i in tableHeader ) {
+				const th = tableHeader[ i ];
+				th.id = i;
+				tableHeaderArray[ th.order ] = th;
+			}
 			rowsLoop: // eslint-disable-line no-unused-labels
 			for ( const i in this.dataStructure ) {
 				if ( i === 'length' || i === 'lengthOfVisible' ) {
@@ -1760,13 +1822,14 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					//const tableHeaderLength = Object.keys( this.settings.tableHeader ).length;
 					const row = document.createElement( 'tr' );
 					cellsLoop: // eslint-disable-line no-unused-labels
-					for ( const ii in this.settings.tableHeader ) { // tbody works aginst thead
+					tableHeaderArray.forEach( ( /** @type { {id, hidden, caption, title, dataType} } */ item ) =>
+					{
 						if ( this.settings.groupBy === this.GROUP_BY_OPTIONS[ 'DISABLED' ] ) {
-							if ( !this.settings.tableHeader[ ii ][ 3 ] ) {
+							if ( !item.hidden ) {
 								const cell = document.createElement( 'td' );
-								const columnPosition = this.getColumnPositionBy( this.settings.tableHeader[ ii ][ 0 ] );
+								const columnPosition = this.getColumnPositionBy( item.id );
 								let node;
-								if ( this.settings.tableHeader[ ii ][ 0 ] === 'datetime' ) {
+								if ( item.id === 'datetime' ) {
 									const currentDate = new Date( this.dataStructure[ i ][ columnPosition ] );
 									cell.setAttribute( 'data-raw-content', String( Number( currentDate ) / 1000 ) );
 									node = document.createElement( 'time' );
@@ -1776,24 +1839,24 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 										+ ' '
 										+ currentDate.toLocaleTimeString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
 									) );
-								} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'dur' ) {
+								} else if ( item.id === 'dur' ) {
 									node = document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] )[ this.seconds2Hms ]( this.settings.lang ) );
 								} else {
-									node = document.createTextNode( this.dataStructure[ i ][ columnPosition ] );
+									node = document.createTextNode( this.dataStructure[ i ][ columnPosition ][ this.truncate ]( this.settings.strLen ) );
 								}
 								cell.appendChild( node );
 								row.appendChild( cell );
 							}
 						} else { // @todo : move it into this.cellFromGroupedDataStructure();
 							const cell = document.createElement( 'td' );
-							if ( this.settings.tableHeader[ ii ][ 0 ] === 'id' ) { // it's already time for switch() ?
+							if ( item.id === 'id' ) { // it's already time for switch() ?
 								if ( this.dataStructure[ i ][ 'ids' ].length < 9 ) {
 									cell.title = '[' + this.dataStructure[ i ][ 'ids' ].join( ', ' )[ this.truncate ]( this.settings.strLen ) + ']';
 								}
 								const idText = this.dataStructure[ i ][ 'ids' ].length + '\u00A0\u00D7'; // NO-BREAK SPACE and MULTIPLICATION SIGN
 								cell.appendChild( document.createTextNode( idText ) );
-							} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'datetime' ) {
-								const interval = this.dataStructure[ i ][ this.settings.tableHeader[ ii ][ 0 ] ];
+							} else if ( item.id === 'datetime' ) {
+								const interval = this.dataStructure[ i ][ item.id ];
 								const lang = this.settings.lang;
 								let intString = '';
 								if ( interval.from.toLocaleDateString( lang ) === interval.to.toLocaleDateString( lang ) ) {
@@ -1812,14 +1875,14 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 								}
 								cell.setAttribute( 'data-percentage', String( Math.round( ( 100 / this.settings.maxInterval ) * interval.interval ) ) );
 								cell.appendChild( document.createTextNode( intString ) );
-							} else if ( this.settings.tableHeader[ ii ][ 0 ] === 'hostname' ) {
+							} else if ( item.id === 'hostname' ) {
 								cell.appendChild( document.createTextNode( i ) );
 							} else {
-								cell.appendChild( document.createTextNode( this.dataStructure[ i ][ this.settings.tableHeader[ ii ][ 0 ] ] ) );
+								cell.appendChild( document.createTextNode( this.dataStructure[ i ][ item.id ] ) );
 							}
 							row.appendChild( cell );
 						} // @todo : … end
-					}
+					} );
 					tbody.appendChild( row );
 				}
 			}
@@ -1857,9 +1920,9 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			}
 
 			const existingColumns = [];
-			const theader = this.settings.tableHeader;
+			const theader = this.settings.refactoringTableHeader;
 			for ( const i in theader ) {
-				existingColumns.push( theader[ i ][ 0 ] );
+				existingColumns.push( i );
 			}
 
 			const afterAsyncGraphs = [];
@@ -2052,6 +2115,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 								currentControlFormElement.parentNode.nextElementSibling.dispatchEvent(new Event(INPUT_EVENT_NAME));
 							}
 							*/
+							currentControlFormElement.parentNode.nextElementSibling.dispatchEvent( new Event( 'focus' ) );
 							currentControlFormElement.dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
 						}
 					} else { // add
@@ -2060,6 +2124,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						eventTarget.classList.add( 'add', 'filter' );
 						eventTarget.classList.remove( 'remove' );
 						if ( event.isTrusted ) {
+							currentControlFormElement.parentNode.nextElementSibling.dispatchEvent( new Event( 'focus' ) );
 							filterValues.push( currentValue );
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
 							if (
@@ -2091,6 +2156,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		{
 			const INPUT_EVENT_NAME = 'input';
 			const FAKE_TRUSTED_DETAIL_STRING = 'fakeTrusted';
+			const PLACEHOLDER_CLASS_NAME = 'placeholder';
 			const TEXTAREA_ID_MAP = Object.freeze( {
 				'eventSource': {
 					'hostname-filter': 'hostname',
@@ -2108,8 +2174,20 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					const eventSourceKey = TEXTAREA_ID_MAP.eventSource[ controlForm[ i ].id ];
 					const controlFormKey = TEXTAREA_ID_MAP.controlForm[ controlForm[ i ].id ];
 					const tagsRoot = document.createElement( 'div' );
+					if ( controlForm[ i ].placeholder ) {
+						tagsRoot.appendChild( this.createFakePlaceholder( controlForm[ i ].placeholder, PLACEHOLDER_CLASS_NAME ) );
+					}
 					tagsRoot.contentEditable = 'true';
 					tagsRoot.className = 'tags';
+					tagsRoot.addEventListener( 'focus', this.placeholderLikeEffect.bind( this, PLACEHOLDER_CLASS_NAME ), false );
+					tagsRoot.addEventListener( 'focusout', ( /** @type {FocusEvent} */ event ) =>
+					{
+						/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
+						const eventTarget = ( event.target );
+						if ( !eventTarget.textContent ) {
+							eventTarget.appendChild( this.createFakePlaceholder( controlForm[ i ].placeholder, PLACEHOLDER_CLASS_NAME ) );
+						}
+					}, false );
 					tagsRoot.addEventListener( 'keydown', this.keyboardHandler.bind( this, controlFormKey ), false );
 					tagsRoot.addEventListener( INPUT_EVENT_NAME, ( /** @type {Event} */ event ) => // it can be also inputEvent (waiting for browsers to implement)
 					{
@@ -2171,9 +2249,14 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						title.appendChild( document.createTextNode( controlForm[ i ].parentNode.firstChild.textContent ) );
 						tagsRoot.parentNode.insertBefore( title, tagsRoot.previousSibling );
 					}
-					if ( controlForm[ i ].parentNode.lastElementChild && controlForm[ i ].parentNode.lastElementChild !== tagsRoot ) {
+					if (
+						controlForm[ i ].parentNode.lastElementChild
+						&& controlForm[ i ].parentNode.lastElementChild !== tagsRoot
+						&& controlForm[ i ].parentNode.lastElementChild.nodeName !== 'TEXTAREA'
+					) {
 						tagsRoot.parentNode.insertBefore( controlForm[ i ].parentNode.lastElementChild, tagsRoot.nextSibling );
 					}
+
 				}
 			}
 
@@ -2226,6 +2309,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		const sortTable = function ( /** @type {HTMLTableCellElement} */ th )
 		{
 			const ORDER_ATTRIBUTE = 'data-order';
+			const CURRENT_CLASS_NAME = 'current';
 			/** @type {HTMLTableSectionElement} */
 			let table = ( th.parentNode.parentNode );
 			let skipN = 1;
@@ -2237,6 +2321,11 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 			/** @type {HTMLTableRowElement} */
 			const tr = ( th.parentNode );
+			[ ...tr.children ].forEach( ( /** @type {HTMLTableCellElement} */ th ) =>
+			{
+				th.classList.remove( CURRENT_CLASS_NAME );
+			} );
+			th.classList.add( CURRENT_CLASS_NAME );
 
 			th.setAttribute( ORDER_ATTRIBUTE, ( th.getAttribute( ORDER_ATTRIBUTE ) === ORDER.ASC ) ? ORDER.DESC : ORDER.ASC );
 			[ ...table.querySelectorAll( 'tr:nth-child(n+' + ( skipN + 1 ) + ')' ) ].sort(
@@ -2257,8 +2346,11 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				const SPACE_NAME = ' ';
 				th.tabIndex = 0; // focusable with TAB, but low priority
 				th.className = 'clickable';
-				console.log(th.textContent);
-				if ( th.textContent === 'Sent data' || th.textContent === 'Received data' ) { // @todo : refactor -> use real names from table headers OR event better, place option for headers to sort reversable
+				if (
+					th.textContent === this.getColumnNameBy( 'sent' )
+					|| th.textContent === this.getColumnNameBy( 'recvd' )
+					|| th.textContent === this.getColumnNameBy( 'dur' )
+				) {
 					th.setAttribute( 'data-order', 'asc' );
 				}
 				th.addEventListener( 'keydown', ( /** @type {KeyboardEvent} */ event ) =>
@@ -2322,6 +2414,36 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 			resolve( true );
 		} );
+	}
+
+
+	placeholderLikeEffect ( /** @type {String} */ placeholderClassName = '' )
+	{
+		/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
+		const eventTarget = ( arguments[ 1 ].target );
+		let rootElement = eventTarget;
+		while ( rootElement.contentEditable !== 'true' ) { // can be strings true, false, inherit, and more
+			rootElement = rootElement.parentElement;
+		}
+		[ ...rootElement.children ].forEach( ( /** @type {HTMLElement} */ item ) =>
+		{
+			if ( item.classList.contains( placeholderClassName ) ) {
+				rootElement.setAttribute( 'data-placeholder', item.textContent );
+				item.remove();
+			}
+		} );
+
+		return true;
+	}
+
+
+	createFakePlaceholder ( placeholderText = '', placeHolderClassName = '' )
+	{
+		const fakePlaceholder = document.createElement( 'small' );
+		fakePlaceholder.classList.add( placeHolderClassName );
+		fakePlaceholder.appendChild( document.createTextNode( placeholderText ) );
+
+		return fakePlaceholder;
 	}
 
 
@@ -2527,7 +2649,9 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		for ( const i in suffixes ) {
 			if ( currentCell.getAttribute( 'data-raw-content-' + suffixes[ i ] ) ) {
 				currentCell.setAttribute( 'data-percentage',
-					String( Math.round( ( 100 / this.settings[ 'max' + suffixes[ i ][ this.capitalize ]() ] ) * Number( currentCell.getAttribute( 'data-raw-content-' + suffixes[ i ] ) ) ) )
+					String(
+						Math.round( ( 100 / this.settings[ 'max' + suffixes[ i ][ this.capitalize ]() ] ) * Number( currentCell.getAttribute( 'data-raw-content-' + suffixes[ i ] ) ) )
+					)
 				);
 				//currentCell.removeAttribute( 'data-raw-content-' + suffixes[ i ] ); // now it's used for sorting
 				break; // one cell can have just one data-raw-…
@@ -2545,12 +2669,14 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 		const datetimePosition = this.getColumnPositionBy( 'datetime' );
 		const hostnamePosition = this.getColumnPositionBy( 'hostname' );
+		const durPosition = this.getColumnPositionBy( 'dur' );
 		const dstPortPosition = this.getColumnPositionBy( 'dstPort' );
 		const srcMACPosition = this.getColumnPositionBy( 'srcMAC' );
 		const sentPosition = this.getColumnPositionBy( 'sent' );
 		const recvdPosition = this.getColumnPositionBy( 'recvd' );
 
 		if ( this.settings.postRenderImprove.datetime.liveTime && Number.isInteger( datetimePosition ) ) {
+			this.renewDateTextContent.bind( this, datetimePosition )(); // first run immediately, and then in period set in settings
 			setInterval(
 				this.renewDateTextContent.bind( this, datetimePosition ),
 				this.settings.postRenderImprove.datetime.renewPeriod * 1000
@@ -2586,7 +2712,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					link.href = currentScheme + code.textContent;
 					link.title = this.settings.postRenderImprove.hostname.link.title;
 					if ( this.settings.postRenderImprove.hostname.link.newWindow ) {
-						link.onclick = function () // do NOT bind this in here!
+						link.onclick = function () // do NOT bind(this) in here!
 						{
 							/** @type {HTMLAnchorElement} */
 							const self = ( this );
@@ -2620,6 +2746,22 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
 				currentCell.appendChild( filter );
 				filter.dispatchEvent( new Event( 'click' ) );
+			}
+			if ( Number.isInteger( durPosition ) ) {
+				const ZEROS = '00';
+				const zerosLength = ( ZEROS.length + 1 );
+				const currentCell = rows[ i ].children[ durPosition ];
+				if (
+					currentCell.textContent.substr( 0, zerosLength ) === ZEROS + '.'
+					|| currentCell.textContent.substr( 0, zerosLength ) === ZEROS + ':'
+				) {
+					const divider = currentCell.textContent.substr( 2, 1 );
+					currentCell.textContent = currentCell.textContent.substr( zerosLength );
+					const span = document.createElement( 'span' );
+					span.classList.add( 'redundant' );
+					span.appendChild( document.createTextNode( ZEROS + divider ) );
+					currentCell.insertBefore( span, currentCell.firstChild );
+				}
 			}
 			if ( this.settings.postRenderImprove.srcMAC.filter.enable && Number.isInteger( srcMACPosition ) ) {
 				const currentCell = rows[ i ].children[ srcMACPosition ];
@@ -2704,14 +2846,16 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			}
 
 		}
-
-		const nItemsElement = document.createElement( 'p' );
-		nItemsElement.id = 'nItems';
-		nItemsElement.appendChild( document.createTextNode( 'n: ' ) );
-		const innerElement = document.createElement( 'span' );
-		innerElement.appendChild( document.createTextNode( this.dataStructure[ 'lengthOfVisible' ] ) );
-		nItemsElement.appendChild( innerElement );
-		container.appendChild( nItemsElement );
+		/* option - write nItems into new p element inside statisticsElement
+				const nItemsElement = document.createElement( 'p' );
+				nItemsElement.id = 'nItems';
+				nItemsElement.appendChild( document.createTextNode( 'n: ' ) );
+				const innerElement = document.createElement( 'span' );
+				innerElement.appendChild( document.createTextNode( this.dataStructure[ 'lengthOfVisible' ] ) );
+				nItemsElement.appendChild( innerElement );
+				container.appendChild( nItemsElement );
+		*/
+		this.settings.nItemsElement.textContent = this.settings.nItemsPrefix + '(' + this.dataStructure[ 'lengthOfVisible' ] + ')';
 
 		if ( this.virtualStatistics && this.settings.eventSource.dumpIntoStatistics ) { // can be done after resolve() …
 			const nodes = this.virtualStatistics;
@@ -2754,17 +2898,20 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						datasets: [ {
 							data: data,
 							backgroundColor: this.createColorsFrom( labels ),
-						} ]
+						} ],
 					},
 					options: {
 						title: {
 							display: true,
-							fontSize: 20, // in px
+							fontSize: 15, // in px
 							text: ( items.length === this.settings.statisticsData.graphs.maxItems ) ?
 								statisticParts[ i ].firstChild.textContent + ' [' + items.length + this.settings.statisticsData.graphs.mostFrequentTextContent + ']' :
 								statisticParts[ i ].firstChild.textContent,
-						}
-					}
+						},
+						legend: {
+							position: 'right',
+						},
+					},
 				} );
 				while ( statisticParts[ i ].firstChild ) { // better performance then simple statisticParts[i].innerHTML = '';
 					if ( statisticParts[ i ].firstChild.nodeName === CANVAS_TAG_NAME ) { // do not remove canvas
@@ -2831,25 +2978,25 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			return columnPosition;
 		} else { // take from settings
 			let n = 0;
-			for ( const i in this.settings.tableHeader ) {
-				if ( this.settings.tableHeader[ i ][ 0 ] === key ) {
+			for ( const i in this.settings.refactoringTableHeader ) {
+				if ( i === key ) {
 					return n;
 				}
 				n++;
 			}
 		}
 
-		return -1;
+		return -1; // -1 = not found
 
 	}
 
 
 	getColumnNameBy ( key = '' )
 	{
-		const sth = this.settings.tableHeader;
-		for ( let i = 0; i < Object.keys( sth ).length; i++ ) {
-			if ( sth[ Object.keys( sth )[ i ] ][ 0 ] === key ) {
-				return sth[ Object.keys( sth )[ i ] ][ 1 ];
+		const theader = this.settings.refactoringTableHeader;
+		for ( const i in theader ) {
+			if ( i === key ) {
+				return theader[ i ].caption;
 			}
 		}
 
@@ -2886,17 +3033,28 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	{
 		const thead = document.createElement( 'thead' );
 		const row = document.createElement( 'tr' );
-		// @todo : sort this.settings['tableHeader'] by item keys
-		for ( const i in this.settings.tableHeader ) {
-			if ( !this.settings.tableHeader[ i ][ 3 ] ) {
+
+		const tableHeader = this.settings.refactoringTableHeader;
+		const tableHeaderArray = [];
+		for ( const i in tableHeader ) {
+			const th = tableHeader[ i ];
+			th.id = i;
+			tableHeaderArray[ th.order ] = th;
+		}
+		tableHeaderArray.forEach( ( /** @type { {id, hidden, caption, title, dataType} } */ item ) =>
+		{
+			if ( !item.hidden ) {
 				const cell = document.createElement( 'th' );
-				cell.appendChild( document.createTextNode( this.settings.tableHeader[ i ][ 1 ] ) );
-				if ( this.settings.tableHeader[ i ][ 2 ] ) {
-					cell.className = this.settings.tableHeader[ i ][ 2 ];
+				cell.appendChild( document.createTextNode( item.caption ) );
+				if ( item.title ) {
+					cell.title = item.title;
+				}
+				if ( item.dataType ) {
+					cell.className = item.dataType;
 				}
 				row.appendChild( cell );
 			}
-		}
+		} );
 		thead.appendChild( row );
 		return thead;
 	}
@@ -3210,18 +3368,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 };
 
-/*
- * Example usage:
- *
-	<script src="czNicTurrisPakon.js"></script>
-	<script>
-		const cntp = new czNicTurrisPakon(window);
-		//cntp.settings = {'lang': 'cs', '…': true};
-		cntp.run();
-		//const cs = window.document.currentScript;
-		//cs.parentNode.removeChild(cs);
-	</script>
- */
 
 
  /*!
