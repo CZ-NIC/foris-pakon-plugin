@@ -1,50 +1,47 @@
-
 %rebase("config/base.tpl", **locals())
 
 <div id="page-pakon-plugin" class="config-page">
     %include("_messages.tpl")
 
     <fieldset>
-        <legend>{{ trans("Data view - settings") }}:</legend>
-        <label for="date-from">
-            {{ trans("Date From") }}:
+        <legend>{{ trans("Filtering") }}:</legend>
+        <label for="date-from" title="{{ trans("Date From") }}">
+            {{ trans("From") }}:
             <input type="date" name="date-from" id="date-from">
         </label>
-        <label for="time-from">
+        <label for="time-from" title="{{ trans("Time From") }}">
             {{ trans("Time") }}:
-            <input type="time" name="time-from" id="time-from" title="{{ trans("Time From") }}">
+            <input type="time" name="time-from" id="time-from">
         </label>
         <br>
-        <label for="date-to">
+        <label for="date-to" title="{{ trans("Date To") }}">
             {{ trans("Date To") }}:
             <input type="date" name="date-to" id="date-to">
         </label>
-        <label for="time-to">
+        <label for="time-to" title="{{ trans("Time To") }}">
             {{ trans("Time") }}:
-            <input type="time" name="time-to" id="time-to" title="{{ trans("Time To") }}">
+            <input type="time" name="time-to" id="time-to">
         </label>
-        <hr>
+        <br>
         <label for="aggregate">
-            {{ trans("Aggregation - by hostname") }}:
+            {{ trans("Aggregation by hostname") }}:
             <input type="checkbox" name="aggregate" id="aggregate" checked>
         </label>
-        <hr>
+        <br>
         <label for="hostname-filter">
             {{ trans("Only following hostnames") }}:
             <br>
-            <textarea name="hostname-filter" id="hostname-filter"></textarea>
+            <textarea name="hostname-filter" id="hostname-filter" placeholder="{{ trans("All hostnames if empty") }}"></textarea>
             <br>
             <small>{{ trans("(All hostnames if empty)") }}</small>
         </label>
-        <hr>
+        <br>
         <label for="srcMAC-filter">
-            {{ trans("Only following MAC addresses") }}:
+            {{ trans("Only following clients") }}:
             <br>
-            <textarea name="srcMAC-filter" id="srcMAC-filter"></textarea>
-            <br>
-            <small>{{ trans("(All MAC adresses if empty)") }}</small>
+            <textarea name="srcMAC-filter" id="srcMAC-filter" placeholder="{{ trans("All clients if empty") }}"></textarea>
         </label>
-        <hr>
+        <br>
         <label for="apply-changes">
             <input type="submit" id="apply-changes" value="aplikovat změny" disabled>
         </label>
