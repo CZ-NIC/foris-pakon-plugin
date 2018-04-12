@@ -15,7 +15,7 @@
         </label>
         <br>
         <label for="date-to" title="{{ trans("Date To") }}">
-            {{ trans("Date To") }}:
+            {{ trans("To") }}:
             <input type="date" name="date-to" id="date-to">
         </label>
         <label for="time-to" title="{{ trans("Time To") }}">
