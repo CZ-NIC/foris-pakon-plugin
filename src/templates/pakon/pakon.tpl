@@ -32,8 +32,6 @@
             {{ trans("Only following hostnames") }}:
             <br>
             <textarea name="hostname-filter" id="hostname-filter" placeholder="{{ trans("All hostnames if empty") }}"></textarea>
-            <br>
-            <small>{{ trans("(All hostnames if empty)") }}</small>
         </label>
         <br>
         <label for="srcMAC-filter">
