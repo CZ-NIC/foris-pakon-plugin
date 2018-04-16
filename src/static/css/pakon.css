@@ -1,4 +1,3 @@
-
 #pakon-results td,
 #pakon-results th {
 	padding: 0.3em 0.8em;
@@ -61,12 +60,9 @@ tbody td:nth-child(4) span:not(.clickable) {
 	display: none;
 }
 
-.improved .tags {
-	border: 1px solid green;
-}
-
 .tags>span {
 	position: relative;
+	caret-color: red;
 	background: #ddd;
 	border-radius: 1em;
 	padding: 0.3em 0.5em;
@@ -74,12 +70,12 @@ tbody td:nth-child(4) span:not(.clickable) {
 }
 
 .tags>span::after {
-	content: "x";
+	content: '\00d7'; /* × - times */
 	background: #aaa;
 	color: #fff;
 	border-radius: 0.5em;
 	text-align: center;
-	border: 1px solid red;
+	border: 1px solid;
 	position: absolute;
 	display: inline-block;
 	width: 0.9em;
@@ -116,7 +112,7 @@ div[contenteditable] {
 	top: -0.8rem;
 	width: 0.8rem;
 	height: 0.8rem;
-	background: url(filter-add.svg);
+	background: url(../img/filter-add.svg);
 }
 
 .clickable.current::before {
@@ -189,6 +185,46 @@ label[for="time-to"] input {
 
 #pakon-results-statistics {
 	width: 1250px;
+}
+
+dialog.loading {
+	visibility: hidden;
+	display: block;
+	position: fixed;
+	background: url(../img/loader.gif);
+	width: 120px;
+	height: 120px;
+	padding: 0;
+	border: 0;
+	opacity: 0;
+	transition: all 0.5s;
+	top: 45%;
+	transform: translateX(-50%);
+}
+
+dialog.loading[open] {
+	visibility: visible;
+	top: 50%;
+	opacity: 1;
+}
+
+#pokusy-smazat {
+	border: 1px solid red;
+}
+
+#pokusy-smazat span {
+	padding: 0.3em 30px 0.3em 0.5em;
+	margin-left: 0.2em;
+	margin-right: 0.1em;
+}
+
+#pokusy-smazat span::after {
+	margin-left: 6px;
+	right: auto;
+}
+
+#pokusy-smazat span:first-of-type {
+	margin-right: 0;
 }
 
 /*******/
