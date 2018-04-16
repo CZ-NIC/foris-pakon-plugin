@@ -795,7 +795,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				*/
 			},
 			'lang': 'en',
-			'strLen': 60, // max string length for table cells
+			'strLen': 50, // max string length for table cells
 			'groupBy': this.GROUP_BY_OPTIONS[ 'DISABLED' ], // HOSTNAME_COUNT
 			'sortBy': this.SORT_BY_OPTIONS[ 'DATETIME' ],
 			'filterBy': null, // @refactor later
@@ -823,11 +823,11 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						'className': 'clickable',
 						'add': {
 							'textContent': '\u2442', // OCR FORK ⑂
-							'title': 'Filter by this MAC address',
+							'title': 'Filter by this hostname',
 						},
 						'remove': {
 							'textContent': '\u2443', // OCR INVERTED FORK ⑃
-							'title': 'Remove filter by this MAC address',
+							'title': 'Remove filter by this hostname',
 						},
 					},
 				},
@@ -837,11 +837,11 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						'className': 'clickable',
 						'add': {
 							'textContent': '\u2442', // OCR FORK ⑂
-							'title': 'Filter by this MAC address',
+							'title': 'Filter by this client',
 						},
 						'remove': {
 							'textContent': '\u2443', // OCR INVERTED FORK ⑃
-							'title': 'Remove filter by this MAC address',
+							'title': 'Remove filter by this client',
 						},
 					},
 				},
@@ -973,6 +973,19 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					},
 				},
 			},
+			'userMessages': {
+				'errors': {
+					'failedLoadingData': [
+						'Failed to load data',
+						'Make sure you have the filtering parameters set up correctly',
+					],
+				}
+			},
+			'loader': {
+				'id': 'loader-spinner',
+				'className': 'loading',
+				'textContent': null,
+			},
 		};
 
 		/**
@@ -1059,20 +1072,24 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		};
 
 		this.truncate = Symbol( 'czNic::String' );
-		String.prototype[ this.truncate ] = function ( maxLen = 1, append = '\u2026', clever = false ) // \u2026 is HORIZONTAL ELLIPSIS ( … )
+		String.prototype[ this.truncate ] = function ( maxLen = 1, append = '\u2026', clever = false, leftTruncate = false ) // \u2026 is HORIZONTAL ELLIPSIS ( … )
 		{
 			if ( this.length > maxLen ) {
-				const regular = new RegExp( '^.{1,' + maxLen + '}(?=[\\s !-\\/:-@\\[-`\\{-¿])', 'u' ); // eats a lot of resources :(
+				const regular = new RegExp( '^.{1,' + maxLen + '}(?=[\\s !-\\/:-@\\[-`\\{-\u00bf])', 'u' ); // eats a lot of resources :(
 				let parts = [];
 				maxLen = maxLen - append.length;
 				if ( maxLen < 1 ) {
 					return append;
-				} else if ( clever && ( parts = this.match( regular ) ) ) {
+				} else if ( clever && ( parts = this.match( regular ) ) ) { // @todo : clever leftTruncate
 					if ( parts ) {
 						return parts[ 0 ] + append;
 					}
 				} else {
-					return this.substring( 0, maxLen ) + append;
+					if ( leftTruncate ) {
+						const length = this.length - maxLen;
+						return append + this.substr( length );
+					}
+					return this.substr( 0, maxLen ) + append;
 				}
 			}
 			return this;
@@ -1155,7 +1172,30 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			} );
 		};
 
+		const dialog = document.createElement( 'dialog' );
+		if (
+			dialog instanceof HTMLUnknownElement &&
+			!( 'open' in dialog && 'show' in dialog && 'close' in dialog )
+		) {
+			HTMLUnknownElement.prototype[ 'open' ] = false;
+			HTMLUnknownElement.prototype[ 'show' ] = function ()
+			{
+				this.hidden = false;
+				this.style.visibility = 'visible';
+				this[ 'open' ] = true;
+				this.setAttribute( 'open', '' );
+			};
+			HTMLUnknownElement.prototype[ 'close' ] = function ()
+			{
+				this.hidden = true;
+				this.style.visibility = 'hidden';
+				this[ 'open' ] = false;
+				this.removeAttribute( 'open' );
+			};
+		}
+
 	}
+
 
 	/**
 	 * Set settings for whole class
@@ -1188,6 +1228,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		Object.assign( this._settings, variables );
 	}
 
+
 	/**
 	 * Get settings for whole class
 	 */
@@ -1195,6 +1236,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	{
 		return this._settings;
 	}
+
 
 	/**
 	 * Get GROUP_BY_OPTIONS
@@ -1204,6 +1246,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		return this._GROUP_BY_OPTIONS;
 	}
 
+
 	/**
 	 * Get SORT_BY_OPTIONS
 	 */
@@ -1211,6 +1254,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	{
 		return this._SORT_BY_OPTIONS;
 	}
+
 
 	/**
 	 * Get FILTER_BY_OPTIONS
@@ -1220,25 +1264,30 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		return this._FILTER_BY_OPTIONS;
 	}
 
+
 	get CHART_COLORS ()
 	{
 		return this._CHART_COLORS;
 	}
+
 
 	set time_units_in_languages ( inObj )
 	{
 		this._time_units_in_languages = inObj;
 	}
 
+
 	get time_units_in_languages ()
 	{
 		return this._time_units_in_languages;
 	}
 
+
 	set dataStructure ( inObj )
 	{
 		this._dataStructure = inObj;
 	}
+
 
 	/**
 	 * Get statistics data
@@ -1248,26 +1297,31 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		return this._dataStructure;
 	}
 
+
 	set timeLimitation ( /** @type { { from: Date, to: Date } } */ input )
 	{
 		this.settings.timeLimitation.from = input.from;
 		this.settings.timeLimitation.to = input.to;
 	}
 
+
 	set virtualTable ( /** @type {HTMLTableElement} */ table )
 	{
 		this._virtualTable = table;
 	}
+
 
 	get virtualTable ()
 	{
 		return this._virtualTable;
 	}
 
+
 	set virtualStatistics ( /** @type {HTMLElement} */ element )
 	{
 		this._virtualStatistics = element;
 	}
+
 
 	get virtualStatistics ()
 	{
@@ -1326,8 +1380,8 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		const messageArray = JSON.parse( event.data );
 		this.dataStructure[ messageArray.join()[ this.hashCode ]().toString( 36 ) ] = messageArray; // … = messageArray.concat([false]) ?
 		/*
-				const evtSource = new EventSource(ESUrl + '&timeout=' + Math.round(+new Date()/1000));
-				evtSource.onmessage = this.eventMessage; // regenerate
+		const evtSource = new EventSource(ESUrl + '&timeout=' + Math.round(+new Date()/1000));
+		evtSource.onmessage = this.eventMessage; // regenerate
 		*/
 		event.target.close();
 	}
@@ -1372,7 +1426,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				} );
 			}
 
-			tx.oncomplete = function ()
+			tx.oncomplete = () =>
 			{
 				db.close();
 			};
@@ -1563,15 +1617,15 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			const repeatedCalls = arguments[ 0 ]; // bool value
 			if ( repeatedCalls ) {
 				const controlForm = this.settings.controlForm;
-				let errorMessage = 'Chyba. Nepodařilo se načíst data';
+				let errorMessage = this.settings.userMessages.errors.failedLoadingData[ 0 ];
 				/** @type {HTMLTextAreaElement} */
 				const hostnameTextarea = ( controlForm.hostnameFilter );
 				/** @type {HTMLTextAreaElement} */
 				const srcMACTextarea = ( controlForm.srcMACFilter );
 				if ( hostnameTextarea.value || srcMACTextarea.value ) {
-					errorMessage += ' \nUjistěte se, že máte správně nastavené parametry filtrování';
+					errorMessage += ' \n' + this.settings.userMessages.errors.failedLoadingData[ 1 ];
 				}
-				alert( errorMessage );
+				alert( errorMessage ); // @todo : use this.showEmptyResponseInfo in here
 				this.setSyncWorkTo( false );
 			} else {
 				this.repairUserInputs();
@@ -1842,7 +1896,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 								} else if ( item.id === 'dur' ) {
 									node = document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] )[ this.seconds2Hms ]( this.settings.lang ) );
 								} else {
-									node = document.createTextNode( this.dataStructure[ i ][ columnPosition ][ this.truncate ]( this.settings.strLen ) );
+									node = document.createTextNode( this.dataStructure[ i ][ columnPosition ] );
 								}
 								cell.appendChild( node );
 								row.appendChild( cell );
@@ -1910,7 +1964,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				this.settings.statisticsData.nHits = Number( result );
 			} );
 
-			//			this.settings.statisticsData.nAggregatedHits = this.dataStructure.length;
+			//this.settings.statisticsData.nAggregatedHits = this.dataStructure.length;
 
 			const list = this.settings.statisticsData.graphs.createFor;
 			if ( list.length ) {
@@ -2020,7 +2074,21 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				}
 			}
 
-			// @todo : place some spinner ?!?!?
+			/** @type {HTMLDialogElement} */
+			let loader = ( document.getElementById( this.settings.loader.id ) );
+			if ( !loader ) {
+				/** @type {HTMLDialogElement} */
+				loader = ( document.createElement( 'dialog' ) );
+				loader.id = this.settings.loader.id;
+				loader.classList.add( this.settings.loader.className );
+				document.body.appendChild( loader );
+			}
+
+			if ( status ) {
+				loader.show();
+			} else {
+				loader.close();
+			}
 
 			if ( safeStatus ) {
 				setTimeout( () =>
@@ -2283,6 +2351,13 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			/** @type {HTMLTableCellElement} */
 			const currentCell = ( tr.children[ columnPosition ] );
 
+			/** @type {HTMLElement} */
+			const innerElement = ( currentCell.firstElementChild );
+
+			if ( innerElement && innerElement.title ) {
+				return innerElement.title;
+			}
+
 			for ( let i = 0; i < currentCell.attributes.length; i++ ) {
 				if ( currentCell.attributes[ i ].nodeName.substr( 0, 16 ) === 'data-raw-content' ) {
 					return currentCell.attributes[ i ].nodeValue;
@@ -2345,7 +2420,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				const ENTER_NAME = 'Enter';
 				const SPACE_NAME = ' ';
 				th.tabIndex = 0; // focusable with TAB, but low priority
-				th.className = 'clickable';
+				th.classList.add( 'clickable' );
 				if (
 					th.textContent === this.getColumnNameBy( 'sent' )
 					|| th.textContent === this.getColumnNameBy( 'recvd' )
@@ -2417,17 +2492,22 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	}
 
 
-	placeholderLikeEffect ( /** @type {String} */ placeholderClassName = '' )
+	/**
+	 * @todo : description
+	 * @returns {boolean}
+	 */
+	placeholderLikeEffect ( placeholderClassName = '' )
 	{
 		/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
 		const eventTarget = ( arguments[ 1 ].target );
 		let rootElement = eventTarget;
-		while ( rootElement.contentEditable !== 'true' ) { // can be strings true, false, inherit, and more
+		while ( rootElement.contentEditable !== 'true' ) { // contentEditable can be strings true, false, inherit, and more
 			rootElement = rootElement.parentElement;
 		}
 		[ ...rootElement.children ].forEach( ( /** @type {HTMLElement} */ item ) =>
 		{
 			if ( item.classList.contains( placeholderClassName ) ) {
+				this.setCursorAtTheEndOf( rootElement );
 				rootElement.setAttribute( 'data-placeholder', item.textContent );
 				item.remove();
 			}
@@ -2437,6 +2517,10 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	}
 
 
+	/**
+	 * @todo : description
+	 * @returns {HTMLElement}
+	 */
 	createFakePlaceholder ( placeholderText = '', placeHolderClassName = '' )
 	{
 		const fakePlaceholder = document.createElement( 'small' );
@@ -2447,6 +2531,9 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	}
 
 
+	/**
+	 * @todo : description
+	 */
 	getTimeDiff ( /** @type {Date} */ timeA, /** @type {Date} */ timeB, relative = false, lang = this.settings.lang, type = 'long' )
 	{
 		const s = 1 * 1000;
@@ -2690,7 +2777,11 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			if ( Number.isInteger( hostnamePosition ) ) {
 				const currentCell = rows[ i ].children[ hostnamePosition ];
 				const code = document.createElement( 'code' );
-				code.appendChild( document.createTextNode( currentCell.textContent ) );
+				const fullUrl = currentCell.textContent;
+				code.appendChild( document.createTextNode( fullUrl[ this.truncate ]( this.settings.strLen, '\u2026', false, true ) ) );
+				if ( fullUrl.length > this.settings.strLen ) {
+					code.title = fullUrl;
+				}
 				currentCell.textContent = '';
 
 				if ( this.settings.postRenderImprove.hostname.link.openLink ) {
@@ -2709,7 +2800,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					} else {
 						currentScheme = '//'; // protocol relative
 					}
-					link.href = currentScheme + code.textContent;
+					link.href = currentScheme + fullUrl;
 					link.title = this.settings.postRenderImprove.hostname.link.title;
 					if ( this.settings.postRenderImprove.hostname.link.newWindow ) {
 						link.onclick = function () // do NOT bind(this) in here!
@@ -2725,6 +2816,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
 					currentCell.appendChild( link );
 				}
+
 				const filter = document.createElement( 'span' );
 				filter.className = this.settings.postRenderImprove.hostname.filter.className;
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'hostname' );
@@ -3052,6 +3144,10 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				if ( item.dataType ) {
 					cell.className = item.dataType;
 				}
+				if ( item.id === 'datetime' ) {
+					cell.classList.add( 'current' );
+					cell.setAttribute( 'data-order', 'desc' );
+				}
 				row.appendChild( cell );
 			}
 		} );
@@ -3217,7 +3313,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 	showEmptyResponseInfo () // @todo : if filter exist, than create a oprion for drop it. If not show only info for user.
 	{
-		//alert('Nejsou žádné výsledky… zkuste vyhodit filtr'); // @ todo : better message
+		alert( this.settings.userMessages.errors.failedLoadingData[ 0 ] );
 
 		return true;
 	}
@@ -3244,6 +3340,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						return true;
 					}
 					if ( this.settings.controlForm.controlFormSubmit && event.isTrusted ) {
+						this.setSyncWorkTo( false, true );
 						return true;
 					}
 					this.storeHitsToIndexedDB();
