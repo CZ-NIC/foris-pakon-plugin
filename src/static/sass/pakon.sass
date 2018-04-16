@@ -43,22 +43,22 @@ tbody td:nth-child(4) span:not(.clickable)
 
 .improved
   display: none
-  .tags
-    border: 1px solid green
 
 .tags > span
   position: relative
+  caret-color: red
   background: #ddd
   border-radius: 1em
   padding: 0.3em 0.5em
   margin-right: 1em
   &::after
-    content: "x"
+    content: '\00d7'
+    /* × - times
     background: #aaa
     color: #fff
     border-radius: 0.5em
     text-align: center
-    border: 1px solid red
+    border: 1px solid
     position: absolute
     display: inline-block
     width: 0.9em
@@ -91,7 +91,7 @@ div[contenteditable]
     top: -0.8rem
     width: 0.8rem
     height: 0.8rem
-    background: url(filter-add.svg)
+    background: url(../img/filter-add.svg)
   &.current::before
     content: ''
     display: block
@@ -143,6 +143,24 @@ label
 
 #pakon-results-statistics
   width: 1250px
+
+dialog.loading
+  visibility: hidden
+  display: block
+  position: fixed
+  background: url(../img/loader.gif)
+  width: 120px
+  height: 120px
+  padding: 0
+  border: 0
+  opacity: 0
+  transition: all 0.5s
+  top: 45%
+  transform: translateX(-50%)
+  &[open]
+    visibility: visible
+    top: 50%
+    opacity: 1
 
 /******
 
