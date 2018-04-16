@@ -4,7 +4,7 @@
     %include("_messages.tpl")
 
     <fieldset>
-        <legend>{{ trans("Filtering") }}:</legend>
+        <legend><h3>{{ trans("Filtering") }}:</h3></legend>
         <label for="date-from" title="{{ trans("Date From") }}">
             {{ trans("From") }}:
             <input type="date" name="date-from" id="date-from">
