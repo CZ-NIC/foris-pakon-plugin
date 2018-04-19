@@ -1,32 +1,36 @@
 %rebase("config/base.tpl", **locals())
 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"><!--@todo : download for local offline usage -->
+
 <div id="page-pakon-plugin" class="config-page">
     %include("_messages.tpl")
 
     <fieldset>
         <legend><h3>{{ trans("Filtering") }}:</h3></legend>
         <label for="date-from" title="{{ trans("Date From") }}">
-            {{ trans("From") }}:
+            <span>{{ trans("From") }}:</span>
             <input type="date" name="date-from" id="date-from">
         </label>
         <label for="time-from" title="{{ trans("Time From") }}">
-            {{ trans("Time") }}:
+            <span>{{ trans("Time") }}:</span>
             <input type="time" name="time-from" id="time-from">
         </label>
         <br>
         <label for="date-to" title="{{ trans("Date To") }}">
-            {{ trans("To") }}:
+            <span>{{ trans("To") }}:</span>
             <input type="date" name="date-to" id="date-to">
         </label>
         <label for="time-to" title="{{ trans("Time To") }}">
-            {{ trans("Time") }}:
+            <span>{{ trans("Time") }}:</span>
             <input type="time" name="time-to" id="time-to">
         </label>
+        <br>
         <br>
         <label for="aggregate">
             {{ trans("Aggregation by hostname") }}:
             <input type="checkbox" name="aggregate" id="aggregate" checked>
         </label>
+        <br>
         <br>
         <label for="hostname-filter">
             {{ trans("Only following hostnames") }}:
