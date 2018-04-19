@@ -52,13 +52,13 @@ tbody td:nth-child(4) span:not(.clickable)
   padding: 0.3em 0.5em
   margin-right: 1em
   &::after
-    content: '\00d7'
-    /* × - times
+    font-family: "Font Awesome 5 Free", FontAwesome
+    content: '\f057'
+    /* times (\f00d is Bugged!!!)
     background: #aaa
     color: #fff
     border-radius: 0.5em
     text-align: center
-    border: 1px solid
     position: absolute
     display: inline-block
     width: 0.9em
@@ -83,22 +83,22 @@ div[contenteditable]
     overflow: visible
     white-space: nowrap
 
-.clickable
-  &.filter
-    position: relative
-    display: inline-block
-    font-size: 0
-    top: -0.8rem
-    width: 0.8rem
-    height: 0.8rem
-    background: url(../img/filter-add.svg)
-  &.current::before
-    content: ''
-    display: block
-    position: absolute
-    margin-left: -1.1rem
-    margin-right: 0.5rem
-    border: 0.5rem solid transparent
+.clickable.filter
+  position: relative
+  display: inline-block
+  width: 1rem
+
+.fas
+  text-decoration: none
+  font-size: 8px
+
+.clickable.current::before
+  content: ''
+  display: block
+  position: absolute
+  margin-left: -1.1rem
+  margin-right: 0.5rem
+  border: 0.5rem solid transparent
 
 [data-order="asc"].current::before
   border-bottom-color: black
@@ -114,8 +114,9 @@ label
     min-width: 80px
     padding-right: 2rem
   &[for="date-from"] span::after, &[for="date-to"] span::after
-    content: '\1f4c5'
-    /* 📅
+    font-family: "Font Awesome 5 Free", FontAwesome
+    content: '\f073'
+    /* calendar
     position: absolute
     display: inline-block
     right: 0
@@ -123,12 +124,13 @@ label
     position: absolute
     font-size: 0
   &[for="time-from"] span::after, &[for="time-to"] span::after
-    content: '\25f7'
-    /* ◷
+    font-family: "Font Awesome 5 Free", FontAwesome
+    content: '\f017'
+    /* clock
     position: absolute
     display: inline-block
     font-size: 1rem
-    margin-left: 1rem
+    margin: 0.2rem 0 0 0.8rem
   &[for="time-from"] input, &[for="time-to"] input
     margin-left: 2rem
 
