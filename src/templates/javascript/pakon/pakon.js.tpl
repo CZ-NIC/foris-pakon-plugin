@@ -815,18 +815,19 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							'http',
 							'ftp',
 						],
-						'textContent': '\u29C9', // TWO JOINED SQUARES ⧉
+						'textContent': null,
+						'faClassName': 'fa-external-link-alt',
 						'title': 'Open this hostname as URL in new window',
 					},
 					filter: {
 						'enable': true,
-						'className': 'clickable',
+						'className': 'clickable', // no spaces
 						'add': {
-							'textContent': '\u2442', // OCR FORK ⑂
+							'faClassName': 'fa-filter', // no spaces
 							'title': 'Filter by this hostname',
 						},
 						'remove': {
-							'textContent': '\u2443', // OCR INVERTED FORK ⑃
+							'faClassName': 'fa-filter', // no spaces
 							'title': 'Remove filter by this hostname',
 						},
 					},
@@ -834,13 +835,13 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				'srcMAC': {
 					filter: {
 						'enable': true,
-						'className': 'clickable',
+						'className': 'clickable', // no spaces
 						'add': {
-							'textContent': '\u2442', // OCR FORK ⑂
+							'faClassName': 'fa-filter', // no spaces
 							'title': 'Filter by this client',
 						},
 						'remove': {
-							'textContent': '\u2443', // OCR INVERTED FORK ⑃
+							'faClassName': 'fa-filter', // no spaces
 							'title': 'Remove filter by this client',
 						},
 					},
@@ -2166,10 +2167,9 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				if ( Array.isArray( filterValues ) ) {
 					const currentControlFormElement = this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ];
 					if ( filterValues.includes( currentValue ) ) { // remove
-						eventTarget.textContent = this.settings.postRenderImprove[ key ].filter.remove.textContent;
 						eventTarget.title = this.settings.postRenderImprove[ key ].filter.remove.title;
-						eventTarget.classList.add( 'remove', 'filter' );
-						eventTarget.classList.remove( 'add' ); // it does perfectly sense XD
+						eventTarget.classList.remove( 'add', this.settings.postRenderImprove[ key ].filter.add.faClassName ); // it does perfectly sense XD
+						eventTarget.classList.add( 'remove', this.settings.postRenderImprove[ key ].filter.remove.faClassName );
 						if ( event.isTrusted ) {
 							filterValues = this.settings.eventSource.query[ key ] = filterValues.filter( item => item !== currentValue ); // removes current from array
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
@@ -2187,10 +2187,10 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							currentControlFormElement.dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
 						}
 					} else { // add
-						eventTarget.textContent = this.settings.postRenderImprove[ key ].filter.add.textContent;
+						//eventTarget.textContent = this.settings.postRenderImprove[ key ].filter.add.textContent;
 						eventTarget.title = this.settings.postRenderImprove[ key ].filter.add.title;
-						eventTarget.classList.add( 'add', 'filter' );
-						eventTarget.classList.remove( 'remove' );
+						eventTarget.classList.remove( 'remove', this.settings.postRenderImprove[ key ].filter.remove.faClassName );
+						eventTarget.classList.add( 'add', this.settings.postRenderImprove[ key ].filter.add.faClassName );
 						if ( event.isTrusted ) {
 							currentControlFormElement.parentNode.nextElementSibling.dispatchEvent( new Event( 'focus' ) );
 							filterValues.push( currentValue );
@@ -2810,15 +2810,18 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							return !window.open( self.href );
 						};
 					}
-					link.appendChild( document.createTextNode( this.settings.postRenderImprove.hostname.link.textContent ) );
+					link.classList.add( 'fas', this.settings.postRenderImprove.hostname.link.faClassName );
+					if ( this.settings.postRenderImprove.hostname.link.textContent ) {
+						link.appendChild( document.createTextNode( this.settings.postRenderImprove.hostname.link.textContent ) );
+					}
 
 					currentCell.appendChild( code );
 					currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
 					currentCell.appendChild( link );
 				}
 
-				const filter = document.createElement( 'span' );
-				filter.className = this.settings.postRenderImprove.hostname.filter.className;
+				const filter = document.createElement( 'i' );
+				filter.classList.add( 'fas', 'filter', this.settings.postRenderImprove.hostname.filter.className );
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'hostname' );
 
 				const part = code.textContent.split( '.' );
@@ -2861,8 +2864,8 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				code.appendChild( document.createTextNode( currentCell.textContent ) );
 				currentCell.textContent = '';
 
-				const filter = document.createElement( 'span' );
-				filter.className = this.settings.postRenderImprove.srcMAC.filter.className; // @todo : refactor into classList
+				const filter = document.createElement( 'i' );
+				filter.classList.add( 'fas', 'filter', this.settings.postRenderImprove.srcMAC.filter.className );
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'srcMAC' );
 
 				currentCell.appendChild( code );
@@ -3464,7 +3467,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	}
 
 };
-
 
 
  /*!
