@@ -70,12 +70,12 @@ tbody td:nth-child(4) span:not(.clickable) {
 }
 
 .tags>span::after {
-	content: '\00d7'; /* × - times */
+	font-family: "Font Awesome 5 Free", FontAwesome;
+	content: '\f057'; /* times (\f00d is Bugged!!!) */
 	background: #aaa;
 	color: #fff;
 	border-radius: 0.5em;
 	text-align: center;
-	border: 1px solid;
 	position: absolute;
 	display: inline-block;
 	width: 0.9em;
@@ -108,11 +108,12 @@ div[contenteditable] {
 .clickable.filter {
 	position: relative;
 	display: inline-block;
-	font-size: 0;
-	top: -0.8rem;
-	width: 0.8rem;
-	height: 0.8rem;
-	background: url(../img/filter-add.svg);
+	width: 1rem;
+}
+
+.fas {
+	text-decoration: none;
+	font-size: 8px;
 }
 
 .clickable.current::before {
@@ -143,8 +144,8 @@ label[for="date-to"] span {
 
 label[for="date-from"] span::after,
 label[for="date-to"] span::after {
-	content: '\1f4c5';
-	/* 📅 */
+	font-family: "Font Awesome 5 Free", FontAwesome;
+	content: '\f073'; /* calendar */
 	position: absolute;
 	display: inline-block;
 	right: 0;
@@ -158,12 +159,12 @@ label[for="time-to"] span {
 
 label[for="time-from"] span::after,
 label[for="time-to"] span::after {
-	content: '\25f7';
-	/* ◷ */
+	font-family: "Font Awesome 5 Free", FontAwesome;
+	content: '\f017';	/* clock */
 	position: absolute;
 	display: inline-block;
 	font-size: 1rem;
-	margin-left: 1rem;
+	margin: 0.2rem 0 0 0.8rem;
 }
 
 label[for="time-from"] input,
@@ -208,24 +209,6 @@ dialog.loading[open] {
 	opacity: 1;
 }
 
-#pokusy-smazat {
-	border: 1px solid red;
-}
-
-#pokusy-smazat span {
-	padding: 0.3em 30px 0.3em 0.5em;
-	margin-left: 0.2em;
-	margin-right: 0.1em;
-}
-
-#pokusy-smazat span::after {
-	margin-left: 6px;
-	right: auto;
-}
-
-#pokusy-smazat span:first-of-type {
-	margin-right: 0;
-}
 
 /*******/
 
