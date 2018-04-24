@@ -2,6 +2,7 @@
 #pakon-results th {
 	padding: 0.3em 0.8em;
 	border-bottom: 1px solid #fff;
+	white-space: nowrap;
 }
 
 #pakon-results tr:first-child td {
@@ -87,6 +88,7 @@ div[contenteditable] {
 	border: 1px inset #aaa;
 	padding: 0.5em;
 	min-height: 1.6em;
+	border-radius: 0.4em;
 }
 
 .chart {
