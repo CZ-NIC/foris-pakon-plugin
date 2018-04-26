@@ -56,6 +56,8 @@
     %include("pakon/_results.tpl")
 </div>
 
+<script src="{{ static("plugins/pakon/js/Chart.min.js") }}"></script>
+<script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}"></script>
 <script>
     const cntp = new czNicTurrisPakon(window);
     cntp.settings = {
