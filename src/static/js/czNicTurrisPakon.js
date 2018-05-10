@@ -2355,14 +2355,14 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			/** @type {HTMLElement} */
 			const innerElement = ( currentCell.firstElementChild );
 
-			if ( innerElement && innerElement.title ) {
-				return innerElement.title;
-			}
-
 			for ( let i = 0; i < currentCell.attributes.length; i++ ) {
 				if ( currentCell.attributes[ i ].nodeName.substr( 0, 16 ) === 'data-raw-content' ) {
 					return currentCell.attributes[ i ].nodeValue;
 				}
+			}
+
+			if ( innerElement && innerElement.title ) {
+				return innerElement.title;
 			}
 
 			return ( currentCell.innerText || currentCell.textContent );
