@@ -2150,12 +2150,11 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	 * @async
 	 * @returns {Promise<Boolean>}
 	 */
-	async filterClickHandlerFor ( key = '', /** @type { Event | MouseEvent } */ event )
+	async filterClickHandlerFor ( key = '', /** @type { Event | MouseEvent } */ event ) ///
 	{
 		return new Promise( ( resolve ) =>
 		{
 			if ( key ) {
-				const CHANGE_EVENT_NAME = 'change';
 				const FILTER_ELEMENT_SUFFIX = 'Filter';
 				const INPUT_EVENT_NAME = 'input';
 				let filterValues = this.settings.eventSource.query[ key ] = this.readFromTextarea( this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ] );
@@ -2174,18 +2173,9 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						if ( event.isTrusted ) {
 							filterValues = this.settings.eventSource.query[ key ] = filterValues.filter( item => item !== currentValue ); // removes current from array
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
-							/*
-							if (
-								currentControlFormElement.parentNode.nextElementSibling
-								&& currentControlFormElement.parentNode.nextElementSibling.nodeType === Node.ELEMENT_NODE
-								&& currentControlFormElement.parentNode.nextElementSibling.nodeName === 'DIV'
-								&& currentControlFormElement.parentNode.nextElementSibling.contentEditable
-							) {
-								currentControlFormElement.parentNode.nextElementSibling.dispatchEvent(new Event(INPUT_EVENT_NAME));
-							}
-							*/
-							currentControlFormElement.parentNode.nextElementSibling.dispatchEvent( new Event( 'focus' ) );
-							currentControlFormElement.dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
+
+							currentControlFormElement.dispatchEvent( new Event( INPUT_EVENT_NAME ) );
+							/// @todo : change disabled on submit button
 						}
 					} else { // add
 						//eventTarget.textContent = this.settings.postRenderImprove[ key ].filter.add.textContent;
@@ -2196,139 +2186,13 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							currentControlFormElement.parentNode.nextElementSibling.dispatchEvent( new Event( 'focus' ) );
 							filterValues.push( currentValue );
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
-							if (
-								currentControlFormElement.parentNode.nextElementSibling
-								&& currentControlFormElement.parentNode.nextElementSibling.nodeType === Node.ELEMENT_NODE
-								&& currentControlFormElement.parentNode.nextElementSibling.nodeName === 'DIV'
-								&& currentControlFormElement.parentNode.nextElementSibling.contentEditable
-							) {
-								currentControlFormElement.parentNode.nextElementSibling.dispatchEvent( new Event( INPUT_EVENT_NAME ) );
-							}
-							currentControlFormElement.dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
+
+							currentControlFormElement.dispatchEvent( new Event( INPUT_EVENT_NAME ) );
+							/// @todo : change disabled on submit button
 						}
 					}
 				}
 			}
-			resolve( true );
-		} );
-	}
-
-
-	/**
-	 * @todo : description
-	 * @async
-	 * @returns {Promise<Boolean>}
-	 */
-	async improveControlFormTextareas ()
-	{
-		return new Promise( ( resolve ) =>
-		{
-			const INPUT_EVENT_NAME = 'input';
-			const FAKE_TRUSTED_DETAIL_STRING = 'fakeTrusted';
-			const PLACEHOLDER_CLASS_NAME = 'placeholder';
-			const TEXTAREA_ID_MAP = Object.freeze( {
-				'eventSource': {
-					'hostname-filter': 'hostname',
-					'srcMAC-filter': 'mac',
-				},
-				'controlForm': {
-					'hostname-filter': 'hostnameFilter',
-					'srcMAC-filter': 'srcMACFilter',
-				},
-			} );
-			const controlForm = this.settings.controlForm;
-			for ( const i in controlForm ) {
-				if ( controlForm[ i ] && controlForm[ i ].nodeType === Node.ELEMENT_NODE && controlForm[ i ].type === 'textarea' ) {
-					controlForm[ i ].parentNode.hidden = true;
-					const eventSourceKey = TEXTAREA_ID_MAP.eventSource[ controlForm[ i ].id ];
-					const controlFormKey = TEXTAREA_ID_MAP.controlForm[ controlForm[ i ].id ];
-					const tagsRoot = document.createElement( 'div' );
-					if ( controlForm[ i ].placeholder ) {
-						tagsRoot.appendChild( this.createFakePlaceholder( controlForm[ i ].placeholder, PLACEHOLDER_CLASS_NAME ) );
-					}
-					tagsRoot.contentEditable = 'true';
-					tagsRoot.className = 'tags';
-					tagsRoot.addEventListener( 'focus', this.placeholderLikeEffect.bind( this, PLACEHOLDER_CLASS_NAME ), false );
-					tagsRoot.addEventListener( 'focusout', ( /** @type {FocusEvent} */ event ) =>
-					{
-						/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
-						const eventTarget = ( event.target );
-						if ( !eventTarget.textContent ) {
-							eventTarget.appendChild( this.createFakePlaceholder( controlForm[ i ].placeholder, PLACEHOLDER_CLASS_NAME ) );
-						}
-					}, false );
-					tagsRoot.addEventListener( 'keydown', this.keyboardHandler.bind( this, controlFormKey ), false );
-					tagsRoot.addEventListener( INPUT_EVENT_NAME, ( /** @type {Event} */ event ) => // it can be also inputEvent (waiting for browsers to implement)
-					{
-						/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
-						const eventTarget = ( event.target );
-						if ( event.isTrusted || event[ 'detail' ] === FAKE_TRUSTED_DETAIL_STRING ) {
-							const children = [ ...eventTarget.childNodes ];
-							children.forEach( ( item ) =>
-							{
-								if ( item.nodeType === Node.TEXT_NODE ) {
-									const regexp = new RegExp( '(?:,|;|\\s| |\\r?\\n)+', 'u' ); // lot of possible dividers
-									const clearedItem = item.textContent.replace( regexp, '' );
-									if ( clearedItem ) {
-										const tag = this.createSingleTag( clearedItem, INPUT_EVENT_NAME, FAKE_TRUSTED_DETAIL_STRING );
-										eventTarget.insertBefore( document.createTextNode( this.settings.textareaSeparator ), item );
-										eventTarget.replaceChild( tag, item );
-										this.setCursorAtTheEndOf( eventTarget );
-										eventTarget.appendChild( document.createTextNode( this.settings.textareaSeparator ) );
-									}
-								}
-							} );
-							const values = this.settings.eventSource.query[ eventSourceKey ] = this.readFromEditableElement( eventTarget );
-							this.settings.controlForm[ controlFormKey ].value = values.join( this.settings.textareaSeparator );
-							if ( ( eventTarget.firstChild ) && ( eventTarget.firstChild.textContent === this.settings.textareaSeparator ) ) {
-								eventTarget.removeChild( eventTarget.firstChild );
-							}
-							if ( eventTarget.lastChild ) {
-								while (
-									eventTarget.lastChild.nodeType === Node.TEXT_NODE
-									&& eventTarget.lastChild.previousSibling
-									&& eventTarget.lastChild.previousSibling.nodeType === Node.TEXT_NODE
-								) {
-									eventTarget.lastChild.previousSibling[ 'textNode' ] += eventTarget.lastChild[ 'textNode' ];
-									eventTarget.removeChild( eventTarget.lastChild );
-								}
-								if ( eventTarget.lastChild.textContent !== this.settings.textareaSeparator ) {
-									eventTarget.appendChild( document.createTextNode( this.settings.textareaSeparator ) );
-								}
-							}
-							/** @type {HTMLInputElement} */
-							const submitButton = ( this.settings.controlForm.controlFormSubmit );
-							if ( submitButton ) {
-								submitButton.disabled = false;
-							}
-						} else {
-							const currentEventKey = this.settings.eventSource.query[ eventSourceKey ] = this.readFromTextarea( this.settings.controlForm[ controlFormKey ] );
-							for ( const i in currentEventKey ) {
-								const tag = this.createSingleTag( currentEventKey[ i ], INPUT_EVENT_NAME, FAKE_TRUSTED_DETAIL_STRING );
-								tagsRoot.appendChild( tag );
-								//if (currentEventKey[Number(i) + 1]) {
-								tagsRoot.appendChild( document.createTextNode( this.settings.textareaSeparator ) );
-								//}
-							}
-						}
-					}, false );
-					controlForm[ i ].parentNode.parentNode.insertBefore( tagsRoot, controlForm[ i ].parentNode.nextSibling );
-					if ( controlForm[ i ].parentNode.firstChild ) {
-						const title = document.createElement( 'div' );
-						title.appendChild( document.createTextNode( controlForm[ i ].parentNode.firstChild.textContent ) );
-						tagsRoot.parentNode.insertBefore( title, tagsRoot.previousSibling );
-					}
-					if (
-						controlForm[ i ].parentNode.lastElementChild
-						&& controlForm[ i ].parentNode.lastElementChild !== tagsRoot
-						&& controlForm[ i ].parentNode.lastElementChild.nodeName !== 'TEXTAREA'
-					) {
-						tagsRoot.parentNode.insertBefore( controlForm[ i ].parentNode.lastElementChild, tagsRoot.nextSibling );
-					}
-
-				}
-			}
-
 			resolve( true );
 		} );
 	}
@@ -2495,45 +2359,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 	/**
 	 * @todo : description
-	 * @returns {boolean}
-	 */
-	placeholderLikeEffect ( placeholderClassName = '' )
-	{
-		/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
-		const eventTarget = ( arguments[ 1 ].target );
-		let rootElement = eventTarget;
-		while ( rootElement.contentEditable !== 'true' ) { // contentEditable can be strings true, false, inherit, and more
-			rootElement = rootElement.parentElement;
-		}
-		[ ...rootElement.children ].forEach( ( /** @type {HTMLElement} */ item ) =>
-		{
-			if ( item.classList.contains( placeholderClassName ) ) {
-				this.setCursorAtTheEndOf( rootElement );
-				rootElement.setAttribute( 'data-placeholder', item.textContent );
-				item.remove();
-			}
-		} );
-
-		return true;
-	}
-
-
-	/**
-	 * @todo : description
-	 * @returns {HTMLElement}
-	 */
-	createFakePlaceholder ( placeholderText = '', placeHolderClassName = '' )
-	{
-		const fakePlaceholder = document.createElement( 'small' );
-		fakePlaceholder.classList.add( placeHolderClassName );
-		fakePlaceholder.appendChild( document.createTextNode( placeholderText ) );
-
-		return fakePlaceholder;
-	}
-
-
-	/**
-	 * @todo : description
 	 */
 	getTimeDiff ( /** @type {Date} */ timeA, /** @type {Date} */ timeB, relative = false, lang = this.settings.lang, type = 'long' )
 	{
@@ -2616,76 +2441,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			return UNITS[ lang ].preffix + n + DIVIDER + inflect( UNITS[ lang ][ type ].w, n, UNITS[ lang ].plural ) + UNITS[ lang ].suffix;
 		}
 		// @todo : refactor till now
-		return true;
-	}
-
-
-	createSingleTag ( textContent = '', inputEventName = '', fakeTrustedDetailString = '' )
-	{
-		const USE_SUGGESTIONS = false; // @todo : create suggestions by using input[list="<id>"] and shared datalist[id="<id>"]
-		const CLOSER_SAFETY_DISTANCE = 1; // (int) in px
-		const tag = document.createElement( USE_SUGGESTIONS ? 'input' : 'span' );
-		if ( 'value' in tag ) {
-			tag.value = textContent;
-		} else {
-			tag.appendChild( document.createTextNode( textContent ) );
-		}
-		tag.onclick = function ( event )
-		{ // tag self-destruction
-			if ( ( event.target.offsetLeft + event.target.offsetWidth ) < ( event.pageX + CLOSER_SAFETY_DISTANCE ) ) { // if clicked on ::after pseudo element content
-				const tagsRoot = event.target.parentNode;
-				const nextText = event.target.nextSibling;
-				if ( nextText && nextText.nodeType === Node.TEXT_NODE && nextText.textContent === this.settings.textareaSeparator ) {
-					tagsRoot.removeChild( nextText );
-				}
-				tagsRoot.removeChild( event.target );
-				tagsRoot.dispatchEvent( new CustomEvent( inputEventName, { 'detail': fakeTrustedDetailString } ) );
-				this.setCursorAtTheEndOf( tagsRoot );
-			}
-		}.bind( this );
-
-		return tag;
-	}
-
-
-	setCursorAtTheEndOf ( /** @type {HTMLElement} and it's descendants */ element )
-	{
-		const range = document.createRange();
-		const sel = this.window.getSelection();
-
-		if ( element.textContent.slice( -this.settings.textareaSeparator.length ) === this.settings.textareaSeparator ) {
-			range.setStart( element.lastChild, this.settings.textareaSeparator.length );
-		} else if ( element.lastElementChild ) {
-			range.setStart( element.lastElementChild, 1 );
-		}
-		range.collapse( true );
-		sel.removeAllRanges();
-		sel.addRange( range );
-
-		return true;
-	}
-
-
-	keyboardHandler ( controlFormKey = '', /** @type {KeyboardEvent} */ event )
-	{
-		const ENTER_NAME = 'Enter';
-		const SPACE_NAME = ' ';
-		const CHANGE_EVENT_NAME = 'change';
-		if (
-			event.key === ENTER_NAME || event.code === ENTER_NAME
-			|| event.key === SPACE_NAME || event.code === SPACE_NAME
-		) {
-			event.stopPropagation();
-			event.preventDefault();
-			if ( event.shiftKey && controlFormKey ) {
-				this.settings.controlForm[ controlFormKey ].dispatchEvent( new Event( CHANGE_EVENT_NAME ) );
-			} else {
-				/** @type {HTMLDivElement} */
-				const eventTarget = ( event.target );
-				this.setCursorAtTheEndOf( eventTarget );
-			}
-		}
-
 		return true;
 	}
 
@@ -3423,7 +3178,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	 */
 	run ()
 	{
-		this.improveControlFormTextareas(); // async
 		this.setSyncWorkTo( true ).then( () =>
 		{
 			this.makeObsoleteItemsInIndexedDB().then( () =>

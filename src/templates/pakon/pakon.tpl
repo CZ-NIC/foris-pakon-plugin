@@ -4,7 +4,9 @@
     %include("_messages.tpl")
 
     <fieldset>
-        <legend><h3>{{ trans("Filtering") }}:</h3></legend>
+        <legend>
+            <h3>{{ trans("Filtering") }}:</h3>
+        </legend>
         <label for="date-from" title="{{ trans("Date From") }}">
             <span>{{ trans("From") }}:</span>
             <input type="date" name="date-from" id="date-from">
@@ -54,13 +56,17 @@
     %include("pakon/_results.tpl")
 </div>
 
+
+<script src="{{ static("plugins/pakon/js/focuserForLabels.defer.js") }}" defer></script>
+<script src="{{ static("plugins/pakon/js/tagsBuilder.defer.js") }}" defer></script>
+
 <script src="{{ static("plugins/pakon/js/Chart.min.js") }}"></script>
 <script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}"></script>
 <script>
-    const cntp = new czNicTurrisPakon(window);
+    const cntp = new czNicTurrisPakon( window );
     cntp.settings = {
         'eventSource': {
-            'baseUrl': new URL('ajax', window.location.href),
+            'baseUrl': new URL( 'ajax', window.location.href ),
             'dumpIntoStatistics': false,
         },
         'statisticsData': {
@@ -72,5 +78,5 @@
     };
     cntp.run();
     const cs = window.document.currentScript;
-    cs.parentNode.removeChild(cs);
+    cs.parentNode.removeChild( cs );
 </script>
