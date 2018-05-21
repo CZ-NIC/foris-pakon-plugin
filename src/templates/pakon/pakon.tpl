@@ -59,6 +59,7 @@
 
 <script src="{{ static("plugins/pakon/js/focuserForLabels.defer.js") }}" defer></script>
 <script src="{{ static("plugins/pakon/js/tagsBuilder.defer.js") }}" defer></script>
+<script src="{{ static("plugins/pakon/js/sortableTable.defer.js") }}" defer></script>
 
 <script src="{{ static("plugins/pakon/js/Chart.min.js") }}"></script>
 <script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}"></script>
