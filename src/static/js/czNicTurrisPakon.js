@@ -3100,7 +3100,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							{
 								this.improveTableUX(); // post render improvement
 								window[ 'makeTableSortable' ](); // from window namespace added in file sortableTable.defer.js
-							}, 1 ); // 1ms winting force browser to redraw website
+							}, 1 ); // 1ms waiting force browser to redraw website
 						} );
 					} );
 				} );
