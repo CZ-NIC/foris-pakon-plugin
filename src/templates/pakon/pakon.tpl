@@ -26,9 +26,9 @@
         </label>
         <br>
         <br>
-        <label for="aggregate">
+        <label for="aggregate" tabindex="0" class="checkbox">
             {{ trans("Aggregation by hostname") }}:
-            <input type="checkbox" name="aggregate" id="aggregate" checked>
+            <input type="checkbox" name="aggregate" id="aggregate" tabindex="-1" checked>
         </label>
         <br>
         <br>
