@@ -1,18 +1,19 @@
 'use strict';
-( () =>
+( function ()
 {
 	const PLACEHOLDER_CLASS_NAME = 'placeholder';
 	const FAKE_TRUSTED_DETAIL_STRING = 'fakeTrusted';
 	const TEXTAREA_SEPARATOR = ',';
 	const INPUT_EVENT_NAME = 'input';
-	const DIVIDER_OPTIONS_REGEXP = new RegExp( '(?:,|;|\\s| |\\r?\\n)+', 'u' ); // many possible dividers
+	const DIVIDER_OPTIONS_REGEXP = new RegExp( '(?:,|;|\\s| |\\r?\\n)+', 'i' ); // many possible dividers
 	const NO_BREAK_SPACE = '\u00A0';
+
 
 	/**
 	 * @todo : description
 	 * @returns {HTMLElement}
 	 */
-	function createFakePlaceholder ( placeholderText = '', placeHolderClassName = '' )
+	function createFakePlaceholder ( placeholderText/* = ''*/, placeHolderClassName/* = ''*/ )
 	{
 		const fakePlaceholder = document.createElement( 'small' );
 		fakePlaceholder.classList.add( placeHolderClassName );
@@ -48,7 +49,7 @@
 	 * @todo : description
 	 * @returns {true}
 	 */
-	function moveCaretBy ( /** @type {Number} positive or negative */ charCount = 1 )
+	function moveCaretBy ( /** @type {Number} positive or negative */ charCount/* = 1*/ )
 	{
 		/** @type {Selection} */
 		let selection;
@@ -108,7 +109,7 @@
 	 * @todo : in future returns HTMLSpanElement or input
 	 * @returns {HTMLSpanElement}
 	 */
-	function createSingleTag ( textContent = '' )
+	function createSingleTag ( textContent/* = ''*/ )
 	{
 		const USE_SUGGESTIONS = false; // @todo : create suggestions by using input[list="<id>"] and shared datalist[id="<id>"]
 		const CLOSER_DIMENSIONS = [ 30, 23 ]; // [start, width] in px
@@ -121,7 +122,7 @@
 			tag.appendChild( document.createTextNode( NO_BREAK_SPACE + textContent ) );
 		}
 
-		tag.onmouseout = ( /** @type {MouseEvent} */ event ) =>
+		tag.onmouseout = function ( /** @type {MouseEvent} */ event )
 		{
 			/** @type {HTMLSpanElement} */
 			const eventTarget = ( event.target );
@@ -129,7 +130,7 @@
 			eventTarget.classList.remove( CLOSING_HOVER_CLASS_NAME );
 		};
 
-		tag.onmousemove = ( /** @type {MouseEvent} */ event ) =>
+		tag.onmousemove = function ( /** @type {MouseEvent} */ event )
 		{
 			/** @type {HTMLSpanElement} */
 			const eventTarget = ( event.target );
@@ -146,7 +147,7 @@
 
 		};
 
-		tag.onclick = ( /** @type {MouseEvent} */ event ) =>
+		tag.onclick = function ( /** @type {MouseEvent} */ event )
 		{ // tag self-destruction by click
 
 			/** @type {HTMLSpanElement} */
@@ -182,7 +183,7 @@
 			const regexp = DIVIDER_OPTIONS_REGEXP;
 			const list = element.value.split( regexp );
 			const withoutEmptyItems = list.filter( String );
-			return [ ...new Set( withoutEmptyItems ) ]; // this make [] unique
+			return Array.from( new Set( withoutEmptyItems ) ); // it make [] unique
 		}
 
 		return [];
@@ -197,11 +198,11 @@
 	{
 		if ( element && element.nodeType === Node.ELEMENT_NODE && element.children && element.children.length ) {
 			const withoutEmptyItems = [];
-			[ ...element.children ].forEach( ( /** @type {HTMLSpanElement } */ child ) =>
+			Array.from( element.children ).forEach( function ( /** @type {HTMLSpanElement } */ child )
 			{
 				withoutEmptyItems.push( child.textContent );
 			} );
-			return [ ...new Set( withoutEmptyItems ) ]; // this make [] unique
+			return Array.from( new Set( withoutEmptyItems ) ); // it make [] unique
 		}
 
 		return [];
@@ -222,7 +223,7 @@
 	}
 
 
-	[ ...document.getElementsByTagName( 'textarea' ) ].forEach( ( /** @type {HTMLTextAreaElement} */ textarea ) =>
+	Array.from( document.getElementsByTagName( 'textarea' ) ).forEach( function ( /** @type {HTMLTextAreaElement} */ textarea )
 	{
 		const INITIALIZE_TEXTAREA_CLASS_NAME = 'tags';
 		const TAGS_ROOT_CLASS_NAME = INITIALIZE_TEXTAREA_CLASS_NAME;
@@ -238,7 +239,7 @@
 					tagsRoot.appendChild( createFakePlaceholder( textarea.placeholder, PLACEHOLDER_CLASS_NAME ) );
 				}
 
-				tagsRoot.addEventListener( FOCUS_NAME, ( /** @type {FocusEvent} */  event ) =>
+				tagsRoot.addEventListener( FOCUS_NAME, function ( /** @type {FocusEvent} */  event )
 				{
 					/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
 					const eventTarget = ( event.target );
@@ -247,7 +248,7 @@
 					while ( rootElement.contentEditable !== 'true' ) { // contentEditable can be strings 'true', 'false', 'inherit', and more
 						rootElement = rootElement.parentElement;
 					}
-					[ ...rootElement.children ].forEach( ( /** @type {HTMLElement} */ item ) =>
+					Array.from( rootElement.children ).forEach( function ( /** @type {HTMLElement} */ item )
 					{
 						if ( item.classList.contains( PLACEHOLDER_CLASS_NAME ) ) {
 							setCaretAtTheEndOf( eventTarget );
@@ -258,7 +259,7 @@
 					return true;
 				}, false );
 
-				tagsRoot.addEventListener( 'focusout', ( /** @type {FocusEvent} */ event ) =>
+				tagsRoot.addEventListener( 'focusout', function ( /** @type {FocusEvent} */ event )
 				{
 					/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
 					const eventTarget = ( event.target );
@@ -268,7 +269,7 @@
 				}, false );
 			}
 
-			tagsRoot.addEventListener( 'keypress', (/** @type {KeyboardEvent} */ event ) =>
+			tagsRoot.addEventListener( 'keypress', function ( /** @type {KeyboardEvent} */ event )
 			{ // Backspace and Delete are not in keypress, only in keydown
 				const ENTER_NAME = 'Enter';
 				const SPACE_NAME = ' ';
@@ -289,7 +290,7 @@
 				return true;
 			}, false );
 
-			tagsRoot.addEventListener( 'keydown', (/** @type {KeyboardEvent} */ event ) =>
+			tagsRoot.addEventListener( 'keydown', function ( /** @type {KeyboardEvent} */ event )
 			{ // Backspace and Delete are not in keypress, only in keydown
 				const BACKSPACE_NAME = 'Backspace';
 				const DELETE_NAME = 'Delete'; // eslint-disable-line no-unused-vars
@@ -297,7 +298,7 @@
 				/** @type {HTMLDivElement} */
 				const eventTarget = ( event.target );
 
-				[ ...eventTarget.childNodes ].forEach( (/** @type {Text | HTMLSpanElement} */ item ) =>
+				Array.from( eventTarget.childNodes ).forEach( function ( /** @type {Text | HTMLSpanElement} */ item )
 				{ // @ todo
 					if ( item.nodeType === Node.TEXT_NODE && item.nextSibling && item.nextSibling.nodeType === Node.TEXT_NODE ) { // remove multiple separators if needed
 						eventTarget.removeChild( item.nextSibling );
@@ -319,7 +320,7 @@
 						event.stopPropagation();
 						event.preventDefault();
 						moveCaretBy( -1 );
-						[ ...eventTarget.children ].forEach( ( /** @type {HTMLSpanElement} */tag ) =>
+						Array.from( eventTarget.children ).forEach( function ( /** @type {HTMLSpanElement} */tag )
 						{
 							if ( tag.textContent === NO_BREAK_SPACE ) {
 								if ( tag === eventTarget.firstElementChild ) {
@@ -336,7 +337,7 @@
 				return true;
 			}, false );
 
-			tagsRoot.addEventListener( FOCUS_NAME, ( /** @type {FocusEvent} */  event ) =>
+			tagsRoot.addEventListener( FOCUS_NAME, function ( /** @type {FocusEvent} */  event )
 			{
 				/** @type {HTMLElement} - some HTMLElement (HTMLDivElement for example) with contentEditable attribute */
 				const eventTarget = ( event.target );
@@ -349,7 +350,7 @@
 				}
 			}, false );
 
-			tagsRoot.addEventListener( INPUT_EVENT_NAME, ( /** @type {Event} */ event ) => ///
+			tagsRoot.addEventListener( INPUT_EVENT_NAME, function ( /** @type {Event} */ event )///
 			{ // it can be also InputEvent (waiting for browsers to implement)… than {Event | InputEvent}
 				/** @type {HTMLDivElement} - some HTMLElement with contentEditable attribute */
 				const eventTarget = ( event.target );
@@ -358,7 +359,7 @@
 				const originalTextarea = ( tagsRoot.previousElementSibling );
 
 				if ( event.isTrusted || event[ 'detail' ] === FAKE_TRUSTED_DETAIL_STRING ) { // click on element with contenteditable
-					[ ...eventTarget.childNodes ].forEach( ( /** @type {Text | HTMLSpanElement} */ item ) =>
+					Array.from( eventTarget.childNodes ).forEach( function ( /** @type {Text | HTMLSpanElement} */ item )
 					{
 						if ( item.nodeType === Node.TEXT_NODE ) {
 							const regexp = DIVIDER_OPTIONS_REGEXP;
@@ -399,7 +400,7 @@
 						tagsRoot.removeChild( tagsRoot.lastChild );
 					}
 
-					readFromTextarea( originalTextarea ).forEach( ( /** @type {String} */ tagText ) =>
+					readFromTextarea( originalTextarea ).forEach( function ( /** @type {String} */ tagText )
 					{
 						tagsRoot.appendChild( createSingleTag( tagText ) );
 						tagsRoot.appendChild( document.createTextNode( TEXTAREA_SEPARATOR ) );
@@ -411,7 +412,7 @@
 			textarea.parentNode.insertBefore( tagsRoot, textarea.nextSibling );
 			tagsRoot.dispatchEvent( new Event( INPUT_EVENT_NAME ) );
 
-			textarea.addEventListener( INPUT_EVENT_NAME, ( /** @type {Event} */ event ) =>
+			textarea.addEventListener( INPUT_EVENT_NAME, function ( /** @type {Event} */ event )
 			{
 				/** @type {HTMLDivElement} */
 				const eventTarget = ( event.target );
