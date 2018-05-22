@@ -2087,7 +2087,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 			if ( status ) {
 				loader.show();
-			} else {
+			} else if ( loader.open ) { // cannot close dialog which is not opened
 				loader.close();
 			}
 
@@ -2859,7 +2859,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		}
 		toString += 'Z';
 		if ( dateFrom && dateFrom.value ) {
-			toString += dateFrom.value;
+			fromString += dateFrom.value;
 		} else {
 			d.setDate( d.getDate() - this.settings.timeLimitation.suggestedInterval );
 			fromString += d.getFullYear() + '-' + String( d.getMonth() + 1 ).padStart( 2, '0' ) + '-' + String( d.getDate() ).padStart( 2, '0' );
@@ -2871,6 +2871,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			fromString += '00:00:00';
 		}
 		fromString += 'Z';
+
 		let fromDate = new Date( fromString );
 		let toDate = new Date( toString );
 
@@ -2972,6 +2973,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	showEmptyResponseInfo () // @todo : if filter exist, than create a oprion for drop it. If not show only info for user.
 	{
 		alert( this.settings.userMessages.errors.failedLoadingData[ 0 ] );
+		this.setSyncWorkTo( false );
 
 		return true;
 	}
@@ -3108,7 +3110,9 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 							setTimeout( () =>
 							{
 								this.improveTableUX(); // post render improvement
-								window[ 'makeTableSortable' ](); // from window namespace added in file sortableTable.defer.js
+								if ( 'makeTableSortable' in this.window ) {
+									window[ 'makeTableSortable' ](); // from window namespace added in file sortableTable.defer.js
+								}
 							}, 1 ); // 1ms waiting force browser to redraw website
 						} );
 					} );
