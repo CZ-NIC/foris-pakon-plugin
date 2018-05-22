@@ -90,7 +90,6 @@ class PakonPlugin(ForisPlugin):
     PLUGIN_STATIC_SCRIPTS = [
     ]
     PLUGIN_DYNAMIC_SCRIPTS = [
-        "pakon.js"
     ]
 
     def __init__(self, app):

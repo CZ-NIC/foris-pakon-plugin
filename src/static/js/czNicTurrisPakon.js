@@ -872,7 +872,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			'timeLimitation': {
 				'from': null,
 				'to': null,
-				'suggestedInterval': 1, // in days
+				'suggestedInterval': 1, // in days (0 means 'only today, from 00:00:00 to 23:59:59')
 			},
 			'refactoringTableHeader': { // @todo : refactoring in use
 				'id': {
@@ -2839,39 +2839,48 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		const dateTo = ( this.settings.controlForm.timeLimitationInputs.dateTo );
 		/** @type {HTMLInputElement} */
 		const timeTo = ( this.settings.controlForm.timeLimitationInputs.timeTo );
+
 		let fromString = '';
 		let toString = '';
 		const d = new Date();
+
+		const offsetMinutes = d.getTimezoneOffset();
+
 		if ( dateTo && dateTo.value ) {
-			const part1 = dateTo.value.substr( 0, 4 );
-			const part2 = dateTo.value.substr( 5 );
-			toString += part2.replace( '-', ', ' ) + ', ' + part1 + ', ';
+			toString += dateTo.value;
 		} else {
-			toString += ( d.getMonth() + 1 ) + ', ' + d.getDate() + ', ' + d.getFullYear() + ', ';
+			toString += d.getFullYear() + '-' + String( d.getMonth() + 1 ).padStart( 2, '0' ) + '-' + String( d.getDate() ).padStart( 2, '0' );
 		}
+		toString += 'T';
 		if ( timeFrom && timeFrom.value ) {
-			toString += timeTo.value;
+			toString += timeTo.value + ':00';
 		} else {
 			toString += '23:59:59';
 		}
+		toString += 'Z';
 		if ( dateFrom && dateFrom.value ) {
-			const part1 = dateFrom.value.substr( 0, 4 );
-			const part2 = dateFrom.value.substr( 5 );
-			fromString += part2.replace( '-', ', ' ) + ', ' + part1 + ', ';
+			toString += dateFrom.value;
 		} else {
 			d.setDate( d.getDate() - this.settings.timeLimitation.suggestedInterval );
-			fromString += ( d.getMonth() + 1 ) + ', ' + d.getDate() + ', ' + d.getFullYear() + ', ';
+			fromString += d.getFullYear() + '-' + String( d.getMonth() + 1 ).padStart( 2, '0' ) + '-' + String( d.getDate() ).padStart( 2, '0' );
 		}
+		fromString += 'T';
 		if ( timeFrom && timeFrom.value ) {
-			fromString += timeFrom.value;
+			fromString += timeFrom.value + ':00';
 		} else {
 			fromString += '00:00:00';
 		}
+		fromString += 'Z';
 		let fromDate = new Date( fromString );
 		let toDate = new Date( toString );
+
+		fromDate.setMinutes( fromDate.getMinutes() + offsetMinutes );
+		toDate.setMinutes( toDate.getMinutes() + offsetMinutes );
+
 		if ( toDate < fromDate ) { // if user set bad interval
 			[ toDate, fromDate ] = [ fromDate, toDate ]; // swap
 		}
+
 		return {
 			'from': fromDate,
 			'to': toDate,
