@@ -7,6 +7,7 @@
 	const INPUT_EVENT_NAME = 'input';
 	const DIVIDER_OPTIONS_REGEXP = new RegExp( '(?:,|;|\\s| |\\r?\\n)+', 'i' ); // many possible dividers
 	const NO_BREAK_SPACE = '\u00A0';
+	const BASE_OFFSET = 351; // in px
 
 
 	/**
@@ -66,27 +67,20 @@
 				}
 
 				const position = Math.min( focusNode.textContent.length, selection.focusOffset + charCount );
-				//console.log( position );
 				if ( !Number.isInteger( position ) ) {
 					return true;
 				}
 				if ( position < 0 ) {
-					//console.log( 'a' );
 					return true;
 				} else if ( position === 0 ) {
-					//console.log( 'b' );
 					if ( focusNode.previousSibling ) {
-						//console.log( 'c' );
 						selection.collapse( focusNode.previousSibling, 1 );
 					} else {
 						selection.collapse( focusNode.parentNode.previousSibling, 1 );
-						//console.log( 'd' );
 					}
 				} else if ( position === 1 ) {
-					//console.log( 'e' );
 					selection.collapse( focusNode.nextSibling, 1 );
 				} else {
-					//console.log( 'f' );
 					selection.collapse( focusNode, position );
 				}
 			}
@@ -154,8 +148,8 @@
 			const eventTarget = ( event.target );
 
 			if (
-				( eventTarget.offsetLeft + eventTarget.offsetWidth ) < ( event.pageX + CLOSER_DIMENSIONS[ 0 ] )
-				&& ( event.pageX + CLOSER_DIMENSIONS[ 0 ] < eventTarget.offsetLeft + eventTarget.offsetWidth + CLOSER_DIMENSIONS[ 1 ] )
+				( eventTarget.offsetLeft + eventTarget.offsetWidth ) < ( ( event.pageX - BASE_OFFSET ) + CLOSER_DIMENSIONS[ 0 ] )
+				&& ( ( event.pageX - BASE_OFFSET ) + CLOSER_DIMENSIONS[ 0 ] < eventTarget.offsetLeft + eventTarget.offsetWidth + CLOSER_DIMENSIONS[ 1 ] )
 			) { // if clicked on ::after pseudo element content
 				/** @type {HTMLDivElement} */
 				const tagsRoot = ( eventTarget.parentNode );
