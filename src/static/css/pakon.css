@@ -1,3 +1,8 @@
+[hidden]
+{
+	display: none;
+}
+
 #pakon-results td,
 #pakon-results th {
 	padding: 0.3em 0.8em;
@@ -240,7 +245,7 @@ dialog.loading[open] {
 div[contenteditable] {
 	border: 1px inset #aaa;
 	padding: 0.8em 0.8em 0.8em 0.3em;
-	min-height: 4em;
+	min-height: 6.5em;
 	border-radius: 0.4em;
 	cursor: text;
 	caret-color: blue;

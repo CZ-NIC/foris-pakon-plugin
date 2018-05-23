@@ -35,13 +35,13 @@
         <label for="hostname-filter">
             {{ trans("Only following hostnames") }}:
             <br>
-            <textarea name="hostname-filter" id="hostname-filter" placeholder="{{ trans("All hostnames if empty") }}"></textarea>
+            <textarea name="hostname-filter" id="hostname-filter" placeholder="{{ trans("All hostnames if empty") }}" class="tags"></textarea>
         </label>
         <br>
         <label for="srcMAC-filter">
             {{ trans("Only following clients") }}:
             <br>
-            <textarea name="srcMAC-filter" id="srcMAC-filter" placeholder="{{ trans("All clients if empty") }}"></textarea>
+            <textarea name="srcMAC-filter" id="srcMAC-filter" placeholder="{{ trans("All clients if empty") }}" class="tags"></textarea>
         </label>
         <br>
         <label for="apply-changes">
