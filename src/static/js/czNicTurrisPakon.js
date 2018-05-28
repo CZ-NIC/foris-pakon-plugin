@@ -846,12 +846,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						},
 					},
 				},
-				'datetime': {
-					'renewPeriod': 15, // (float) in seconds
-					'liveTime': true,
-					'divider': ' ',
-					'time_diff': 300, // (float) in secs
-				},
 			},
 			'nItemsPrefix': 'Results ', // with space in the end
 			'nItemsElement': document.getElementById( 'pakon-results-table' ).parentNode[ 'previousElementSibling' ],
@@ -1016,43 +1010,45 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			return new Date( this.getTime() - ( this.getTimezoneOffset() * 60000 ) ).toISOString().split( 'T' )[ 1 ].substr( 0, 5 );
 		};
 
-		this.toW3CString = Symbol( 'czNic::Date' );
-		Date.prototype[ this.toW3CString ] = function ()
-		{
-			const y = this.getFullYear();
-			let M = this.getMonth() + 1;
-			let d = this.getDate();
-			let h = this.getHours();
-			let m = this.getMinutes();
-			let s = this.getSeconds();
-			let offset = -this.getTimezoneOffset();
-			let offsetH = Math.abs( Math.floor( offset / 60 ) );
-			let offsetM = Math.abs( offset ) - offsetH * 60;
-			const offsetS = ( offset < 0 ) ? '-' : '+';
+		/*
+				this.toW3CString = Symbol( 'czNic::Date' );
+				Date.prototype[ this.toW3CString ] = function ()
+				{
+					const y = this.getFullYear();
+					let M = this.getMonth() + 1;
+					let d = this.getDate();
+					let h = this.getHours();
+					let m = this.getMinutes();
+					let s = this.getSeconds();
+					let offset = -this.getTimezoneOffset();
+					let offsetH = Math.abs( Math.floor( offset / 60 ) );
+					let offsetM = Math.abs( offset ) - offsetH * 60;
+					const offsetS = ( offset < 0 ) ? '-' : '+';
 
-			if ( M < 10 ) {
-				M = Number( '0' ) + M;
-			}
-			if ( d < 10 ) {
-				d = Number( '0' ) + d;
-			}
-			if ( h < 10 ) {
-				h = Number( '0' ) + h;
-			}
-			if ( m < 10 ) {
-				m = Number( '0' ) + m;
-			}
-			if ( s < 10 ) {
-				s = Number( '0' ) + s;
-			}
-			if ( offsetH < 10 ) {
-				offsetH = Number( '0' ) + offsetH;
-			}
-			if ( offsetM < 10 ) {
-				offsetM = Number( '0' ) + offsetM;
-			}
-			return y + '-' + M + '-' + d + 'T' + h + ':' + m + ':' + s + offsetS + offsetH + ':' + offsetM;
-		};
+					if ( M < 10 ) {
+						M = Number( '0' ) + M;
+					}
+					if ( d < 10 ) {
+						d = Number( '0' ) + d;
+					}
+					if ( h < 10 ) {
+						h = Number( '0' ) + h;
+					}
+					if ( m < 10 ) {
+						m = Number( '0' ) + m;
+					}
+					if ( s < 10 ) {
+						s = Number( '0' ) + s;
+					}
+					if ( offsetH < 10 ) {
+						offsetH = Number( '0' ) + offsetH;
+					}
+					if ( offsetM < 10 ) {
+						offsetM = Number( '0' ) + offsetM;
+					}
+					return y + '-' + M + '-' + d + 'T' + h + ':' + m + ':' + s + offsetS + offsetH + ':' + offsetM;
+				};
+		*/
 
 		this.hashCode = Symbol( 'czNic::String' );
 		String.prototype[ this.hashCode ] = function () // collision probability is 31^11
@@ -1885,10 +1881,14 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 								const columnPosition = this.getColumnPositionBy( item.id );
 								let node;
 								if ( item.id === 'datetime' ) {
-									const currentDate = new Date( this.dataStructure[ i ][ columnPosition ] );
+									const timeString = this.dataStructure[ i ][ columnPosition ].replace( ' ', 'T' ) + 'Z'; // For Safari browser
+									const currentDate = new Date( timeString );
+									const d = new Date;
+									const offsetMinutes = d.getTimezoneOffset();
+									currentDate.setMinutes( currentDate.getMinutes() + offsetMinutes );
 									cell.setAttribute( 'data-raw-content', String( Number( currentDate ) / 1000 ) );
 									node = document.createElement( 'time' );
-									node.dateTime = currentDate[ this.toW3CString ]();
+									node.dateTime = currentDate.toISOString();
 									node.appendChild( document.createTextNode(
 										currentDate.toLocaleDateString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
 										+ ' '
@@ -2198,132 +2198,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	}
 
 
-	/**
-	 * @todo : description
-	 * @async
-	 * @returns {Promise<Boolean>}
-	 */
-	async renewDateTextContent ()
-	{ // can be runed periodicly
-		return new Promise( ( resolve ) =>
-		{
-			const datetimePosition = arguments[ 0 ];
-			/** @type {HTMLTableElement} */
-			const table = ( this.settings.resultsTable );
-			[ ...table.tBodies[ 0 ].rows ].forEach( ( /** @type {HTMLTableRowElement} */ currentRow ) =>
-			{
-				/** @type {HTMLElement} */
-				const currentCell = ( (
-					currentRow.children[ datetimePosition ].firstChild
-					&& currentRow.children[ datetimePosition ].firstChild.nodeType === Node.ELEMENT_NODE
-					&& currentRow.children[ datetimePosition ].firstChild.nodeName === 'TIME'
-				)
-					? currentRow.children[ datetimePosition ].firstChild
-					: currentRow.children[ datetimePosition ] );
-				if ( !currentCell.title ) {
-					currentCell.title = currentCell.textContent;
-				}
-				/** @type {HTMLTableCellElement} */
-				const td = ( currentCell.parentNode );
-				const timeDiff = this.getTimeDiff( new Date( Number( td.getAttribute( 'data-raw-content' ) ) * 1000 ), new Date(), false, this.settings.lang, 'long' );
-				if ( timeDiff && timeDiff.length > 1 ) {
-					currentCell.textContent = timeDiff;
-				}
-			} );
-
-			resolve( true );
-		} );
-	}
-
-
-	/**
-	 * @todo : description
-	 */
-	getTimeDiff ( /** @type {Date} */ timeA, /** @type {Date} */ timeB, relative = false, lang = this.settings.lang, type = 'long' )
-	{
-		const s = 1 * 1000;
-		const m = 60 * s;
-		const h = 60 * m;
-		const d = 24 * h;
-		const w = 7 * d;
-
-		const justNow = 5 * s;
-		const stop = 4 * w;
-
-		if ( relative && ( timeA > timeB ) ) {
-			return false;
-		}
-
-		const inflect = ( /** @type { String | Array } */ term, /** @type {Number} */ n = 0, /** @type {Function} */ pluralFunction ) =>
-		{
-			if ( pluralFunction && Array.isArray( term ) ) {
-				return term[ pluralFunction( n ) ];
-			}
-
-			return term;
-		};
-
-		const diff = Math.abs( Number( timeA ) - Number( timeB ) );
-
-		const rc = ( int = 0 ) =>
-		{
-			return Math.floor( int * ( ( 1 / this.settings.postRenderImprove.datetime.time_diff ) / 1000 ) );
-		};
-
-		const currentDate = new Date();
-
-		const closerDate = [ timeA, timeB ].reduce( ( prev, curr ) =>
-		{
-			return ( Math.abs( Number( curr ) - Number( currentDate ) ) < Math.abs( Number( prev ) - Number( currentDate ) ) ? curr : prev );
-		} );
-
-		const UNITS = this.time_units_in_languages; // @todo : refactor this
-		const DIVIDER = this.settings.postRenderImprove.datetime.divider; // @todo : refactor this
-
-		if ( rc( Number( closerDate ) ) === rc( Number( currentDate ) ) ) {
-			const comparedDate = ( closerDate === timeA ) ? timeB : timeA;
-			const yesterdayDate = new Date();
-			yesterdayDate.setDate( yesterdayDate.getDate() - 1 );
-			const theDayBeforeYesterdayDayDate = new Date();
-			theDayBeforeYesterdayDayDate.setDate( theDayBeforeYesterdayDayDate.getDate() - 2 );
-
-			const comparedShred = String( comparedDate.getDate() ) + comparedDate.getMonth() + comparedDate.getFullYear();
-			const todayShred = String( currentDate.getDate() ) + currentDate.getMonth() + currentDate.getFullYear();
-			const yesterdayShred = String( yesterdayDate.getDate() ) + yesterdayDate.getMonth() + yesterdayDate.getFullYear();
-			const theDayBeforeYesterdayShred = String( theDayBeforeYesterdayDayDate.getDate() ) + theDayBeforeYesterdayDayDate.getMonth() + theDayBeforeYesterdayDayDate.getFullYear();
-			const UNITS = this.time_units_in_languages; // @todo : refactor this
-			if ( UNITS[ lang ].today && comparedShred === todayShred ) {
-				return UNITS[ lang ].today + DIVIDER + comparedDate.toLocaleTimeString();
-			} else if ( UNITS[ lang ].yesterday && comparedShred === yesterdayShred ) {
-				return UNITS[ lang ].yesterday + DIVIDER + comparedDate.toLocaleTimeString();
-			} else if ( UNITS[ lang ].theDayBeforeYesterday && comparedShred === theDayBeforeYesterdayShred ) {
-				return UNITS[ lang ].theDayBeforeYesterday + DIVIDER + comparedDate.toLocaleTimeString();
-			}
-		}
-		// @todo : refactor from now
-		if ( diff < justNow ) { // no SWITCH… switch() have very bad performance!
-			return UNITS[ lang ].justNow;
-		} else if ( diff < m ) {
-			const n = Math.round( diff / s );
-			return UNITS[ lang ].preffix + n + DIVIDER + inflect( UNITS[ lang ][ type ].s, n, UNITS[ lang ].plural ) + UNITS[ lang ].suffix;
-		} else if ( diff <= h ) {
-			const n = Math.round( diff / m );
-			return UNITS[ lang ].preffix + n + DIVIDER + inflect( UNITS[ lang ][ type ].m, n, UNITS[ lang ].plural ) + UNITS[ lang ].suffix;
-		} else if ( diff < d ) {
-			const n = Math.round( diff / h );
-			return UNITS[ lang ].preffix + n + DIVIDER + inflect( UNITS[ lang ][ type ].h, n, UNITS[ lang ].plural ) + UNITS[ lang ].suffix;
-		} else if ( diff < w ) {
-			const n = Math.round( diff / d );
-			return UNITS[ lang ].preffix + n + DIVIDER + inflect( UNITS[ lang ][ type ].d, n, UNITS[ lang ].plural ) + UNITS[ lang ].suffix;
-		} else if ( diff < stop ) {
-			const n = Math.round( diff / w );
-			return UNITS[ lang ].preffix + n + DIVIDER + inflect( UNITS[ lang ][ type ].w, n, UNITS[ lang ].plural ) + UNITS[ lang ].suffix;
-		}
-		// @todo : refactor till now
-		return true;
-	}
-
-
 	db_init ( /** @type {IDBOpenDBRequest} */ openReq )
 	{
 		const event = arguments[ 1 ];
@@ -2389,7 +2263,6 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		this.getMaxDataFrom( 'recvd' ); // sets it into settings and as data-XZY attribute into cell
 		this.getMaxDataFrom( 'dur' ); // sets it into settings and as data-XZY attribute into cell
 
-		const datetimePosition = this.getColumnPositionBy( 'datetime' );
 		const hostnamePosition = this.getColumnPositionBy( 'hostname' );
 		const durPosition = this.getColumnPositionBy( 'dur' );
 		const dstPortPosition = this.getColumnPositionBy( 'dstPort' );
@@ -2408,13 +2281,10 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			}
 		} );
 
-		if ( this.settings.postRenderImprove.datetime.liveTime && Number.isInteger( datetimePosition ) ) {
-			this.renewDateTextContent.bind( this, datetimePosition )(); // first run immediately, and then in period set in settings
-			setInterval(
-				this.renewDateTextContent.bind( this, datetimePosition ),
-				this.settings.postRenderImprove.datetime.renewPeriod * 1000
-			);
+		if ( 'renewDateTextContent' in this.window ) {
+			window[ 'renewDateTextContent' ](); // from window namespace added in file timeLiveView.defer.js
 		}
+
 		/** @type {HTMLTableElement} */
 		const table = ( this.settings.resultsTable );
 		const rows = table.tBodies[ 0 ].rows;
@@ -2849,7 +2719,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		if ( dateTo && dateTo.value ) {
 			toString += dateTo.value;
 		} else {
-			toString += d.getFullYear() + '-' + String( d.getMonth() + 1 ).padStart( 2, '0' ) + '-' + String( d.getDate() ).padStart( 2, '0' );
+			toString += d.getFullYear() + '-' + String( d.getMonth() + 1 )[ 'padStart' ]( 2, '0' ) + '-' + String( d.getDate() )[ 'padStart' ]( 2, '0' );
 		}
 		toString += 'T';
 		if ( timeFrom && timeFrom.value ) {
@@ -2862,7 +2732,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			fromString += dateFrom.value;
 		} else {
 			d.setDate( d.getDate() - this.settings.timeLimitation.suggestedInterval );
-			fromString += d.getFullYear() + '-' + String( d.getMonth() + 1 ).padStart( 2, '0' ) + '-' + String( d.getDate() ).padStart( 2, '0' );
+			fromString += d.getFullYear() + '-' + String( d.getMonth() + 1 )[ 'padStart' ]( 2, '0' ) + '-' + String( d.getDate() )[ 'padStart' ]( 2, '0' );
 		}
 		fromString += 'T';
 		if ( timeFrom && timeFrom.value ) {
