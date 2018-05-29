@@ -1623,7 +1623,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					errorMessage += ' \n' + this.settings.userMessages.errors.failedLoadingData[ 1 ];
 				}
 				alert( errorMessage ); // @todo : use this.showEmptyResponseInfo in here
-				this.setSyncWorkTo( false );
+				this.setSyncWorkTo( false, true );
 			} else {
 				this.repairUserInputs();
 				this.createSourceUrl();
@@ -2052,18 +2052,19 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	 * @async
 	 * @returns {Promise<Boolean>}
 	 */
-	async setSyncWorkTo ( status = false, triggeredByEvent = false )
+	async setSyncWorkTo ( status = false, visual = true )
 	{
 		return new Promise( ( resolve ) =>
 		{
-			const submitButton = this.settings.controlForm.controlFormSubmit;
-			const safeStatus = status ? ( submitButton ? false : true ) : false;
+			/** @type {HTMLInputElement} */
+			const submitButton = ( this.settings.controlForm.controlFormSubmit );
 
-			const formControls = this.settings.controlForm;
+			const safeStatus = status ? ( submitButton ? false : true ) : false;
+			const formControls = ( this.settings.controlForm );
 
 			for ( const i in formControls ) {
 				if ( formControls[ i ] && formControls[ i ].nodeType === Node.ELEMENT_NODE ) {
-					if ( formControls[ i ].type !== 'submit' || triggeredByEvent ) {
+					if ( formControls[ i ].type !== 'submit' || !visual ) {
 						formControls[ i ].disabled = safeStatus;
 					}
 				} else {
@@ -2073,6 +2074,11 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						}
 					}
 				}
+			}
+
+			if ( visual === false ) {
+				resolve( true );
+				return true;
 			}
 
 			/** @type {HTMLDialogElement} */
@@ -2847,7 +2853,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	showEmptyResponseInfo () // @todo : if filter exist, than create a oprion for drop it. If not show only info for user.
 	{
 		alert( this.settings.userMessages.errors.failedLoadingData[ 0 ] );
-		this.setSyncWorkTo( false );
+		this.setSyncWorkTo( false, true );
 
 		return true;
 	}
@@ -2860,7 +2866,8 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 			return true;
 		}
 		*/
-		this.setSyncWorkTo( true, event.isTrusted ).then( () =>
+
+		this.setSyncWorkTo( true, !event.isTrusted ).then( () =>
 		{
 			this.readAndSetControlForm(); // set into settings
 			this.makeObsoleteItemsInIndexedDB().then( () =>
@@ -2917,15 +2924,20 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					const fakeUntrustedEvent = {};
 					fakeUntrustedEvent.isTrusted = false;
 					inputs[ i ].addEventListener( CLICK_EVENT_NAME, this.universalFormHook.bind( this, fakeUntrustedEvent ), false ); // @todo : only flush when fakeUntrustedEvent
-					inputs[ i ].addEventListener( CLICK_EVENT_NAME, () =>
+					inputs[ i ].addEventListener( CLICK_EVENT_NAME, ( event ) =>
 					{
-						this.disabled = true;
+						/** @type {HTMLInputElement} */
+						const eventTarget = ( event.target );
+
+						eventTarget.disabled = true;
 					}, false );
 				} else {
-					inputs[ i ].addEventListener( CHANGE_EVENT_NAME, this.universalFormHook.bind( this ), false );
+					const fakeTrustedEvent = {};
+					fakeTrustedEvent.isTrusted = true;
+					inputs[ i ].addEventListener( CHANGE_EVENT_NAME, this.universalFormHook.bind( this, fakeTrustedEvent ), false );
 					inputs[ i ].addEventListener( KEYUP_EVENT_NAME, () =>
 					{
-						this.settings.controlForm.controlFormSubmit[ 'disabled' ] = false;
+						inputs.controlFormSubmit[ 'disabled' ] = false;
 					}, false );
 				}
 			} else {
@@ -2952,7 +2964,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 	 */
 	run ()
 	{
-		this.setSyncWorkTo( true ).then( () =>
+		this.setSyncWorkTo( true, true ).then( () =>
 		{
 			this.makeObsoleteItemsInIndexedDB().then( () =>
 			{
@@ -2970,7 +2982,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 					this.fillTimeLimitationForm(); // from this.settings.timeLimitation
 					this.groupData().then( () =>
 					{
-						this.setSyncWorkTo( false );
+						this.setSyncWorkTo( false, true );
 						//this.applyFilters(); // works with virtual DOM
 						this.createFullStatistic().then( () =>
 						{
