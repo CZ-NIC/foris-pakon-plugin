@@ -2121,6 +2121,9 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 				const db = openReq.result;
 				const tx = db.transaction( this.settings.db_credentials.table_name, 'readwrite' );
 				const store = tx.objectStore( this.settings.db_credentials.table_name );
+				store.clear();
+				resolve( true );
+				/* @todo : for future use
 				store.openCursor().onsuccess = function ( event )
 				{ // alternative and easier .getAll() is badly supported in browsers yet
 					const cursor = event.target.result;
@@ -2133,6 +2136,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 						resolve( true );
 					}
 				};
+				*/
 				tx.oncomplete = function ()
 				{
 					db.close();
