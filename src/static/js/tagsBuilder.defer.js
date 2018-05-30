@@ -8,11 +8,6 @@
 	const DIVIDER_OPTIONS_REGEXP = new RegExp( '(?:,|;|\\s| |\\r?\\n)+', 'i' ); // many possible dividers
 	const NO_BREAK_SPACE = '\u00A0';
 	const BASE_OFFSET = 0; // in px
-	// originální textarea se chová tak, že pozice kurzoru uvnitř je zapamatovaná a při přecházení tab-em mezi jednotlivými textarejemi se kurzor umisťuje na poslední známé umístění kurzoru v té které textareji
-	// klávesy end a home by se měly opravit… end vždy posouvá na konec aktuálního tagu, ale pokud už kurzor na konci je, tak end by měl skočit na konec rodiče
-	// při kliku na label (do labelu) focusovat contenteditable
-	// při plnění prázného conteneditable bez focusu se nesmaže placeholder
-	// FF má specifické chování, jde kurzorem doscrollovat na první pozici v tagu (v Chromu to nejde, i když chování FF je logičtější)
 
 
 	/**
@@ -223,7 +218,7 @@
 
 
 	Array.from( document.getElementsByTagName( 'textarea' ) ).forEach( function ( /** @type {HTMLTextAreaElement} */ textarea )
-	{ // @ todo : těchto pár řádků dát i na focusout rodiče… když se vytabuji pryč z elementu, tak mohou zůstat 2 čárky po sobě… teoreticky i 2 elementy bez čárek (vyzkoušet)
+	{ // @ todo
 		const INITIALIZE_TEXTAREA_CLASS_NAME = 'tags';
 		const TAGS_ROOT_CLASS_NAME = INITIALIZE_TEXTAREA_CLASS_NAME;
 		const FOCUS_NAME = 'focus';
