@@ -2506,7 +2506,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const data = [];
 				const items = statisticParts[ i ].firstElementChild.children;
 				for ( let i = 0; i < items.length; i++ ) {
-					labels.push( items[ i ].childNodes[ 0 ].textContent + items[ i ].childNodes[ 2 ].textContent );
+					labels.push( items[ i ].childNodes[ 0 ].textContent[ this.truncate ]( this.settings.strLen ) + items[ i ].childNodes[ 2 ].textContent );
 					data.push( items[ i ].childNodes[ 1 ].textContent.replace( this.settings.itemsTextContent, '' ) );
 				}
 				/** @type {HTMLCanvasElement} */
