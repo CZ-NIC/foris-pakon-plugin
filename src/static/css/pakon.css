@@ -181,14 +181,17 @@ dialog.loading {
 	border: 0;
 	opacity: 0;
 	transition: all 0.5s;
+	margin-left: 50%;
 	top: 45%;
 	transform: translateX(-50%);
+	z-index: -1;
 }
 
 dialog.loading[open] {
 	visibility: visible;
 	top: 50%;
 	opacity: 1;
+	z-index: 1;
 }
 
 /**********************************************************************************************************************/

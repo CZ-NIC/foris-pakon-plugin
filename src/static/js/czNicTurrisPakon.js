@@ -3,7 +3,7 @@
 /** @typedef {function(): true} Chart - global Chart export from library Chart.js */
 var Chart;
 
-const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
+class czNicTurrisPakon // eslint-disable-line no-unused-vars
 {
 
 	/**
@@ -2492,7 +2492,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 
 	makeFullGraphs ()
 	{
-		if ( !( Chart instanceof Function ) ) { // Chart.js library is missing
+		if ( !( Chart instanceof Function ) ) {
 			return false;
 		}
 		if ( !this.settings.statisticsElement ) { // nothing to do
@@ -3009,7 +3009,7 @@ const czNicTurrisPakon = class // eslint-disable-line no-unused-vars
 		return true;
 	}
 
-};
+}
 
 /*
  * Example usage:
