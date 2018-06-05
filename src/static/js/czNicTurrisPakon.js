@@ -771,10 +771,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		 * @private
 		 */
 		this._settings = {
-			db_credentials: {
-				db_name: 'PakonLive',
-				table_name: 'hits',
-				version: 2,
+			'db_credentials': {
+				'db_name': 'PakonLive',
+				'table_name': 'hits',
+				'version': 2,
 			},
 			'eventSource': {
 				'baseUrl': null,
@@ -1575,7 +1575,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 			if ( false ) { // eslint-disable-line no-constant-condition
 				// @todo : eventsource - asynchronous
-				const evtSource = new EventSource( this.settings.eventSource.completeUrl, { withCredentials: true } ); // @todo : remove withCredentials after testing & also remove 'Access-Control-Allow-Origin' header from backend!
+				const evtSource = new EventSource( this.settings.eventSource.completeUrl, { withCredentials: true } );
 				evtSource.onmessage = this.eventMessage.bind( this );
 				resolve( true );
 			} else { // fetch - synchronous
@@ -1650,7 +1650,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				headers: {
 					'Accept': 'application/json',
 				},
-				credentials: 'include', // @todo : remove after testing & also remove 'Access-Control-Allow-Origin' header from backend!
+				credentials: 'include',
 			} ).then( ( response ) =>
 			{
 				if ( response.ok && ( response.status === 200 ) ) {
@@ -1959,7 +1959,6 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	{
 		return new Promise( ( resolve ) =>
 		{
-
 			this.countHits().then( ( result ) =>
 			{
 				this.settings.statisticsData.nHits = Number( result );
@@ -2160,14 +2159,25 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 * @async
 	 * @returns {Promise<Boolean>}
 	 */
-	async filterClickHandlerFor ( key = '', /** @type { Event | MouseEvent } */ event ) ///
+	async filterClickHandlerFor ( key = '', /** @type { Event | MouseEvent } */ event )
 	{
 		return new Promise( ( resolve ) =>
 		{
 			if ( key ) {
+				const queryFrom = ( key = '' ) =>
+				{
+					const KEYS_TO_QUERY = {
+						'srcMAC': 'mac',
+					};
+					if ( Object.keys( KEYS_TO_QUERY ).includes( key ) ) {
+						return KEYS_TO_QUERY[ key ];
+					}
+					return key;
+				};
+
 				const FILTER_ELEMENT_SUFFIX = 'Filter';
 				const INPUT_EVENT_NAME = 'input';
-				let filterValues = this.settings.eventSource.query[ key ] = this.readFromTextarea( this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ] );
+				let filterValues = this.settings.eventSource.query[ queryFrom( key ) ] = this.readFromTextarea( this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ] );
 				/** @type {HTMLElement} */
 				const eventTarget = ( event.target );
 				/** @type {HTMLTableCellElement} */
@@ -2181,11 +2191,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						eventTarget.classList.remove( 'add', this.settings.postRenderImprove[ key ].filter.add.faClassName ); // it does perfectly sense XD
 						eventTarget.classList.add( 'remove', this.settings.postRenderImprove[ key ].filter.remove.faClassName );
 						if ( event.isTrusted ) {
-							filterValues = this.settings.eventSource.query[ key ] = filterValues.filter( item => item !== currentValue ); // removes current from array
+							filterValues = this.settings.eventSource.query[ queryFrom( key ) ] = filterValues.filter( item => item !== currentValue ); // removes current from array
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
 
 							currentControlFormElement.dispatchEvent( new Event( INPUT_EVENT_NAME ) );
-							/// @todo : change disabled on submit button
 						}
 					} else { // add
 						//eventTarget.textContent = this.settings.postRenderImprove[ key ].filter.add.textContent;
@@ -2198,7 +2207,6 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
 
 							currentControlFormElement.dispatchEvent( new Event( INPUT_EVENT_NAME ) );
-							/// @todo : change disabled on submit button
 						}
 					}
 				}
@@ -2685,30 +2693,6 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	}
 
 
-	applyFilters () // @depricated ... soon
-	{
-		if ( !this.settings.filterBy ) {
-			return true;
-		}
-		if ( this.settings.filterBy === this.FILTER_BY_OPTIONS[ 'DATETIME' ] ) {
-			const ds = this.dataStructure;
-			for ( const i in ds ) {
-				ds[ i ].hidden = false;
-				if ( ds[ i ].datetime.from < this.settings.timeLimitation.from ) {
-					ds[ i ].hidden = true;
-					continue;
-				}
-				if ( ds[ i ].datetime.to > this.settings.timeLimitation.to ) {
-					ds[ i ].hidden = true;
-					continue;
-				}
-			}
-
-			return true;
-		}
-	}
-
-
 	readTimeLimitationForm ()
 	{
 		/** @type {HTMLInputElement} */
@@ -2983,7 +2967,6 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					this.groupData().then( () =>
 					{
 						this.setSyncWorkTo( false, true );
-						//this.applyFilters(); // works with virtual DOM
 						this.createFullStatistic().then( () =>
 						{
 							this.makeSimpleGraphs();
