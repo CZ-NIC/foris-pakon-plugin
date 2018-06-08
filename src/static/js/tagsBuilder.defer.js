@@ -7,7 +7,6 @@
 	const INPUT_EVENT_NAME = 'input';
 	const DIVIDER_OPTIONS_REGEXP = new RegExp( '(?:,|;|\\s| |\\r?\\n)+', 'i' ); // many possible dividers
 	const NO_BREAK_SPACE = '\u00A0';
-	const BASE_OFFSET = 0; // in px
 
 
 	/**
@@ -43,6 +42,24 @@
 		sel.addRange( range );
 
 		return true;
+	}
+
+
+	/**
+	 * @todo : description
+	 */
+	function getXPosition ( /** @type {HTMLElement} */ element )
+	{
+		let xPosition = 0;
+
+		while ( element ) {
+			xPosition += ( element.offsetLeft - element.scrollLeft + element.clientLeft );
+
+			/** @type {HTMLElement} */
+			element = ( element.offsetParent );
+		}
+
+		return xPosition;
 	}
 
 
@@ -103,10 +120,10 @@
 	 * @todo : in future returns HTMLSpanElement or input
 	 * @returns {HTMLSpanElement}
 	 */
-	function createSingleTag ( textContent/* = ''*/ )
+	function createSingleTag ( textContent /* = ''*/ )
 	{
 		const USE_SUGGESTIONS = false; // @todo : create suggestions by using input[list="<id>"] and shared datalist[id="<id>"]
-		const CLOSER_DIMENSIONS = [ 30, 23 ]; // [start, width] in px
+		const CLOSER_DIMENSIONS = [ 31, 24 ]; // [start, width] in px
 		const CLOSING_HOVER_CLASS_NAME = 'closing-hover';
 
 		const tag = document.createElement( USE_SUGGESTIONS ? 'input' : 'span' ); // @todo
@@ -129,8 +146,8 @@
 			/** @type {HTMLSpanElement} */
 			const eventTarget = ( event.target );
 
-			if ( event.pageX + CLOSER_DIMENSIONS[ 0 ] > eventTarget.offsetLeft + eventTarget.offsetWidth ) {
-				if ( event.pageX + CLOSER_DIMENSIONS[ 0 ] > eventTarget.offsetLeft + eventTarget.offsetWidth + CLOSER_DIMENSIONS[ 1 ] ) {
+			if ( event.pageX > getXPosition( eventTarget ) + eventTarget.offsetWidth - CLOSER_DIMENSIONS[ 0 ] ) {
+				if ( event.pageX > getXPosition( eventTarget ) + eventTarget.offsetWidth - CLOSER_DIMENSIONS[ 0 ] + CLOSER_DIMENSIONS[ 1 ] ) {
 					eventTarget.classList.remove( CLOSING_HOVER_CLASS_NAME );
 				} else {
 					eventTarget.classList.add( CLOSING_HOVER_CLASS_NAME );
@@ -148,11 +165,12 @@
 			const eventTarget = ( event.target );
 
 			if (
-				( eventTarget.offsetLeft + eventTarget.offsetWidth ) < ( ( event.pageX - BASE_OFFSET ) + CLOSER_DIMENSIONS[ 0 ] )
-				&& ( ( event.pageX - BASE_OFFSET ) + CLOSER_DIMENSIONS[ 0 ] < eventTarget.offsetLeft + eventTarget.offsetWidth + CLOSER_DIMENSIONS[ 1 ] )
+				( event.pageX > getXPosition( eventTarget ) + eventTarget.offsetWidth - CLOSER_DIMENSIONS[ 0 ] )
+				&& ( event.pageX <= getXPosition( eventTarget ) + eventTarget.offsetWidth - CLOSER_DIMENSIONS[ 0 ] + CLOSER_DIMENSIONS[ 1 ] )
 			) { // if clicked on ::after pseudo element content
 				/** @type {HTMLDivElement} */
 				const tagsRoot = ( eventTarget.parentNode );
+
 				const nextText = eventTarget.nextSibling;
 				if ( nextText && nextText.nodeType === Node.TEXT_NODE && nextText.textContent === TEXTAREA_SEPARATOR ) {
 					tagsRoot.removeChild( nextText );
@@ -161,6 +179,7 @@
 				tagsRoot.dispatchEvent( new CustomEvent( INPUT_EVENT_NAME, { 'detail': FAKE_TRUSTED_DETAIL_STRING } ) );
 				//setCaretAtTheEndOf( tagsRoot );
 			}
+
 		};
 
 		return tag;

@@ -181,17 +181,14 @@ dialog.loading {
 	border: 0;
 	opacity: 0;
 	transition: all 0.5s;
-	margin-left: 50%;
 	top: 45%;
 	transform: translateX(-50%);
-	z-index: -1;
 }
 
 dialog.loading[open] {
 	visibility: visible;
 	top: 50%;
 	opacity: 1;
-	z-index: 1;
 }
 
 /**********************************************************************************************************************/
@@ -225,7 +222,6 @@ dialog.loading[open] {
 	position: absolute;
 	display: inline-block;
 	margin-left: 0.1em;
-	margin-top: -0.07em;
 	cursor: pointer;
 }
 
@@ -248,7 +244,7 @@ dialog.loading[open] {
 div[contenteditable] {
 	border: 1px inset #aaa;
 	padding: 0.8em 0.8em 0.8em 0.3em;
-	min-height: 6.5em;
+	min-height: 4em;
 	border-radius: 0.4em;
 	cursor: text;
 	caret-color: blue;
