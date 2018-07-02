@@ -57,13 +57,13 @@
 </div>
 
 
-<script src="{{ static("plugins/pakon/js/focuserForLabels.defer.js") }}" defer></script>
-<script src="{{ static("plugins/pakon/js/tagsBuilder.defer.js") }}" defer></script>
-<script src="{{ static("plugins/pakon/js/sortableTable.defer.js") }}" defer></script>
-<script src="{{ static("plugins/pakon/js/timeLiveView.defer.js") }}" defer></script>
+<script src="{{ static("plugins/pakon/js/focuserForLabels.defer.js") }}?v=2" defer></script>
+<script src="{{ static("plugins/pakon/js/tagsBuilder.defer.js") }}?v=2" defer></script>
+<script src="{{ static("plugins/pakon/js/sortableTable.defer.js") }}?v=2" defer></script>
+<script src="{{ static("plugins/pakon/js/timeLiveView.defer.js") }}?v=2" defer></script>
 
 <script src="{{ static("plugins/pakon/js/Chart.min.js") }}"></script>
-<script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}"></script>
+<script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}?v=2"></script>
 <script>
     const cntp = new czNicTurrisPakon( window );
     cntp.settings = {

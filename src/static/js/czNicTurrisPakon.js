@@ -2836,7 +2836,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	showEmptyResponseInfo () // @todo : if filter exist, than create a oprion for drop it. If not show only info for user.
 	{
-		alert( this.settings.userMessages.errors.failedLoadingData[ 0 ] );
+		//alert( this.settings.userMessages.errors.failedLoadingData[ 0 ] );
 		this.setSyncWorkTo( false, true );
 
 		return true;
