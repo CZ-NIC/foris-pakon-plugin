@@ -63,13 +63,16 @@
 <script src="{{ static("plugins/pakon/js/timeLiveView.defer.js") }}?v=2" defer></script>
 
 <script src="{{ static("plugins/pakon/js/Chart.min.js") }}"></script>
-<script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}?v=2"></script>
+<script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}?v=3"></script>
 <script>
     const cntp = new czNicTurrisPakon( window );
     cntp.settings = {
         'eventSource': {
             'baseUrl': new URL( 'ajax', window.location.href ),
             'dumpIntoStatistics': false,
+        },
+        'postRenderImprove': {
+            'brandColorsUrl': new URL( '/static/js/brandcolors.json', window.location.href ),
         },
         'statisticsData': {
             'graphs': {

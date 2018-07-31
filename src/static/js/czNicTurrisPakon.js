@@ -24,617 +24,6 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			|| this.window[ 'shimIndexedDB' ]; // This works on all devices/browsers, and uses IndexedDBShim as a final fallback
 
 		/**
-		 * @public
-		 */
-		this.brandColors = Object.freeze( [
-			'500px',
-			'about-me',
-			'adobe',
-			'aer-lingus',
-			'aetna',
-			'aiesec',
-			'aim',
-			'airbnb',
-			'akamai',
-			'alcon',
-			'algolia',
-			'alibaba',
-			'alienware',
-			'alphabet',
-			'amazon',
-			'american-express',
-			'american-red-cross',
-			'android',
-			'angies-list',
-			'angularjs',
-			'answers',
-			'aol',
-			'arch-linux',
-			'arizona-state-university-asu',
-			'arriva-danmark',
-			'asana',
-			'askfm',
-			'associated-press',
-			'att',
-			'atlanta-falcons',
-			'atlantic-coast-conference-acc',
-			'atlassian',
-			'auth0',
-			'avira',
-			'baidu',
-			'bandcamp',
-			'barclays',
-			'barnes-noble',
-			'basecamp',
-			'beats-by-dre',
-			'bebo',
-			'behance',
-			'best-buy',
-			'big-cartel',
-			'bing',
-			'bitbucket',
-			'bitly',
-			'blackberry',
-			'blockchain',
-			'blogger',
-			'boeing',
-			'boise-state-university',
-			'bombardier',
-			'booking-com',
-			'bower',
-			'box',
-			'boy-scouts-of-america',
-			'british-airways',
-			'bt',
-			'buffer',
-			'burger-king',
-			'buzzfeed',
-			'bynder',
-			'cadbury',
-			'canon',
-			'capital-one',
-			'carbonmade',
-			'carrefour',
-			'carrot',
-			'cartoon-network',
-			'case-mate',
-			'change-org',
-			'channel-4',
-			'charity-water',
-			'cheddar',
-			'clemson-university',
-			'coca-cola',
-			'code-school',
-			'codecademy',
-			'codepen',
-			'connexxion',
-			'continental-ag',
-			'courtyard',
-			'craft-cms',
-			'creative-commons',
-			'creative-market',
-			'crowdin',
-			'crowne-plaza',
-			'crunchbase',
-			'culvers',
-			'cunard',
-			'cvs',
-			'dailymotion',
-			'daimler',
-			'dealhack',
-			'debian',
-			'deezer',
-			'delectable',
-			'delicious',
-			'dell',
-			'delta-airlines',
-			'dental-plans',
-			'designer-news',
-			'designmoo',
-			'deutsche-bahn',
-			'deviantart',
-			'devour',
-			'dewalt',
-			'dhl',
-			'diebold',
-			'digg',
-			'digital-ocean',
-			'dindr',
-			'direct-energy',
-			'directv',
-			'discogs',
-			'discord',
-			'dish-network',
-			'disney-xd',
-			'disqus',
-			'django',
-			'docker',
-			'dominos',
-			'dow',
-			'dribbble',
-			'dropbox',
-			'droplr',
-			'drupal',
-			'dunked',
-			'duolingo',
-			'dwolla',
-			'etrade',
-			'e4',
-			'easy-jet',
-			'ebay',
-			'el-al',
-			'elance',
-			'ello',
-			'ember',
-			'emma',
-			'endomundo',
-			'engadget',
-			'envato',
-			'epam',
-			'epictions',
-			'ericsson',
-			'esl',
-			'espn',
-			'estimote',
-			'etsy',
-			'evaneos',
-			'eventbrite',
-			'evernote',
-			'execucar',
-			'fab-com',
-			'facebook',
-			'fairfield-inn-suites',
-			'fairmont',
-			'famo-us',
-			'fancy',
-			'fedex',
-			'feedly',
-			'fendi',
-			'ferrari',
-			'fiat',
-			'film4',
-			'firefox',
-			'fiskars',
-			'fitbit',
-			'five-guys',
-			'fiverr',
-			'flattr',
-			'flavors-me',
-			'flickr',
-			'flipboard',
-			'flixster',
-			'follr',
-			'ford',
-			'4ormat',
-			'forrst',
-			'foursquare',
-			'freecodecamp',
-			'friend2friend',
-			'gallaudet-university',
-			'gannett',
-			'garmin',
-			'garuda',
-			'generatepress',
-			'geocaching',
-			'georgia-southern-university',
-			'ghost',
-			'gibson',
-			'gimmebar',
-			'github',
-			'gitlab',
-			'gitter',
-			'gittip',
-			'godaddy',
-			'gogo',
-			'goodreads',
-			'google',
-			'google-allo',
-			'google-duo',
-			'google-plus',
-			'gospel-for-asia',
-			'gravatar',
-			'gravit',
-			'greenhouse',
-			'groupon',
-			'grunt',
-			'gumtree',
-			'gvb',
-			'hacker-news',
-			'hangouts',
-			'happn',
-			'heineken',
-			'hellowallet',
-			'help-scout',
-			'heroku',
-			'hewlett-packard-enterprise',
-			'hi5',
-			'highfive',
-			'home-depot',
-			'homeaway',
-			'hootsuite',
-			'houzz',
-			'hp',
-			'hsbc',
-			'html5',
-			'hulu',
-			'hyatt',
-			'ibm',
-			'icons8',
-			'ideal',
-			'identi-ca',
-			'ifttt',
-			'iheartradio',
-			'ikea',
-			'imdb',
-			'imgur',
-			'indeed',
-			'indiegogo',
-			'instacart',
-			'instagram',
-			'instapage',
-			'instapaper',
-			'intel',
-			'intuit',
-			'ios',
-			'issuu',
-			'istock',
-			'javascript',
-			'jawbone',
-			'jbl',
-			'jetpack',
-			'joomla',
-			'joyent',
-			'jquery',
-			'kaspersky-lab',
-			'keeeb',
-			'khan-academy',
-			'kia',
-			'kickstarter',
-			'kik',
-			'kippt',
-			'kitkat',
-			'kiva',
-			'kiwipay',
-			'klm',
-			'lamborghini',
-			'laravel',
-			'lastfm',
-			'lastpass',
-			'lego',
-			'line',
-			'linkedin',
-			'livestream',
-			'lloyds',
-			'lomo',
-			'london-underground',
-			'lowes',
-			'lumo',
-			'lyft',
-			'magento',
-			'mail-ru',
-			'mailchimp',
-			'manjaro-linux',
-			'mapbox',
-			'massy-group',
-			'mastercard',
-			'mcdonalds',
-			'medium',
-			'meetup',
-			'meijer',
-			'mercadolibre-com',
-			'messenger',
-			'microsoft',
-			'microsoft-band',
-			'microsoft-office',
-			'microsoft-surface',
-			'milligram',
-			'mixcloud',
-			'mixpanel',
-			'mobilink',
-			'mollie',
-			'mongodb',
-			'montclair-state-university',
-			'more4',
-			'motorola',
-			'mozilla',
-			'musixmatch',
-			'muut',
-			'myspace',
-			'mysql',
-			'nanowrimo',
-			'nasa',
-			'national-geographic',
-			'nationwide',
-			'nbc',
-			'nc-state-university',
-			'nest',
-			'netflix',
-			'netvibes',
-			'new-balance',
-			'new-york-post',
-			'nexar',
-			'nexmo',
-			'nextdoor',
-			'nfl',
-			'nike-football',
-			'nikefuel',
-			'ning',
-			'ninjas-in-pyjamas',
-			'node-js',
-			'nokia',
-			'norsan-media',
-			'northern-arizona-university',
-			'northwestern-university',
-			'novartis',
-			'npm',
-			'ns',
-			'nvidia',
-			'nzxt',
-			'obb',
-			'odnoklassniki',
-			'office-sway',
-			'oktopost',
-			'olark',
-			'olympus',
-			'oneplus',
-			'onshape',
-			'oovoo',
-			'opera',
-			'oracle',
-			'oregon-state-university',
-			'overstock',
-			'oxford-university-press',
-			'pac-12',
-			'panasonic',
-			'pandora',
-			'path',
-			'patreon',
-			'paymill',
-			'paypal',
-			'pearson',
-			'penguin-books',
-			'pepsi',
-			'periscope',
-			'pfizer',
-			'philips',
-			'photobucket',
-			'php',
-			'pinboard',
-			'pinterest',
-			'pizza-hut',
-			'plasso',
-			'plaxo',
-			'playstation',
-			'pocket',
-			'polariod',
-			'portfolium',
-			'postman',
-			'postmates',
-			'prestashop',
-			'prezi',
-			'priceline',
-			'princeton-university',
-			'product-hunt',
-			'protonmail',
-			'puma',
-			'purdue-university',
-			'python',
-			'qantas-airlines',
-			'qualtrics',
-			'quizup',
-			'quora',
-			'quote-fm',
-			'raspberry-pi',
-			'razer',
-			'rdio',
-			'remax',
-			'react',
-			'readability',
-			'realex-payments',
-			'red-hat',
-			'reddit',
-			'redfin',
-			'redox',
-			'renaissance-hotels',
-			'rentler',
-			'residence-inn',
-			'reverbnation',
-			'rochester-institute-of-technology',
-			'rockpack',
-			'roku',
-			'rolls-royce',
-			'roo-kids',
-			'roon',
-			'rosetta-stone',
-			'rounds',
-			'rowan-university',
-			'royal-mail',
-			'rss-2',
-			'ruby',
-			'ruby-on-rails',
-			'rutgers-university',
-			'ryanair',
-			'sabre',
-			'sage',
-			'sainsburys',
-			'salesforce',
-			'samsung',
-			'san-francisco-49ers',
-			'san-francisco-giants',
-			'sap',
-			'scouts-uk',
-			'scribd',
-			'septa',
-			'seton-hall-university',
-			'shazam',
-			'sherwin-williams',
-			'shopify',
-			'shopmium',
-			'siemens',
-			'skillshare',
-			'skoda',
-			'skype',
-			'skywest',
-			'slack',
-			'slideshare',
-			'slipcase',
-			'smashing-magazine',
-			'snagajob',
-			'snapchat',
-			'socialbro',
-			'softonic',
-			'songkick',
-			'sonicbids',
-			'sony',
-			'soulcycle',
-			'soundcloud',
-			'spoken',
-			'spotify',
-			'sprint',
-			'sprout-social',
-			'square-cash',
-			'squarespace',
-			'stack-exchange',
-			'stackoverflow',
-			'staples',
-			'starbucks',
-			'state-farm',
-			'status-chart',
-			'steam',
-			'sterling-hotels',
-			'stockton-university',
-			'storyful',
-			'strava',
-			'streamable',
-			'stripe',
-			'stubhub',
-			'studyblue',
-			'stumbleupon',
-			'subway',
-			'sugarcrm',
-			'suntrust',
-			'supershuttle',
-			'swarm',
-			't-mobile',
-			'tagstr',
-			'taiga',
-			'target',
-			'technorati',
-			'ted',
-			'telegram',
-			'tvtag',
-			'temple',
-			'tesco',
-			'tesla',
-			'texas-am-university',
-			'texas-tech-university',
-			'the-audience-awards',
-			'the-college-of-new-jersey',
-			'the-next-web',
-			'the-ritz-carlton',
-			'the-sun',
-			'the-sun-goals',
-			'the-sun-perks',
-			'the-times',
-			'thomson-reuters',
-			'tivo',
-			'totaljobs',
-			'treehouse',
-			'trello',
-			'tripadvisor',
-			'trulia',
-			'tumblr',
-			'tunngle',
-			'turbotax',
-			'twentythree',
-			'twitch-tv',
-			'twitter',
-			'typekit',
-			'typepad',
-			'typo3',
-			'uber',
-			'ubuntu',
-			'uc-berkeley',
-			'ucsf',
-			'united-way',
-			'unity',
-			'universitat-hamburg',
-			'university-of-alberta',
-			'university-of-arizona',
-			'university-of-cambridge',
-			'university-of-florida',
-			'university-of-illinois-urbana-champaign',
-			'university-of-kentucky',
-			'university-of-michigan',
-			'university-of-oregon',
-			'university-of-texas',
-			'university-of-victoria',
-			'university-of-washington',
-			'university-of-waterloo',
-			'university-of-wisconsin-milwaukee',
-			'univision',
-			'ups',
-			'usps',
-			'ustream',
-			'verizon',
-			'viadeo',
-			'viber',
-			'vidme',
-			'viki',
-			'vimeo',
-			'vine',
-			'virb',
-			'virgin-media',
-			'virgin-money',
-			'visa',
-			'visualcv',
-			'visually',
-			'vkontakte',
-			'vodafone',
-			'volvo',
-			'vue-js',
-			'walgreens',
-			'walmart',
-			'warby-parker',
-			'wave-apps',
-			'webzunder',
-			'wechat',
-			'wendys',
-			'western-digital',
-			'whatsapp',
-			'whoosnap-designer',
-			'wikipedia',
-			'windows',
-			'windows-phone',
-			'woocommerce',
-			'wooga',
-			'wordpress',
-			'wordpress-com',
-			'world-organisation-of-the-scout-movement-wosm',
-			'worldline',
-			'wufoo',
-			'wunderlist',
-			'wwe',
-			'xbox',
-			'xing',
-			'xy-gaming',
-			'yahoo',
-			'yandex',
-			'yellow-pages',
-			'yelp',
-			'yii-framework',
-			'yo',
-			'youtube',
-			'zapier',
-			'zendesk',
-			'zerply',
-			'zillow',
-			'zomato',
-			'zopim',
-		] );
-
-
-		/**
 		 * @private
 		 */
 		this._SORT_BY_OPTIONS = Object.freeze( {
@@ -806,6 +195,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			'maxSent': 0,
 			'maxRecvd': 0,
 			'postRenderImprove': {
+				'brandColorsUrl': null,
 				'hostname': {
 					link: {
 						'openLink': true,
@@ -830,6 +220,11 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 							'faClassName': 'fa-filter', // no spaces
 							'title': 'Remove filter by this hostname',
 						},
+					},
+					'cellInlineCss': {
+						'property': 'border-left',
+						'value': '2px solid --color', // string '--color' will be replaced by real color
+						'notFoundColorValue': 'transparent',
 					},
 				},
 				'srcMAC': {
@@ -940,6 +335,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				'graphs': {
 					'type': 'pie',
 					'maxItems': 6,
+					'divider': ': ',
 					'mostFrequentTextContent': ' most frequent',
 					'createFor': {
 						'srcMAC': {
@@ -961,7 +357,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 							'aggregationType': 'sum',
 						},
 					},
-					'knownColors': {
+					'knownColors': { // names from this.CHART_COLORS.lightnessXXX
 						'tls': 'lightGreen',
 						'http': 'red',
 						'https': 'green',
@@ -996,6 +392,11 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		/**
 		 * @private
 		 */
+		this._brandColors = null;
+
+		/**
+		 * @private
+		 */
 		this._virtualStatistics = null;
 
 		this.toDateInput = Symbol( 'czNic::Date' );
@@ -1009,46 +410,6 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		{
 			return new Date( this.getTime() - ( this.getTimezoneOffset() * 60000 ) ).toISOString().split( 'T' )[ 1 ].substr( 0, 5 );
 		};
-
-		/*
-				this.toW3CString = Symbol( 'czNic::Date' );
-				Date.prototype[ this.toW3CString ] = function ()
-				{
-					const y = this.getFullYear();
-					let M = this.getMonth() + 1;
-					let d = this.getDate();
-					let h = this.getHours();
-					let m = this.getMinutes();
-					let s = this.getSeconds();
-					let offset = -this.getTimezoneOffset();
-					let offsetH = Math.abs( Math.floor( offset / 60 ) );
-					let offsetM = Math.abs( offset ) - offsetH * 60;
-					const offsetS = ( offset < 0 ) ? '-' : '+';
-
-					if ( M < 10 ) {
-						M = Number( '0' ) + M;
-					}
-					if ( d < 10 ) {
-						d = Number( '0' ) + d;
-					}
-					if ( h < 10 ) {
-						h = Number( '0' ) + h;
-					}
-					if ( m < 10 ) {
-						m = Number( '0' ) + m;
-					}
-					if ( s < 10 ) {
-						s = Number( '0' ) + s;
-					}
-					if ( offsetH < 10 ) {
-						offsetH = Number( '0' ) + offsetH;
-					}
-					if ( offsetM < 10 ) {
-						offsetM = Number( '0' ) + offsetM;
-					}
-					return y + '-' + M + '-' + d + 'T' + h + ':' + m + ':' + s + offsetS + offsetH + ':' + offsetM;
-				};
-		*/
 
 		this.hashCode = Symbol( 'czNic::String' );
 		String.prototype[ this.hashCode ] = function () // collision probability is 31^11
@@ -1113,6 +474,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		Number.prototype[ this.seconds2Hms ] = function ( /** @type {String=} */ lang = 'en' )
 		{
 			const HOURS_SEPARATOR = ( lang === 'cs' ? '.' : ':' );
+
 			const MINUTES_SEPARATOR = ':';
 
 			const h = Math.floor( Number( this ) / 3600 );
@@ -1299,6 +661,36 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	{
 		this.settings.timeLimitation.from = input.from;
 		this.settings.timeLimitation.to = input.to;
+	}
+
+
+	set brandColors ( jsonObject )
+	{
+		this._brandColors = jsonObject;
+	}
+
+
+	get brandColors () // async
+	{
+		return new Promise( ( /** @type {Function} */ resolve ) =>
+		{
+			if ( this._brandColors ) {
+				resolve( this._brandColors );
+			} else {
+				if ( this.settings.postRenderImprove.brandColorsUrl ) {
+					fetch( this.settings.postRenderImprove.brandColorsUrl.href ).then( ( /** @type {Response} */ response ) =>
+					{
+						return response.json();
+					} ).then( ( /** @type { {} } */ jsonResponse ) =>
+					{
+						this._brandColors = jsonResponse;
+						resolve( jsonResponse );
+					} );
+				} else {
+					resolve( [] );
+				}
+			}
+		} );
 	}
 
 
@@ -1565,7 +957,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async loadFreshHits ()
 	{
-		return new Promise( ( resolve ) => // eslint-disable-line no-unused-vars
+		return new Promise( ( /** @type {Function} */ resolve ) => // eslint-disable-line no-unused-vars
 		{
 			this.createSourceUrl(); // set into settings
 
@@ -1578,7 +970,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const evtSource = new EventSource( this.settings.eventSource.completeUrl, { withCredentials: true } );
 				evtSource.onmessage = this.eventMessage.bind( this );
 				resolve( true );
-			} else { // fetch - synchronous
+			} else { // fetch - asynchronout but with waiting
 				this.fetchEventSource().then( ( result ) =>
 				{
 					const resultArray = result.split( '\n\n' );
@@ -1609,7 +1001,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async fetchEventSourceError ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			const repeatedCalls = arguments[ 0 ]; // bool value
 			if ( repeatedCalls ) {
@@ -1643,9 +1035,9 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async fetchEventSource ( repeatedCalls = false )
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
-			fetch( this.settings.eventSource.completeUrl, {
+			fetch( this.settings.eventSource.completeUrl.href, {
 				method: 'GET',
 				headers: {
 					'Accept': 'application/json',
@@ -1679,24 +1071,9 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async countHits ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			resolve( this.dataStructure[ 'lengthOfVisible' ] );
-			/*
-			const openReq = this.idb.open(this.settings.db_credentials.db_name, this.settings.db_credentials.version);
-			openReq.onsuccess = function() {
-				const db = openReq.result;
-				const transaction = db.transaction(this.settings.db_credentials.table_name, 'readonly');
-				const objectStore = transaction.objectStore(this.settings.db_credentials.table_name);
-				const countRequest = objectStore.count();
-				countRequest.onsuccess = function() {
-					resolve(countRequest.result);
-				};
-				transaction.oncomplete = function (event) {
-					db.close();
-				};
-			}
-			*/
 		} );
 	}
 
@@ -1708,7 +1085,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async mostUsedHostnames ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 
@@ -1746,7 +1123,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async groupData ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			if ( this.settings.groupBy === this.GROUP_BY_OPTIONS[ 'DISABLED' ] ) {
 				let lengthOfVisible = 0;
@@ -1787,7 +1164,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async getDataFrom ( column = '' )
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 			openReq.onsuccess = function ()
@@ -1837,8 +1214,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async createFullTable ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
+			const NO_BREAK_SPACE = '\u00A0';
+
 			/** @type {HTMLTableElement} */
 			const resultsTable = ( this.settings.resultsTable );
 			const virtualTable = document.createElement( 'table' );
@@ -1890,9 +1269,9 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 									node = document.createElement( 'time' );
 									node.dateTime = currentDate.toISOString();
 									node.appendChild( document.createTextNode(
-										currentDate.toLocaleDateString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
+										currentDate.toLocaleDateString( this.settings.lang ).replace( ' ', NO_BREAK_SPACE ).replace( ' ', NO_BREAK_SPACE ) // .replace().replace() has better performance than regexp
 										+ ' '
-										+ currentDate.toLocaleTimeString( this.settings.lang ).replace( ' ', '\u00A0' ).replace( ' ', '\u00A0' ) // NO-BREAK SPACE // .replace().replace() has better performance than regexp
+										+ currentDate.toLocaleTimeString( this.settings.lang ).replace( ' ', NO_BREAK_SPACE ).replace( ' ', NO_BREAK_SPACE ) // .replace().replace() has better performance than regexp
 									) );
 								} else if ( item.id === 'dur' ) {
 									node = document.createTextNode( Number( this.dataStructure[ i ][ columnPosition ] )[ this.seconds2Hms ]( this.settings.lang ) );
@@ -1908,7 +1287,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 								if ( this.dataStructure[ i ][ 'ids' ].length < 9 ) {
 									cell.title = '[' + this.dataStructure[ i ][ 'ids' ].join( ', ' )[ this.truncate ]( this.settings.strLen ) + ']';
 								}
-								const idText = this.dataStructure[ i ][ 'ids' ].length + '\u00A0\u00D7'; // NO-BREAK SPACE and MULTIPLICATION SIGN
+								const idText = this.dataStructure[ i ][ 'ids' ].length + NO_BREAK_SPACE + '\u00D7'; // MULTIPLICATION SIGN
 								cell.appendChild( document.createTextNode( idText ) );
 							} else if ( item.id === 'datetime' ) {
 								const interval = this.dataStructure[ i ][ item.id ];
@@ -1957,7 +1336,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async createFullStatistic ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			this.countHits().then( ( result ) =>
 			{
@@ -2015,7 +1394,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async fillTimeLimitationForm () // from this.settings.timeLimitation
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			/** @type {HTMLInputElement} */
 			const dateFrom = ( this.settings.controlForm.timeLimitationInputs.dateFrom );
@@ -2053,7 +1432,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async setSyncWorkTo ( status = false, visual = true )
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			/** @type {HTMLInputElement} */
 			const submitButton = ( this.settings.controlForm.controlFormSubmit );
@@ -2116,7 +1495,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async makeObsoleteItemsInIndexedDB ()
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 
 			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
@@ -2161,7 +1540,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	 */
 	async filterClickHandlerFor ( key = '', /** @type { Event | MouseEvent } */ event )
 	{
-		return new Promise( ( resolve ) =>
+		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			if ( key ) {
 				const queryFrom = ( key = '' ) =>
@@ -2216,6 +1595,54 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	}
 
 
+	async createColorsFrom ( labels = [] )
+	{
+		return new Promise( ( /** @type {Function} */ resolve ) =>
+		{
+			if ( labels.length <= 0 ) {
+				resolve( [] );
+			}
+			const color = this.CHART_COLORS.lightness300;
+			const colors = [];
+			const base = ( Object.keys( color ).length < 36 ) ? Object.keys( color ).length : 36;
+			const labelsLength = labels.length;
+			for ( const i in labels ) {
+				const labelParts = labels[ i ].split( this.settings.statisticsData.graphs.divider );
+				const knownColors = this.settings.statisticsData.graphs.knownColors;
+				let currentColor;
+				this.brandcolorsIncludes( labelParts[ 0 ] ).then( ( /** @type {String | Boolean} */ knownBrandColor ) =>
+				{
+					if ( Object.keys( knownColors ).includes( labelParts[ 0 ] ) ) { // known colors
+						currentColor = color[ knownColors[ labelParts[ 0 ] ] ];
+					} else if ( knownBrandColor ) { // colors from brandcolors.net
+						currentColor = knownBrandColor;
+					} else { // pseudo-random color from label name
+						const labelHash = labelParts[ 0 ][ this.hashCode ]().toString( base );
+						let firstInDecimal = ( labelHash[ 0 ] === '-' ) ? parseInt( labelHash[ 1 ], base ) : parseInt( labelHash[ 0 ], base );
+
+						currentColor = color[ Object.keys( color )[ firstInDecimal ] ];
+						if ( labels.length < base ) {
+							while ( colors.includes( currentColor ) ) {
+								const n = ( firstInDecimal < base ) ? firstInDecimal++ : firstInDecimal--;
+								currentColor = color[ Object.keys( color )[ n ] ];
+							}
+						} else {
+							if ( colors[ i ] === colors[ Number( i ) - 1 ] ) {
+								const n = ( firstInDecimal < base ) ? firstInDecimal++ : firstInDecimal--;
+								currentColor = color[ Object.keys( color )[ n ] ];
+							}
+						}
+					}
+					colors.push( currentColor );
+					if ( colors.length >= labelsLength ) {
+						resolve( colors );
+					}
+				} );
+			}
+		} );
+	}
+
+
 	db_init ( /** @type {IDBOpenDBRequest} */ openReq )
 	{
 		const event = arguments[ 1 ];
@@ -2258,6 +1685,31 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	}
 
 
+	async brandcolorsIncludes (/** @type {String} */ name )
+	{
+		return new Promise( ( /** @type {Function} */ resolve ) =>
+		{
+			this.brandColors.then( ( brandColorsJson ) =>
+			{
+				const NUMBER_SIGN = '#';
+				const part = name.split( '.' );
+				const index = Math.max(
+					Object.keys( brandColorsJson ).indexOf( part[ 0 ] ),
+					Object.keys( brandColorsJson ).indexOf( 'www.' + part[ 0 ] ),
+					Object.keys( brandColorsJson ).indexOf( part[ 1 ] ), // example: from 'api.soundclound.com' take 'soundcloud' part
+					( part[ 2 ] ) ? Object.keys( brandColorsJson ).indexOf( part[ 2 ] ) : -1,
+					( part[ 3 ] ) ? Object.keys( brandColorsJson ).indexOf( part[ 3 ] ) : -1,
+				);
+				if ( index !== -1 ) {
+					resolve( NUMBER_SIGN + brandColorsJson[ Object.keys( brandColorsJson )[ index ] ] );
+				} else {
+					resolve( ( name in brandColorsJson ) ? NUMBER_SIGN + brandColorsJson[ name ] : false );
+				}
+			} );
+		} );
+	}
+
+
 	percentageFromRaw ( /** @type {HTMLTableCellElement } */ currentCell, suffixes = [] )
 	{
 		for ( const i in suffixes ) {
@@ -2277,6 +1729,8 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	improveTableUX () // post render improvement
 	{
+		const NO_BREAK_SPACE = '\u00A0';
+
 		this.getMaxDataFrom( 'sent' ); // sets it into settings and as data-XZY attribute into cell
 		this.getMaxDataFrom( 'recvd' ); // sets it into settings and as data-XZY attribute into cell
 		this.getMaxDataFrom( 'dur' ); // sets it into settings and as data-XZY attribute into cell
@@ -2306,10 +1760,12 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		/** @type {HTMLTableElement} */
 		const table = ( this.settings.resultsTable );
 		const rows = table.tBodies[ 0 ].rows;
+
 		rowsLoop: // eslint-disable-line no-unused-labels
 		for ( let i = 0; i < rows.length; i++ ) {
 			if ( Number.isInteger( hostnamePosition ) ) {
-				const currentCell = rows[ i ].children[ hostnamePosition ];
+				/** @type {HTMLElement} */
+				const currentCell = ( rows[ i ].children[ hostnamePosition ] );
 				const code = document.createElement( 'code' );
 				const fullUrl = currentCell.textContent;
 				code.appendChild( document.createTextNode( fullUrl[ this.truncate ]( this.settings.strLen, '\u2026', false, true ) ) );
@@ -2350,7 +1806,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					}
 
 					currentCell.appendChild( code );
-					currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
+					currentCell.appendChild( document.createTextNode( NO_BREAK_SPACE ) );
 					currentCell.appendChild( link );
 				}
 
@@ -2358,21 +1814,15 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				filter.classList.add( 'fas', 'filter', this.settings.postRenderImprove.hostname.filter.className );
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'hostname' );
 
-				const part = code.textContent.split( '.' );
-				const index = Math.max(
-					this.brandColors.indexOf( part[ 0 ] ),
-					this.brandColors.indexOf( 'www.' + part[ 0 ] ),
-					this.brandColors.indexOf( part[ 1 ] ), // example: from 'api.soundclound.com' take 'soundcloud' part
-					( part[ 2 ] ) ? this.brandColors.indexOf( part[ 2 ] ) : -1,
-					( part[ 3 ] ) ? this.brandColors.indexOf( part[ 3 ] ) : -1,
-				);
-				if ( index !== -1 ) {
-					const square = document.createElement( 'span' );
-					square.classList.add( 'bc-background-' + this.brandColors[ index ] );
-					currentCell.appendChild( square );
-				}
+				this.brandcolorsIncludes( code.textContent ).then( (/** @type {String | Boolean} */ result ) =>
+				{
+					/** @type {String} */
+					const color = ( result ? result : this.settings.postRenderImprove.hostname.cellInlineCss.notFoundColorValue );
+					const inlineCss = this.settings.postRenderImprove.hostname.cellInlineCss.property + ':' + this.settings.postRenderImprove.hostname.cellInlineCss.value.replace( '--color', color );
+					currentCell.setAttribute( 'style', inlineCss );
+				} );
 
-				currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
+				currentCell.appendChild( document.createTextNode( NO_BREAK_SPACE ) );
 				currentCell.appendChild( filter );
 				filter.dispatchEvent( new Event( 'click' ) );
 			}
@@ -2403,7 +1853,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				filter.onclick = this.filterClickHandlerFor.bind( this, 'srcMAC' );
 
 				currentCell.appendChild( code );
-				currentCell.appendChild( document.createTextNode( '\u00A0' ) ); // NO-BREAK SPACE
+				currentCell.appendChild( document.createTextNode( NO_BREAK_SPACE ) );
 				currentCell.appendChild( filter );
 				filter.dispatchEvent( new Event( 'click' ) );
 			}
@@ -2458,7 +1908,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					const percentage = Math.round( ( 100 / this.settings.statisticsData.nHits ) * singleItem[ i ].length );
 					const protoItem = document.createElement( 'li' );
 					protoItem.style.width = percentage + '%';
-					protoItem.appendChild( document.createTextNode( i + ': ' ) );
+					protoItem.appendChild( document.createTextNode( i + this.settings.statisticsData.graphs.divider ) );
 					const protoVal = document.createElement( 'span' );
 					protoVal.appendChild( document.createTextNode( singleItem[ i ].length + this.settings.itemsTextContent ) );
 					protoItem.appendChild( protoVal );
@@ -2513,34 +1963,39 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const labels = [];
 				const data = [];
 				const items = statisticParts[ i ].firstElementChild.children;
+				const title = ( items.length === this.settings.statisticsData.graphs.maxItems ) ?
+					statisticParts[ i ].firstChild.textContent + ' [' + items.length + this.settings.statisticsData.graphs.mostFrequentTextContent + ']' :
+					statisticParts[ i ].firstChild.textContent;
 				for ( let i = 0; i < items.length; i++ ) {
 					labels.push( items[ i ].childNodes[ 0 ].textContent[ this.truncate ]( this.settings.strLen ) + items[ i ].childNodes[ 2 ].textContent );
 					data.push( items[ i ].childNodes[ 1 ].textContent.replace( this.settings.itemsTextContent, '' ) );
 				}
 				/** @type {HTMLCanvasElement} */
-				const canvasElement = ( document.createElement( CANVAS_TAG_NAME.toLowerCase() ) );
+				const canvasElement = ( document.createElement( CANVAS_TAG_NAME ) );
 				statisticParts[ i ].appendChild( canvasElement );
-				/*const chart = */new Chart( canvasElement.getContext( '2d' ), {
+				const chart = new Chart( canvasElement.getContext( '2d' ), {
 					type: this.settings.statisticsData.graphs.type,
 					data: {
 						labels: labels,
 						datasets: [ {
 							data: data,
-							backgroundColor: this.createColorsFrom( labels ),
 						} ],
 					},
 					options: {
 						title: {
 							display: true,
 							fontSize: 15, // in px
-							text: ( items.length === this.settings.statisticsData.graphs.maxItems ) ?
-								statisticParts[ i ].firstChild.textContent + ' [' + items.length + this.settings.statisticsData.graphs.mostFrequentTextContent + ']' :
-								statisticParts[ i ].firstChild.textContent,
+							text: title,
 						},
 						legend: {
 							position: 'right',
 						},
 					},
+				} );
+				this.createColorsFrom( labels ).then( ( /** @type { [] } */ colors ) =>
+				{
+					chart.data.datasets[ 0 ].backgroundColor = colors; // colors are set asynchronously
+					chart.update();
 				} );
 				while ( statisticParts[ i ].firstChild ) { // better performance then simple statisticParts[i].innerHTML = '';
 					if ( statisticParts[ i ].firstChild.nodeName === CANVAS_TAG_NAME ) { // do not remove canvas
@@ -2553,40 +2008,6 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		}
 
 		return true;
-	}
-
-
-	createColorsFrom ( labels = [] )
-	{
-		const color = this.CHART_COLORS.lightness300;
-		const colors = [];
-		const base = ( Object.keys( color ).length < 36 ) ? Object.keys( color ).length : 36;
-		for ( const i in labels ) {
-			const labelParts = labels[ i ].split( ': ' );
-			const knownColors = this.settings.statisticsData.graphs.knownColors;
-			let currentColor;
-			if ( Object.keys( knownColors ).includes( labelParts[ 0 ] ) ) { // known colors
-				currentColor = color[ knownColors[ labelParts[ 0 ] ] ];
-			} else { // pseudo-random color from label name
-				const labelHash = labelParts[ 0 ][ this.hashCode ]().toString( base );
-				let firstInDecimal = ( labelHash[ 0 ] === '-' ) ? parseInt( labelHash[ 1 ], base ) : parseInt( labelHash[ 0 ], base );
-				currentColor = color[ Object.keys( color )[ firstInDecimal ] ];
-				if ( labels.length < base ) {
-					while ( colors.includes( currentColor ) ) {
-						const n = ( firstInDecimal < base ) ? firstInDecimal++ : firstInDecimal--;
-						currentColor = color[ Object.keys( color )[ n ] ];
-					}
-				} else {
-					if ( colors[ i ] === colors[ Number( i ) - 1 ] ) {
-						const n = ( firstInDecimal < base ) ? firstInDecimal++ : firstInDecimal--;
-						currentColor = color[ Object.keys( color )[ n ] ];
-					}
-				}
-			}
-			colors.push( currentColor );
-		}
-
-		return colors;
 	}
 
 
@@ -2836,7 +2257,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	showEmptyResponseInfo () // @todo : if filter exist, than create a oprion for drop it. If not show only info for user.
 	{
-		//alert( this.settings.userMessages.errors.failedLoadingData[ 0 ] );
+		alert( this.settings.userMessages.errors.failedLoadingData[ 0 ] );
 		this.setSyncWorkTo( false, true );
 
 		return true;
@@ -2967,6 +2388,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					this.groupData().then( () =>
 					{
 						this.setSyncWorkTo( false, true );
+						this.brandColors; // lazy load
 						this.createFullStatistic().then( () =>
 						{
 							this.makeSimpleGraphs();
@@ -2993,16 +2415,3 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	}
 
 }
-
-/*
- * Example usage:
- *
-	<script src="czNicTurrisPakon.js"></script>
-	<script>
-		const cntp = new czNicTurrisPakon(window);
-		//cntp.settings = {'lang': 'cs', '…': true};
-		cntp.run();
-		//const cs = window.document.currentScript;
-		//cs.parentNode.removeChild(cs);
-	</script>
- */
