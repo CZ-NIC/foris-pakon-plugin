@@ -1476,10 +1476,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			}
 
 			if ( safeStatus ) {
-				setTimeout( () =>
+				requestAnimationFrame( () =>
 				{
 					resolve( true );
-				}, 1 ); // 1ms winting force browser to redraw website
+				} ); // force browser to redraw website
 			} else {
 				resolve( true );
 			}
@@ -2303,10 +2303,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						this.createFullTable().then( () =>
 						{
 							this.flush(); // place virtual DOM elements instead of real site elements
-							setTimeout( () =>
+							requestAnimationFrame( () =>
 							{
 								this.improveTableUX(); // post render improvement
-							}, 1 ); // 1ms winting force browser to redraw website
+							} ); //force browser to redraw website
 						} );
 					} );
 				} );
@@ -2398,13 +2398,13 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						this.createFullTable().then( () =>
 						{
 							this.flush(); // place virtual DOM elements instead of real site elements
-							setTimeout( () =>
+							requestAnimationFrame( () =>
 							{
 								this.improveTableUX(); // post render improvement
 								if ( 'makeTableSortable' in this.window ) {
 									window[ 'makeTableSortable' ](); // from window namespace added in file sortableTable.defer.js
 								}
-							}, 1 ); // 1ms waiting force browser to redraw website
+							} ); // force browser to redraw website
 						} );
 					} );
 				} );
