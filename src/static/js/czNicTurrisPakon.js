@@ -623,7 +623,9 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		return this._FILTER_BY_OPTIONS;
 	}
 
-
+	/**
+	 * Get CHART_COLORS
+	 */
 	get CHART_COLORS ()
 	{
 		return this._CHART_COLORS;
@@ -676,6 +678,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		{
 			if ( this._brandColors ) {
 				resolve( this._brandColors );
+				return true;
 			} else {
 				if ( this.settings.postRenderImprove.brandColorsUrl ) {
 					fetch( this.settings.postRenderImprove.brandColorsUrl.href ).then( ( /** @type {Response} */ response ) =>
@@ -685,9 +688,11 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					{
 						this._brandColors = jsonResponse;
 						resolve( jsonResponse );
+						return true;
 					} );
 				} else {
 					resolve( [] );
+					return true;
 				}
 			}
 		} );
@@ -923,8 +928,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						}
 					}
 					macs = this.settings.eventSource.query.mac = macs.filter( String ); // remove empty items after deleting
+
 					/** @type {HTMLTextAreaElement} */
 					const textarea = ( this.settings.controlForm.srcMACFilter );
+
 					textarea.value = macs.join( this.settings.textareaSeparator ); // this will NOT trigger a change event!!!
 				} else if ( i === 'hostnameFilter' && hostnames ) {
 					// @todo : …
@@ -970,6 +977,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const evtSource = new EventSource( this.settings.eventSource.completeUrl, { withCredentials: true } );
 				evtSource.onmessage = this.eventMessage.bind( this );
 				resolve( true );
+				return true;
 			} else { // fetch - asynchronout but with waiting
 				this.fetchEventSource().then( ( result ) =>
 				{
@@ -988,6 +996,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					this.dataStructure[ 'length' ] = Object.keys( this.dataStructure ).length;
 					this.dataStructure[ 'lengthOfVisible' ] = i;
 					resolve( true );
+					return true;
 				} );
 			}
 		} );
@@ -1007,10 +1016,13 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			if ( repeatedCalls ) {
 				const controlForm = this.settings.controlForm;
 				let errorMessage = this.settings.userMessages.errors.failedLoadingData[ 0 ];
+
 				/** @type {HTMLTextAreaElement} */
 				const hostnameTextarea = ( controlForm.hostnameFilter );
+
 				/** @type {HTMLTextAreaElement} */
 				const srcMACTextarea = ( controlForm.srcMACFilter );
+
 				if ( hostnameTextarea.value || srcMACTextarea.value ) {
 					errorMessage += ' \n' + this.settings.userMessages.errors.failedLoadingData[ 1 ];
 				}
@@ -1022,6 +1034,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				this.fetchEventSource( true ).then( ( result ) =>
 				{
 					resolve( result );
+					return true;
 				} );
 			}
 		} );
@@ -1047,10 +1060,12 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			{
 				if ( response.ok && ( response.status === 200 ) ) {
 					resolve( response.text() );
+					return true;
 				} else {
 					this.fetchEventSourceError.bind( this, repeatedCalls )().then( ( result ) =>
 					{
 						resolve( result );
+						return true;
 					} );
 				}
 			} ).catch( () =>
@@ -1058,6 +1073,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				this.fetchEventSourceError.bind( this, repeatedCalls )().then( ( result ) =>
 				{
 					resolve( result );
+					return true;
 				} );
 			} );
 		} );
@@ -1074,6 +1090,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 			resolve( this.dataStructure[ 'lengthOfVisible' ] );
+			return true;
 		} );
 	}
 
@@ -1140,6 +1157,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				this.dataStructure[ 'length' ] = Object.keys( this.dataStructure ).length;
 				this.dataStructure[ 'lengthOfVisible' ] = lengthOfVisible;
 				resolve( this.dataStructure );
+				return true;
 			} else if ( this.settings.groupBy === this.GROUP_BY_OPTIONS[ 'HOSTNAME_COUNT' ] ) {
 				this.mostUsedHostnames().then( ( result ) =>
 				{
@@ -1147,6 +1165,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					this.dataStructure[ 'length' ] = Object.keys( result ).length;
 					this.dataStructure[ 'lengthOfVisible' ] = '@todo : count this!';
 					resolve( result );
+					return true;
 				} );
 				/*
 				} else if ( false ) { // @todo : add more grouping methods
@@ -1220,6 +1239,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 			/** @type {HTMLTableElement} */
 			const resultsTable = ( this.settings.resultsTable );
+
 			const virtualTable = document.createElement( 'table' );
 			let tHead = null;
 			if ( resultsTable ) {
@@ -1324,6 +1344,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			this.virtualTable = virtualTable;
 
 			resolve( true );
+			return true;
 
 		} );
 	}
@@ -1374,6 +1395,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 								// @todo : get data & place them into dataStore
 							} );
 							resolve( true );
+							return true;
 						}
 					} );
 				} else {
@@ -1396,14 +1418,19 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	{
 		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
+
 			/** @type {HTMLInputElement} */
 			const dateFrom = ( this.settings.controlForm.timeLimitationInputs.dateFrom );
+
 			/** @type {HTMLInputElement} */
 			const timeFrom = ( this.settings.controlForm.timeLimitationInputs.timeFrom );
+
 			/** @type {HTMLInputElement} */
 			const dateTo = ( this.settings.controlForm.timeLimitationInputs.dateTo );
+
 			/** @type {HTMLInputElement} */
 			const timeTo = ( this.settings.controlForm.timeLimitationInputs.timeTo );
+
 			if ( dateFrom && timeFrom && this.settings.timeLimitation.from ) {
 				if ( !dateFrom.value ) {
 					dateFrom.value = this.settings.timeLimitation.from[ this.toDateInput ]();
@@ -1421,6 +1448,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				}
 			}
 			resolve( true );
+			return true;
 		} );
 	}
 
@@ -1434,6 +1462,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	{
 		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
+
 			/** @type {HTMLInputElement} */
 			const submitButton = ( this.settings.controlForm.controlFormSubmit );
 
@@ -1461,9 +1490,12 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 			/** @type {HTMLDialogElement} */
 			let loader = ( document.getElementById( this.settings.loader.id ) );
+
 			if ( !loader ) {
+
 				/** @type {HTMLDialogElement} */
 				loader = ( document.createElement( 'dialog' ) );
+
 				loader.id = this.settings.loader.id;
 				loader.classList.add( this.settings.loader.className );
 				document.body.appendChild( loader );
@@ -1483,6 +1515,8 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			} else {
 				resolve( true );
 			}
+
+			return true;
 
 		} );
 	}
@@ -1557,10 +1591,13 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const FILTER_ELEMENT_SUFFIX = 'Filter';
 				const INPUT_EVENT_NAME = 'input';
 				let filterValues = this.settings.eventSource.query[ queryFrom( key ) ] = this.readFromTextarea( this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ] );
+
 				/** @type {HTMLElement} */
 				const eventTarget = ( event.target );
+
 				/** @type {HTMLTableCellElement} */
 				const currnetCell = ( eventTarget.parentNode );
+
 				currnetCell.setAttribute( 'aria-hidden', 'true' );
 				const currentValue = currnetCell.firstElementChild.textContent;
 				if ( Array.isArray( filterValues ) ) {
@@ -1581,16 +1618,20 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						eventTarget.classList.remove( 'remove', this.settings.postRenderImprove[ key ].filter.remove.faClassName );
 						eventTarget.classList.add( 'add', this.settings.postRenderImprove[ key ].filter.add.faClassName );
 						if ( event.isTrusted ) {
-							currentControlFormElement.parentNode.nextElementSibling.dispatchEvent( new Event( 'focus' ) );
+
+							/** @type {HTMLElement} */
+							const contentEditableElement = currentControlFormElement.parentNode.nextElementSibling;
+
+							contentEditableElement.dispatchEvent( new Event( 'focus' ) );
 							filterValues.push( currentValue );
 							currentControlFormElement.value = filterValues.join( this.settings.textareaSeparator );
-
 							currentControlFormElement.dispatchEvent( new Event( INPUT_EVENT_NAME ) );
 						}
 					}
 				}
 			}
 			resolve( true );
+			return true;
 		} );
 	}
 
@@ -1601,6 +1642,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		{
 			if ( labels.length <= 0 ) {
 				resolve( [] );
+				return true;
 			}
 			const color = this.CHART_COLORS.lightness300;
 			const colors = [];
@@ -1636,6 +1678,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					colors.push( currentColor );
 					if ( colors.length >= labelsLength ) {
 						resolve( colors );
+						return true;
 					}
 				} );
 			}
@@ -1705,6 +1748,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				} else {
 					resolve( ( name in brandColorsJson ) ? NUMBER_SIGN + brandColorsJson[ name ] : false );
 				}
+				return true;
 			} );
 		} );
 	}
@@ -1759,13 +1803,16 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 		/** @type {HTMLTableElement} */
 		const table = ( this.settings.resultsTable );
+
 		const rows = table.tBodies[ 0 ].rows;
 
 		rowsLoop: // eslint-disable-line no-unused-labels
 		for ( let i = 0; i < rows.length; i++ ) {
 			if ( Number.isInteger( hostnamePosition ) ) {
+
 				/** @type {HTMLElement} */
 				const currentCell = ( rows[ i ].children[ hostnamePosition ] );
+
 				const code = document.createElement( 'code' );
 				const fullUrl = currentCell.textContent;
 				code.appendChild( document.createTextNode( fullUrl[ this.truncate ]( this.settings.strLen, '\u2026', false, true ) ) );
@@ -1795,8 +1842,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					if ( this.settings.postRenderImprove.hostname.link.newWindow ) {
 						link.onclick = function () // do NOT bind(this) in here!
 						{
+
 							/** @type {HTMLAnchorElement} */
 							const self = ( this );
+
 							return !window.open( self.href );
 						};
 					}
@@ -1816,8 +1865,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 				this.brandcolorsIncludes( code.textContent ).then( (/** @type {String | Boolean} */ result ) =>
 				{
+
 					/** @type {String} */
 					const color = ( result ? result : this.settings.postRenderImprove.hostname.cellInlineCss.notFoundColorValue );
+
 					const inlineCss = this.settings.postRenderImprove.hostname.cellInlineCss.property + ':' + this.settings.postRenderImprove.hostname.cellInlineCss.value.replace( '--color', color );
 					currentCell.setAttribute( 'style', inlineCss );
 				} );
@@ -1865,12 +1916,16 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const currentCell = rows[ i ].children[ recvdPosition ];
 				currentCell.textContent = Number( currentCell.textContent )[ this.bytesToSize ]();
 			}
+
 			/** @type {HTMLCollection} */
 			const cells = ( rows[ i ].children );
+
 			cellsLoop: // eslint-disable-line no-unused-labels
 			for ( let i = 0; i < cells.length; i++ ) {
+
 				/** @type {HTMLTableCellElement} */
 				const td = ( cells[ i ] );
+
 				this.percentageFromRaw( td, [ 'dur', 'sent', 'recvd' ] ); // faster then autodetection from 'data-raw-content-' attribute prefix
 
 				if ( td.getAttribute( 'data-percentage' ) ) {
@@ -1970,8 +2025,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					labels.push( items[ i ].childNodes[ 0 ].textContent[ this.truncate ]( this.settings.strLen ) + items[ i ].childNodes[ 2 ].textContent );
 					data.push( items[ i ].childNodes[ 1 ].textContent.replace( this.settings.itemsTextContent, '' ) );
 				}
+
 				/** @type {HTMLCanvasElement} */
 				const canvasElement = ( document.createElement( CANVAS_TAG_NAME ) );
+
 				statisticParts[ i ].appendChild( canvasElement );
 				const chart = new Chart( canvasElement.getContext( '2d' ), {
 					type: this.settings.statisticsData.graphs.type,
@@ -2013,8 +2070,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	getColumnPositionBy ( key = '' )
 	{
+
 		/** @type {HTMLTableElement} */
 		const table = ( this.settings.resultsTable );
+
 		const tHeadElements = ( table.tHead ) ? table.tHead.firstElementChild.children : null;
 		if ( tHeadElements ) { // real already-drawed table
 			let columnPosition = -1;
@@ -2056,8 +2115,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	getMaxDataFrom ( col = '' ) // from visible results table
 	{
+
 		/** @type {HTMLTableElement} */
 		const table = ( this.settings.resultsTable );
+
 		if ( table.tBodies.length ) {
 			const columnPosition = this.getColumnPositionBy( col );
 			if ( columnPosition ) {
@@ -2116,12 +2177,16 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	readTimeLimitationForm ()
 	{
+
 		/** @type {HTMLInputElement} */
 		const dateFrom = ( this.settings.controlForm.timeLimitationInputs.dateFrom );
+
 		/** @type {HTMLInputElement} */
 		const timeFrom = ( this.settings.controlForm.timeLimitationInputs.timeFrom );
+
 		/** @type {HTMLInputElement} */
 		const dateTo = ( this.settings.controlForm.timeLimitationInputs.dateTo );
+
 		/** @type {HTMLInputElement} */
 		const timeTo = ( this.settings.controlForm.timeLimitationInputs.timeTo );
 
@@ -2176,8 +2241,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	readAggregation ()
 	{
+
 		/** @type {HTMLInputElement} */
 		const element = ( this.settings.controlForm.aggregate );
+
 		if ( element && element.nodeType === Node.ELEMENT_NODE ) {
 			return element.checked;
 		}
@@ -2331,6 +2398,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					inputs[ i ].addEventListener( CLICK_EVENT_NAME, this.universalFormHook.bind( this, fakeUntrustedEvent ), false ); // @todo : only flush when fakeUntrustedEvent
 					inputs[ i ].addEventListener( CLICK_EVENT_NAME, ( event ) =>
 					{
+
 						/** @type {HTMLInputElement} */
 						const eventTarget = ( event.target );
 
