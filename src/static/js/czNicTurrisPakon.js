@@ -788,15 +788,20 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	storeHitsToIndexedDB ()
 	{
 
+		/** @type {IDBOpenDBRequest} */
 		const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 
 		openReq.onupgradeneeded = this.db_init.bind( this, openReq );
 
 		openReq.onsuccess = function ()
 		{
+
+			/** @type {IDBDatabase} */
 			const db = openReq.result;
-			const tx = db.transaction( this.settings.db_credentials.table_name, 'readwrite' ); // IDBTransaction.READ_WRITE is depricated !
+
+			const tx = db.transaction( this.settings.db_credentials.table_name, 'readwrite' );
 			const store = tx.objectStore( this.settings.db_credentials.table_name );
+
 			store.index( 'hostname' );
 			store.index( 'srcMAC' );
 			store.index( 'dstPort' );
@@ -833,9 +838,9 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	/**
 	 * @todo : description
-	 * @returns { {} | [] }
+	 * @returns { {} | Array }
 	 */
-	combinatedSorting ( /** @type { {} | [] } */ inArray, by = this.settings.sortBy )
+	combinatedSorting ( /** @type { {} | Array } */ inArray, by = this.settings.sortBy )
 	{
 		let sortedUniqueHostnameKeys;
 		if ( by === this.SORT_BY_OPTIONS[ 'N_HITS' ] ) { // sort by number of values
@@ -994,7 +999,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						return 0;
 					} );
 					for ( var i in sortedNonEmpty ) {
-						const currentRow = JSON.parse( sortedNonEmpty[ i ].substr( 6 ) ); // remove 'data: ' string and make it array
+
+						/** @type { Array } */
+						const currentRow = JSON.parse( sortedNonEmpty[ i ].substr( 6 ) );
+
 						this.dataStructure[ currentRow.join()[ this.hashCode ]().toString( 36 ) ] = currentRow.concat( [ false ] ); // add bool 'hidden' column and set default to false
 					}
 					this.dataStructure[ 'length' ] = Object.keys( this.dataStructure ).length;
@@ -1102,32 +1110,43 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	/**
 	 * @todo : description
 	 * @async
-	 * @returns {Promise<[]>}
+	 * @returns {Promise<Array>}
 	 */
 	async mostUsedHostnames ()
 	{
 		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
+			/** @type {IDBOpenDBRequest} */
 			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 
 			openReq.onsuccess = function ()
 			{
+				/** @type {IDBDatabase} */
 				const db = openReq.result;
+
 				const tx = db.transaction( this.settings.db_credentials.table_name, 'readonly' );
 				const store = tx.objectStore( this.settings.db_credentials.table_name );
 				const uniqueHostnameKeys = [];
 				store.openCursor().onsuccess = function ( event )
 				{ // alternative and easier .getAll() is badly supported in browsers yet
-					const cursor = event.target.result;
+
+					/** @type {IDBRequest} */
+					const eventTarget = ( event.target );
+
+					/** @type {IDBCursorWithValue} */
+					const cursor = eventTarget.result;
+
 					if ( cursor ) {
+						/** @type { {} } */
 						const clearedValues = cursor.value;
+
 						uniqueHostnameKeys[ cursor.value.hostname ] = uniqueHostnameKeys[ cursor.value.hostname ] || []; // initialize or add
 						uniqueHostnameKeys[ cursor.value.hostname ].push( clearedValues ); // initialize or add
 						cursor.continue();
 					} else {
 						resolve( this.groupSortData( uniqueHostnameKeys ) );
 					}
-				};
+				}.bind( this );
 				tx.oncomplete = function ()
 				{
 					db.close();
@@ -1189,10 +1208,15 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	{
 		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
+			/** @type {IDBOpenDBRequest} */
 			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
+
 			openReq.onsuccess = function ()
 			{
+
+				/** @type {IDBDatabase} */
 				const db = openReq.result;
+
 				const tx = db.transaction( this.settings.db_credentials.table_name, 'readonly' );
 				const store = tx.objectStore( this.settings.db_credentials.table_name );
 				const protos = [];
@@ -1215,7 +1239,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						}
 						cursor.continue();
 					} else {
+
+						/** @type {Array} */
 						const sortedProtos = this.combinatedSorting( protos, 1 );
+
 						const niceObject = {};
 						for ( var i in sortedProtos ) {
 							if ( i >= this.settings.statisticsData.graphs.maxItems ) {
@@ -1269,7 +1296,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			const tableHeader = this.settings.refactoringTableHeader;
 			const tableHeaderArray = [];
 			for ( const i in tableHeader ) {
+
+				/** @type { {id, order, caption, title, dataType, hidden} } */
 				const th = tableHeader[ i ];
+
 				th.id = i;
 				tableHeaderArray[ th.order ] = th;
 			}
@@ -1542,13 +1572,18 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		return new Promise( ( /** @type {Function} */ resolve ) =>
 		{
 
+			/** @type {IDBOpenDBRequest} */
 			const openReq = this.idb.open( this.settings.db_credentials.db_name, this.settings.db_credentials.version );
 
 			openReq.onsuccess = function ()
 			{
+
+				/** @type {IDBDatabase} */
 				const db = openReq.result;
+
 				const tx = db.transaction( this.settings.db_credentials.table_name, 'readwrite' );
 				const store = tx.objectStore( this.settings.db_credentials.table_name );
+
 				store.clear();
 				resolve( true );
 				/* @todo : for future use
@@ -1611,7 +1646,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				currnetCell.setAttribute( 'aria-hidden', 'true' );
 				const currentValue = currnetCell.firstElementChild.textContent;
 				if ( Array.isArray( filterValues ) ) {
+
+					/** @type {HTMLTextAreaElement} */
 					const currentControlFormElement = this.settings.controlForm[ key + FILTER_ELEMENT_SUFFIX ];
+
 					if ( filterValues.includes( currentValue ) ) { // remove
 						eventTarget.title = this.settings.postRenderImprove[ key ].filter.remove.title;
 						eventTarget.classList.remove( 'add', this.settings.postRenderImprove[ key ].filter.add.faClassName ); // it does perfectly sense XD
@@ -1659,7 +1697,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			const base = ( Object.keys( color ).length < 36 ) ? Object.keys( color ).length : 36;
 			const labelsLength = labels.length;
 			for ( const i in labels ) {
+
+				/** @type {Array} */
 				const labelParts = labels[ i ].split( this.settings.statisticsData.graphs.divider );
+
 				const knownColors = this.settings.statisticsData.graphs.knownColors;
 				let currentColor;
 				this.brandcolorsIncludes( labelParts[ 0 ] ).then( ( /** @type {String | Boolean} */ knownBrandColor ) =>
@@ -1669,9 +1710,11 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					} else if ( knownBrandColor ) { // colors from brandcolors.net
 						currentColor = knownBrandColor;
 					} else { // pseudo-random color from label name
-						const labelHash = labelParts[ 0 ][ this.hashCode ]().toString( base );
-						let firstInDecimal = ( labelHash[ 0 ] === '-' ) ? parseInt( labelHash[ 1 ], base ) : parseInt( labelHash[ 0 ], base );
 
+						/** @type {String} */
+						const labelHash = labelParts[ 0 ][ this.hashCode ]().toString( base );
+
+						let firstInDecimal = ( labelHash[ 0 ] === '-' ) ? parseInt( labelHash[ 1 ], base ) : parseInt( labelHash[ 0 ], base );
 						currentColor = color[ Object.keys( color )[ firstInDecimal ] ];
 						if ( labels.length < base ) {
 							while ( colors.includes( currentColor ) ) {
@@ -1970,7 +2013,9 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 				const protoList = document.createElement( 'ol' );
 
+				/** @type { {} } */
 				const singleItem = list[ i ].dataStore;
+
 				for ( const i in singleItem ) {
 					if ( i === 'length' ) {
 						continue;
@@ -2045,7 +2090,8 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const canvasElement = ( document.createElement( CANVAS_TAG_NAME ) );
 
 				statisticParts[ i ].appendChild( canvasElement );
-				const chart = new Chart( canvasElement.getContext( '2d' ), {
+
+				const chart = new Chart( canvasElement.getContext( '2d' ), { // @type {t}
 					type: this.settings.statisticsData.graphs.type,
 					data: {
 						labels: labels,
@@ -2064,7 +2110,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						},
 					},
 				} );
-				this.createColorsFrom( labels ).then( ( /** @type { [] } */ colors ) =>
+				this.createColorsFrom( labels ).then( ( /** @type { Array } */ colors ) =>
 				{
 					chart.data.datasets[ 0 ].backgroundColor = colors; // colors are set asynchronously
 					chart.update();
@@ -2163,7 +2209,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		const tableHeader = this.settings.refactoringTableHeader;
 		const tableHeaderArray = [];
 		for ( const i in tableHeader ) {
+
+			/** @type { {id, order, caption, title, dataType, hidden} } */
 			const th = tableHeader[ i ];
+
 			th.id = i;
 			tableHeaderArray[ th.order ] = th;
 		}
@@ -2314,7 +2363,10 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	flush () // @todo : future request : argument to draw only table or only statistics
 	{
 		if ( this.virtualTable && this.settings.resultsTable ) {
-			const resultsTable = this.settings.resultsTable;
+
+			/** @type {HTMLTableElement} */
+			const resultsTable = ( this.settings.resultsTable );
+
 			for ( let i = 0; i < resultsTable.attributes.length; i++ ) {
 				this.virtualTable.setAttribute( resultsTable.attributes[ i ].nodeName, resultsTable.attributes[ i ].value );
 			}
