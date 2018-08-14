@@ -831,9 +831,13 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	}
 
 
-	combinatedSorting ( inArray = [], by = this.settings.sortBy )
+	/**
+	 * @todo : description
+	 * @returns { {} | [] }
+	 */
+	combinatedSorting ( /** @type { {} | [] } */ inArray, by = this.settings.sortBy )
 	{
-		let sortedUniqueHostnameKeys = [];
+		let sortedUniqueHostnameKeys;
 		if ( by === this.SORT_BY_OPTIONS[ 'N_HITS' ] ) { // sort by number of values
 			sortedUniqueHostnameKeys = Object.keys( inArray )
 				.map( function ( k ) { return { key: k, value: inArray[ k ] }; } )
@@ -1098,7 +1102,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 	/**
 	 * @todo : description
 	 * @async
-	 * @returns {Promise<Boolean>}
+	 * @returns {Promise<[]>}
 	 */
 	async mostUsedHostnames ()
 	{
