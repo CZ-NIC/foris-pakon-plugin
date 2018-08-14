@@ -1199,9 +1199,15 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				const index = store.index( column );
 				const openCursorRequest = index.openCursor( null, 'next' );
 
-				openCursorRequest.onsuccess = function ( event )
+				openCursorRequest.onsuccess = function ( /** @type {Event} */ event )
 				{
-					const cursor = event.target.result;
+
+					/** @type { IDBRequest } */
+					const eventTarget = ( event.target );
+
+					/** @type {IDBCursorWithValue} */
+					const cursor = eventTarget.result;
+
 					if ( cursor ) {
 						if ( !cursor.value.hidden ) {
 							protos[ cursor.value[ column ] ] = protos[ cursor.value[ column ] ] || []; // initialize or add
@@ -1389,7 +1395,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				if ( i === 'length' ) {
 					continue;
 				} else if ( existingColumns.includes( i ) ) {
-					this.getDataFrom( i ).then( ( result ) =>
+					this.getDataFrom( i ).then( ( /** @type { {} } */ result ) =>
 					{
 						list[ i ].dataStore = result; // set into settings
 						completedPartsSum++;
@@ -1692,12 +1698,17 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	db_init ( /** @type {IDBOpenDBRequest} */ openReq )
 	{
+
+		/** @type {IDBVersionChangeEvent} */
 		const event = arguments[ 1 ];
+
+		/** @type {IDBDatabase} */
 		const db = openReq.result;
+
 		if ( event.oldVersion > 0 && event.oldVersion < event.newVersion ) {
 			db.deleteObjectStore( this.settings.db_credentials.table_name );
 		}
-		const store = db.createObjectStore( this.settings.db_credentials.table_name, { keyPath: 'id', unique: true, autoIncrement: false } );
+		const store = db.createObjectStore( this.settings.db_credentials.table_name, { keyPath: 'id', autoIncrement: false } );
 		store.createIndex( 'hostname', 'hostname', { unique: false } );
 		store.createIndex( 'srcMAC', 'srcMAC', { unique: false } );
 		store.createIndex( 'dstPort', 'dstPort', { unique: false } );
