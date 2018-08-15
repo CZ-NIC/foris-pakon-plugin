@@ -257,13 +257,14 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				'hostnameFilter': document.getElementById( 'hostname-filter' ),
 				'srcMACFilter': document.getElementById( 'srcMAC-filter' ),
 				'controlFormSubmit': document.getElementById( 'apply-changes' ), // if null changes are applied immediately
+				'downloadView': document.getElementById( 'download-current-view' ),
 			},
 			'timeLimitation': {
 				'from': null,
 				'to': null,
 				'suggestedInterval': 1, // in days (0 means 'only today, from 00:00:00 to 23:59:59')
 			},
-			'refactoringTableHeader': { // @todo : refactoring in use
+			'tableHeader': { // @todo : refactoring in use
 				'id': {
 					'order': 10, // int, smaller first, bigger last
 					'caption': 'n ID',
@@ -1293,7 +1294,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 				virtualTable.appendChild( this.createTHead() );
 			}
 			const tbody = document.createElement( 'tbody' );
-			const tableHeader = this.settings.refactoringTableHeader;
+			const tableHeader = this.settings.tableHeader;
 			const tableHeaderArray = [];
 			for ( const i in tableHeader ) {
 
@@ -1414,7 +1415,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			}
 
 			const existingColumns = [];
-			const theader = this.settings.refactoringTableHeader;
+			const theader = this.settings.tableHeader;
 			for ( const i in theader ) {
 				existingColumns.push( i );
 			}
@@ -1511,7 +1512,11 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 			for ( const i in formControls ) {
 				if ( formControls[ i ] && formControls[ i ].nodeType === Node.ELEMENT_NODE ) {
-					if ( formControls[ i ].type !== 'submit' || !visual ) {
+					if (
+						formControls[ i ].type !== 'submit'
+						|| !visual
+						|| formControls[ i ] === this.settings.controlForm.downloadView // download current view button
+					) {
 						formControls[ i ].disabled = safeStatus;
 					}
 				} else {
@@ -1667,8 +1672,11 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 						eventTarget.classList.add( 'add', this.settings.postRenderImprove[ key ].filter.add.faClassName );
 						if ( event.isTrusted ) {
 
+							/** @type {HTMLLabelElement} */
+							const wrappingElement = ( currentControlFormElement.parentNode );
+
 							/** @type {HTMLElement} */
-							const contentEditableElement = currentControlFormElement.parentNode.nextElementSibling;
+							const contentEditableElement = ( wrappingElement.nextElementSibling );
 
 							contentEditableElement.dispatchEvent( new Event( 'focus' ) );
 							filterValues.push( currentValue );
@@ -2148,7 +2156,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 			return columnPosition;
 		} else { // take from settings
 			let n = 0;
-			for ( const i in this.settings.refactoringTableHeader ) {
+			for ( const i in this.settings.tableHeader ) {
 				if ( i === key ) {
 					return n;
 				}
@@ -2163,7 +2171,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 
 	getColumnNameBy ( key = '' )
 	{
-		const theader = this.settings.refactoringTableHeader;
+		const theader = this.settings.tableHeader;
 		for ( const i in theader ) {
 			if ( i === key ) {
 				return theader[ i ].caption;
@@ -2206,7 +2214,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		const thead = document.createElement( 'thead' );
 		const row = document.createElement( 'tr' );
 
-		const tableHeader = this.settings.refactoringTableHeader;
+		const tableHeader = this.settings.tableHeader;
 		const tableHeaderArray = [];
 		for ( const i in tableHeader ) {
 
@@ -2459,7 +2467,18 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		const inputs = this.settings.controlForm;
 		for ( const i in inputs ) {
 			if ( inputs[ i ] && inputs[ i ].nodeType ) {
-				if ( inputs[ i ].type === 'submit' ) {
+				if ( inputs[ i ] === inputs.downloadView ) {
+					inputs[ i ].addEventListener( CLICK_EVENT_NAME, ( event ) =>
+					{
+						event.preventDefault();
+						event.stopPropagation();
+						const blob = new Blob( [ JSON.stringify( this.dataStructure, null, '\t' ) ], { type: 'text/json' } );
+						const virtualA = document.createElement( 'a' );
+						virtualA.href = window.URL.createObjectURL( blob );
+						virtualA.download = 'Pakon-export-' + Math.round( new Date().getTime() / 1000 ) + '.json';
+						virtualA.click(); // event will be trusted
+					}, false );
+				} else if ( inputs[ i ].type === 'submit' ) {
 					const fakeUntrustedEvent = {};
 					fakeUntrustedEvent.isTrusted = false;
 					inputs[ i ].addEventListener( CLICK_EVENT_NAME, this.universalFormHook.bind( this, fakeUntrustedEvent ), false ); // @todo : only flush when fakeUntrustedEvent

@@ -47,6 +47,9 @@
         <label for="apply-changes">
             <input type="submit" id="apply-changes" value="{{ trans("Apply changes") }}" disabled>
         </label>
+        <label for="download-current-view">
+            <button id="download-current-view" title="Download current displayed data as json" disabled><i class="fas fa-download"></i></button>
+        </label>
     </fieldset>
 
     <h3>{{ trans("Statistics") }}</h3>
@@ -63,7 +66,7 @@
 <script src="{{ static("plugins/pakon/js/timeLiveView.defer.js") }}?v=2" defer></script>
 
 <script src="{{ static("plugins/pakon/js/Chart.min.js") }}"></script>
-<script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}?v=3"></script>
+<script src="{{ static("plugins/pakon/js/czNicTurrisPakon.js") }}?v=4"></script>
 <script>
     const cntp = new czNicTurrisPakon( window );
     cntp.settings = {
@@ -82,8 +85,6 @@
         'lang': '{{ lang() }}',
     };
     cntp.run();
-    const cs = window.document.currentScript;
-    cs.parentNode.removeChild( cs );
     /////////////////////
     window.lang = '{{ lang() }}';
 </script>
