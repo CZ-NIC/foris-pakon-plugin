@@ -1,0 +1,124 @@
+@keyframes spinner {
+    from {transform:rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+    
+.spinner:after {
+    content: '';
+    box-sizing: border-box;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    margin-top: -75px;
+    margin-left: -75px;
+    border-radius: 50%;
+    border: 5px solid #ccc;
+    border-top-color: #00a2e2;
+    animation: spinner .6s linear infinite;
+}
+
+i {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+#pakon-pager-page li {
+    display: inline;
+    margin: 5px;
+    text-decoration: underline;
+}
+#pakon-pager-page li.current-page {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.extra_row {
+    display: none;
+    font-style: italic;
+}
+
+#date-from, #date-to, #time-from, #time-to, #apply-changes {
+    float: right;
+    margin-left: 10px;
+    margin-right: 0px;
+}
+
+#page-pakon-plugin {
+    display: inline-block;
+}
+
+#filter-form {
+    display: inline-block;
+    clear: both;
+}
+
+#client-filter, #hostname-filter {
+    width: 100%;
+}
+
+label {
+    padding-top: 10px;
+    display: block;
+    width: 100%;
+}
+
+#no-data {
+    text-align: center;
+}
+
+#pakon-results {
+    white-space: nowrap;
+}
+
+#pakon-results td, th {
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#pakon-results th {
+    font-weight: bold;
+}
+
+tr.odd, tr.even, tr.extra_row.even, tr.extra_row.odd {
+    border-style: none none dashed none;
+    border-width: 2px;
+    border-color: rgba(255,255,255,0);
+}
+
+tr.odd:hover, tr.even:hover, tr.extra_row.even:hover, tr.extra_row.odd:hover {
+    border-color: rgba(0,0,0,1);
+}
+
+tr.odd {
+    background: #EEE;
+}
+tr.even {
+    background: #FFF;
+}
+tr.extra_row.even {
+    background: #DDD;
+}
+tr.extra_row.odd {
+    background: #EEE;
+}
+
+td:nth-child(7), td:nth-child(8), th:nth-child(7), th:nth-child(8) {
+    text-align: right;
+}
+
+#pakon-pager {
+    margin-top: 10px;
+    text-align: right;
+}
+
+#pakon-pager-page {
+    margin: 10px;
+    display: inline-block;
+}
+
+#pakon-pager-pagesize {
+    display: inline-block;
+    width: 10em;
+}

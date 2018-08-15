@@ -41,10 +41,6 @@ class PakonPluginPage(ConfigPageMixin, PakonPluginConfigHandler):
         args['PLUGIN_STYLES'] = PakonPlugin.PLUGIN_STYLES
         args['PLUGIN_STATIC_SCRIPTS'] = PakonPlugin.PLUGIN_STATIC_SCRIPTS
         args['PLUGIN_DYNAMIC_SCRIPTS'] = PakonPlugin.PLUGIN_DYNAMIC_SCRIPTS
-        args['query'] = json.dumps({})
-        data = current_state.backend.perform(
-            "pakon", "perform_query", {"query_data": args['query']})
-        args['results'] = self._prepare_data(data)
 
     def render(self, **kwargs):
         self._prepare_render_args(kwargs)
@@ -55,20 +51,14 @@ class PakonPluginPage(ConfigPageMixin, PakonPluginConfigHandler):
 
     def call_ajax_action(self, action):
         if action == "perform_query":
-            if bottle.request.method != 'POST':
-                raise bottle.HTTPError(404, "Wrong http method (only POST is allowed.")
+            if bottle.request.method != 'GET':
+                raise bottle.HTTPError(404, "Wrong http method (only GET is allowed.")
 
-            query_data = bottle.request.POST.get('query', {})
+            query_data = bottle.request.GET.get('query', {})
             data = current_state.backend.perform(
                 "pakon", "perform_query", {"query_data": query_data})
-            if "text/html" in bottle.request.headers["Accept"]:
-                return bottle.template(
-                    "pakon/_results",
-                    results=self._prepare_data(data),
-                )
-            else:
-                bottle.response.content_type = "application/json"
-                return data["response_data"]
+            bottle.response.content_type = "application/json"
+            return data["response_data"]
 
         raise ValueError("Unknown AJAX action.")
 
@@ -81,6 +71,7 @@ class PakonPlugin(ForisPlugin):
         "css/pakon.css"
     ]
     PLUGIN_STATIC_SCRIPTS = [
+        "js/jQWCloudv3.1.js"
     ]
     PLUGIN_DYNAMIC_SCRIPTS = [
         "pakon.js"
