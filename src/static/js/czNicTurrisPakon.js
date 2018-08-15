@@ -2468,7 +2468,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 		for ( const i in inputs ) {
 			if ( inputs[ i ] && inputs[ i ].nodeType ) {
 				if ( inputs[ i ] === inputs.downloadView ) {
-					inputs[ i ].addEventListener( CLICK_EVENT_NAME, ( event ) =>
+					inputs[ i ].addEventListener( CLICK_EVENT_NAME, ( /** @type {Event} */ event ) =>
 					{
 						event.preventDefault();
 						event.stopPropagation();
@@ -2482,7 +2482,7 @@ class czNicTurrisPakon // eslint-disable-line no-unused-vars
 					const fakeUntrustedEvent = {};
 					fakeUntrustedEvent.isTrusted = false;
 					inputs[ i ].addEventListener( CLICK_EVENT_NAME, this.universalFormHook.bind( this, fakeUntrustedEvent ), false ); // @todo : only flush when fakeUntrustedEvent
-					inputs[ i ].addEventListener( CLICK_EVENT_NAME, ( event ) =>
+					inputs[ i ].addEventListener( CLICK_EVENT_NAME, ( /** @type {Event} */ event ) =>
 					{
 
 						/** @type {HTMLInputElement} */
