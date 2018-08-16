@@ -29,7 +29,8 @@ class PakonPluginConfigHandler(BaseConfigHandler):
 
 class PakonPluginPage(ConfigPageMixin, PakonPluginConfigHandler):
     menu_order = 81
-    template = "pakon/pakon.tpl"
+    template = "pakon/pakon"
+    template_type = "jinja2"
     userfriendly_title = gettext("Pakon")
 
     def save(self, *args, **kwargs):

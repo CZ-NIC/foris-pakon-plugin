@@ -1,5 +1,5 @@
 if (typeof(Worker) == "undefined") {
-    alert("{{ trans("Your browser doesn't support web workers, get a browser from this milenia") }}")
+    alert("{% trans %}Your browser doesn't support web workers, get a browser from this milenia.{% endtrans %}")
 } else {
 
 var wrk = new Worker("{{ static("plugins/pakon/js/data_manager.js") }}");
