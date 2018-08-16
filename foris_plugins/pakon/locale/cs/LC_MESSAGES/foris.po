@@ -1,0 +1,81 @@
+# Czech translations for Foris Pakon Plugin.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the Foris Pakon Plugin
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Foris Pakon Plugin 2\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2018-08-16 11:46+0200\n"
+"PO-Revision-Date: 2018-08-16 11:45+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: cs\n"
+"Language-Team: cs <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+msgid "pakon"
+msgstr ""
+
+msgid "Pakon"
+msgstr ""
+
+msgid "Your browser doesn't support web workers, get a browser from this milenia."
+msgstr ""
+
+msgid "Filtering:"
+msgstr ""
+
+msgid "From:"
+msgstr ""
+
+msgid "To:"
+msgstr ""
+
+msgid "Aggregation by hostname:"
+msgstr ""
+
+msgid "Only following hostnames:"
+msgstr ""
+
+msgid "Only following clients:"
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "Results"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Client"
+msgstr ""
+
+msgid "Hostname"
+msgstr ""
+
+msgid "Port"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "Received"
+msgstr ""
+
+msgid "per page"
+msgstr ""
+
+msgid "everything"
+msgstr ""
+
