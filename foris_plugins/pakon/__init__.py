@@ -14,7 +14,7 @@ from foris.config import ConfigPageMixin, add_config_page
 from foris.config_handlers import BaseConfigHandler
 from foris.plugins import ForisPlugin
 from foris.state import current_state
-from foris.utils.translators import gettext_dummy as gettext, ugettext as _
+from foris.utils.translators import gettext_dummy as gettext, gettext as _
 
 
 class PakonPluginConfigHandler(BaseConfigHandler):
