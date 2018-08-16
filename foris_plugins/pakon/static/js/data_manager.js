@@ -16,8 +16,8 @@ function format_data(data) {
     const RIDGE = '\u00A0'; // NO-BREAK SPACE
     const SIZES = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']; // @todo : add abbr title for units
     const getMeasurementUnit = Math.floor(Math.log(Number(data)) / Math.log(BASE));
-    if(this === 0) {
-        return '0' + RIDGE + BYTES[lang];
+    if (Number(data) == 0) {
+        return '0' + RIDGE + SIZES[0];
     }
     return parseFloat((Number(data) / Math.pow(BASE, getMeasurementUnit)).toFixed(2)) + RIDGE + SIZES[getMeasurementUnit];
 }
