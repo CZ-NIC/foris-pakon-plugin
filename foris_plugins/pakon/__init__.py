@@ -28,6 +28,7 @@ class PakonPluginConfigHandler(BaseConfigHandler):
 
 
 class PakonPluginPage(ConfigPageMixin, PakonPluginConfigHandler):
+    slug = "pakon"
     menu_order = 81
     template = "pakon/pakon"
     template_type = "jinja2"
@@ -80,4 +81,4 @@ class PakonPlugin(ForisPlugin):
 
     def __init__(self, app):
         super(PakonPlugin, self).__init__(app)
-        add_config_page("pakon", PakonPluginPage, top_level=True)
+        add_config_page(PakonPluginPage)
