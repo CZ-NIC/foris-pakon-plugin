@@ -9,71 +9,76 @@ msgstr ""
 "Project-Id-Version: Foris Pakon Plugin 2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2018-08-16 11:46+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2018-10-05 17:33+0000\n"
+"Last-Translator: Krzysztof Kulesza <github@cmza.pl>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/turris/"
+"foris-pakon-plugin/pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.2\n"
 "Generated-By: Babel 2.6.0\n"
 
 msgid "pakon"
-msgstr ""
+msgstr "pakon"
 
 msgid "Pakon"
-msgstr ""
+msgstr "Pakon"
 
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
+"Twoja przeglądarka nie obsługuje web workers, pobierz zgodną przeglądarkę."
 
 msgid "Filtering:"
-msgstr ""
+msgstr "Filtruj:"
 
 msgid "From:"
-msgstr ""
+msgstr "Z:"
 
 msgid "To:"
-msgstr ""
+msgstr "Do:"
 
 msgid "Aggregation by hostname:"
-msgstr ""
+msgstr "Agregacja wg. nazwy hosta:"
 
 msgid "Only following hostnames:"
-msgstr ""
+msgstr "Tylko następujące nazwy hostów:"
 
 msgid "Only following clients:"
-msgstr ""
+msgstr "Tylko następujący klienci:"
 
 msgid "Overview"
-msgstr ""
+msgstr "Przegląd"
 
 msgid "Results"
-msgstr ""
+msgstr "Wyniki"
 
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 msgid "Duration"
-msgstr ""
+msgstr "Czas trwania"
 
 msgid "Client"
-msgstr ""
+msgstr "Klient"
 
 msgid "Hostname"
-msgstr ""
+msgstr "Nazwa hosta"
 
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgid "Sent"
-msgstr ""
+msgstr "Wysłane"
 
 msgid "Received"
-msgstr ""
+msgstr "Odebrane"
 
 msgid "per page"
-msgstr ""
+msgstr "na stronę"
 
 msgid "everything"
-msgstr ""
+msgstr "wszystko"
