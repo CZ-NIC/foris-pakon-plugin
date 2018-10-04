@@ -9,73 +9,76 @@ msgstr ""
 "Project-Id-Version: Foris Pakon Plugin 2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2018-08-16 11:46+0200\n"
-"PO-Revision-Date: 2018-08-16 11:45+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2018-10-04 14:23+0000\n"
+"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/turris/"
+"foris-pakon-plugin/cs/>\n"
 "Language: cs\n"
-"Language-Team: cs <LL@li.org>\n"
-"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Weblate 3.2-dev\n"
 "Generated-By: Babel 2.6.0\n"
 
 msgid "pakon"
-msgstr ""
+msgstr "pakon"
 
 msgid "Pakon"
-msgstr ""
+msgstr "Pakon"
 
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
+"Váš prohlížeč nepodporuje web worker, pořiďte si prohlížeč z tohoto "
+"tisíciletí."
 
 msgid "Filtering:"
-msgstr ""
+msgstr "Filtrování:"
 
 msgid "From:"
-msgstr ""
+msgstr "Od:"
 
 msgid "To:"
-msgstr ""
+msgstr "Do:"
 
 msgid "Aggregation by hostname:"
-msgstr ""
+msgstr "Seskupování podle názvu stroje:"
 
 msgid "Only following hostnames:"
-msgstr ""
+msgstr "Pouze následující názvy strojů:"
 
 msgid "Only following clients:"
-msgstr ""
+msgstr "Pouze následující klienti:"
 
 msgid "Overview"
-msgstr ""
+msgstr "Přehled"
 
 msgid "Results"
-msgstr ""
+msgstr "Výsledky"
 
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 msgid "Duration"
-msgstr ""
+msgstr "Trvání"
 
 msgid "Client"
-msgstr ""
+msgstr "Klient"
 
 msgid "Hostname"
-msgstr ""
+msgstr "Název stroje"
 
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgid "Sent"
-msgstr ""
+msgstr "Odesláno"
 
 msgid "Received"
-msgstr ""
+msgstr "Přijato"
 
 msgid "per page"
-msgstr ""
+msgstr "na stránku"
 
 msgid "everything"
-msgstr ""
-
+msgstr "vše"
