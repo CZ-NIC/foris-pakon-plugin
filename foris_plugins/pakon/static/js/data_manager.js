@@ -50,8 +50,17 @@ function render_entry(data) {
         case '1':
             table += '<td data-sort-value="' + data[y] + '">' + time_interval(data[y]) + '</td>';
             break;
+        case '2':
+            table += '<td data-sort-value="' + data[y] + '">' + data[y] +
+                     '<a href="#" onClick="add_client_filter(\'' + data[y] + '\')"><i class="fas fa-search"/></a></td>';
+            break;
         case '3':
-            table += '<td data-sort-value="' + data[y] + '" title="' + data[y] + '">' + shorten(data[y]) + '</td>';
+            table += '<td data-sort-value="' + data[y] + '" title="' + data[y] + '">' + shorten(data[y]) +
+                     '<a href="#" onClick="add_hostname_filter(\'' + data[y] + '\')"><i class="fas fa-search"/></a>';
+            if(data[4] == 'http' || data[4] == 'https') {
+                table += '<a href="' + data[4] + '://' + data[y] + '" target="_blank_"><i class="fas fa-external-link-alt"/></a>';
+            }
+            table += '</td>';
             break;
         case '5':
             break;
@@ -88,7 +97,7 @@ function render_results() {
         (x < filtered_data.length) && ((page_size == 0) || (x < (page + 1) * page_size)); x++) {
         table += '<tr id="line_' + x + '" class="' + (x % 2 ? 'odd' : 'even') + '">';
         if(filtered_data[x][8]) {
-            table += '<td onClick="toogle_lines(' + x + ')"><i class="fas fa-plus"></i></td>';
+            table += '<td class="line-toogle" onClick="toogle_lines(' + x + ')"><i class="fas fa-plus"></i></td>';
         } else {
             table += '<td></td>';
         }

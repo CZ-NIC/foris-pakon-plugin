@@ -13,12 +13,12 @@ var filter_changed = true;
 var date_changed = true;
 
 function toogle_lines(line) {
-    if($('#line_' + line + ' td i').attr('class') == 'fas fa-plus') {
+    if($('#line_' + line + ' td.line-toogle i').attr('class') == 'fas fa-plus') {
         $('.extra_' + line).show();
-        $('#line_' + line + ' td i').removeClass('fa-plus').addClass('fa-minus');
+        $('#line_' + line + ' td.line-toogle i').removeClass('fa-plus').addClass('fa-minus');
     } else {
         $('.extra_' + line).hide();
-        $('#line_' + line + ' td i').addClass('fa-plus').removeClass('fa-minus');
+        $('#line_' + line + ' td.line-toogle i').addClass('fa-plus').removeClass('fa-minus');
     }
 }
 
@@ -120,6 +120,24 @@ function zp(data) {
     }
 }
 
+function add_client_filter(filter) {
+    filter_changed = true;
+    if($("#client-filter").val() == "") {
+        $("#client-filter").val(filter);
+    } else {
+        $("#client-filter").val($("#client-filter").val() + ', ' + filter);
+    }
+}
+
+function add_hostname_filter(filter) {
+    filter_changed = true;
+    if($("#hostname-filter").val() == "") {
+        $("#hostname-filter").val(filter);
+    } else {
+        $("#hostname-filter").val($("#hostname-filter").val() + ', ' + filter);
+    }
+}
+
 $(document).ready(function () {
     dnd();
     $(".sortable i").addClass("fa fa-sort");
@@ -162,13 +180,7 @@ $(document).ready(function () {
                     $(this).css("text-decoration", "none");
                 },
                 word_click: function () {
-                    let filter = $(this).text();
-                    filter_changed = true;
-                    if($("#hostname-filter").val() == "") {
-                        $("#hostname-filter").val(filter);
-                    } else {
-                        $("#hostname-filter").val($("#hostname-filter").val() + ', ' + filter);
-                    }
+                    add_hostname_filter($(this).text());
                 }
             });
         } else {
