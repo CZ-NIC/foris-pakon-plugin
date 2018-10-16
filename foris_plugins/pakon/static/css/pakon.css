@@ -17,6 +17,7 @@
     border: 5px solid #ccc;
     border-top-color: #00a2e2;
     animation: spinner .6s linear infinite;
+    z-index: 100;
 }
 
 i {
@@ -82,13 +83,13 @@ label {
 }
 
 tr.odd, tr.even, tr.extra_row.even, tr.extra_row.odd {
-    border-style: none none dashed none;
-    border-width: 2px;
+    border-style: none none solid none;
+    border-width: 1px;
     border-color: rgba(255,255,255,0);
 }
 
 tr.odd:hover, tr.even:hover, tr.extra_row.even:hover, tr.extra_row.odd:hover {
-    border-color: rgba(0,0,0,1);
+    border-color: rgba(0,162,226,1);
 }
 
 tr.odd {
