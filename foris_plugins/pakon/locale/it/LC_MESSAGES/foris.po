@@ -1,4 +1,4 @@
-# Czech translations for Foris Pakon Plugin.
+# Translations template for Foris Pakon Plugin.
 # Copyright (C) 2018 ORGANIZATION
 # This file is distributed under the same license as the Foris Pakon Plugin
 # project.
@@ -9,76 +9,71 @@ msgstr ""
 "Project-Id-Version: Foris Pakon Plugin 2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2018-08-16 11:46+0200\n"
-"PO-Revision-Date: 2018-10-04 14:23+0000\n"
-"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
-"Language-Team: Czech <https://hosted.weblate.org/projects/turris/"
-"foris-pakon-plugin/cs/>\n"
-"Language: cs\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 3.2-dev\n"
 "Generated-By: Babel 2.6.0\n"
 
 msgid "pakon"
-msgstr "pakon"
+msgstr ""
 
 msgid "Pakon"
-msgstr "Pakon"
+msgstr ""
 
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
-"Váš prohlížeč nepodporuje web worker, pořiďte si prohlížeč z tohoto "
-"tisíciletí."
 
 msgid "Filtering:"
-msgstr "Filtrování:"
+msgstr ""
 
 msgid "From:"
-msgstr "Od:"
+msgstr ""
 
 msgid "To:"
-msgstr "Do:"
+msgstr ""
 
 msgid "Aggregation by hostname:"
-msgstr "Seskupování podle názvu stroje:"
+msgstr ""
 
 msgid "Only following hostnames:"
-msgstr "Pouze následující názvy strojů:"
+msgstr ""
 
 msgid "Only following clients:"
-msgstr "Pouze následující klienti:"
+msgstr ""
 
 msgid "Overview"
-msgstr "Přehled"
+msgstr ""
 
 msgid "Results"
-msgstr "Výsledky"
+msgstr ""
 
 msgid "Date"
-msgstr "Datum"
+msgstr ""
 
 msgid "Duration"
-msgstr "Trvání"
+msgstr ""
 
 msgid "Client"
-msgstr "Klient"
+msgstr ""
 
 msgid "Hostname"
-msgstr "Název stroje"
+msgstr ""
 
 msgid "Port"
-msgstr "Port"
+msgstr ""
 
 msgid "Sent"
-msgstr "Odesláno"
+msgstr ""
 
 msgid "Received"
-msgstr "Přijato"
+msgstr ""
 
 msgid "per page"
-msgstr "na stránku"
+msgstr ""
 
 msgid "everything"
-msgstr "vše"
+msgstr ""
