@@ -58,7 +58,11 @@ function render_entry(data) {
             table += '<td data-sort-value="' + data[y] + '" title="' + data[y] + '">' + shorten(data[y]) +
                      '<a href="#" onClick="add_hostname_filter(\'' + data[y] + '\')"><i class="fas fa-search"/></a>';
             if(data[4] == 'http' || data[4] == 'https') {
-                table += '<a href="' + data[4] + '://' + data[y] + '" target="_blank_"><i class="fas fa-external-link-alt"/></a>';
+                let url=data[y];
+                if(url.match(/:.*:/)) {
+                    url = '[' + url + ']';
+                }
+                table += '<a href="' + data[4] + '://' + url + '" target="_blank_"><i class="fas fa-external-link-alt"/></a>';
             }
             table += '</td>';
             break;
