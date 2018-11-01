@@ -9,71 +9,76 @@ msgstr ""
 "Project-Id-Version: Foris Pakon Plugin 2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2018-08-16 11:46+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2018-11-02 09:24+0000\n"
+"Last-Translator: Zoli <boritek@gmail.com>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/turris/"
+"foris-pakon-plugin/hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.3-dev\n"
 "Generated-By: Babel 2.6.0\n"
 
 msgid "pakon"
-msgstr ""
+msgstr "pakon"
 
 msgid "Pakon"
-msgstr ""
+msgstr "Pakon"
 
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
+"Böngésző nem támogatja a webes feldolgozókat, szerezzen be böngészőt ebből "
+"az évezredből."
 
 msgid "Filtering:"
-msgstr ""
+msgstr "Szűrés:"
 
 msgid "From:"
-msgstr ""
+msgstr "Kezdés:"
 
 msgid "To:"
-msgstr ""
+msgstr "Befejezés:"
 
 msgid "Aggregation by hostname:"
-msgstr ""
+msgstr "Összesítés gépnevenként:"
 
 msgid "Only following hostnames:"
-msgstr ""
+msgstr "Csak a következő gépneveket:"
 
 msgid "Only following clients:"
-msgstr ""
+msgstr "Csak a következő ügyfeleket:"
 
 msgid "Overview"
-msgstr ""
+msgstr "Áttekintés"
 
 msgid "Results"
-msgstr ""
+msgstr "Találatok"
 
 msgid "Date"
-msgstr ""
+msgstr "Dátum"
 
 msgid "Duration"
-msgstr ""
+msgstr "Időtartam"
 
 msgid "Client"
-msgstr ""
+msgstr "Ügyfél"
 
 msgid "Hostname"
-msgstr ""
+msgstr "Gépnév"
 
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgid "Sent"
-msgstr ""
+msgstr "Küldött"
 
 msgid "Received"
-msgstr ""
+msgstr "Fogadott"
 
 msgid "per page"
-msgstr ""
+msgstr "/ oldal"
 
 msgid "everything"
-msgstr ""
+msgstr "minden"
