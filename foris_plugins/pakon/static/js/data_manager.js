@@ -110,7 +110,10 @@ function render_results() {
         if(filtered_data[x][8]) {
             let y = 0;
             for(y = 0; y < filtered_data[x][8].length; y++) {
-                table += '<tr class="extra_row extra_' + x + ' ' + (y % 2 ? 'odd' : 'even') + '"><td></td>' + render_entry(filtered_data[x][8][y]) + '</tr>\n';
+                let extra_class = ' ';
+                if(y == filtered_data[x][8].length - 1)
+                    extra_class = ' extra_last ';
+                table += '<tr class="extra_row extra_' + x + extra_class + (y % 2 ? 'odd' : 'even') + '"><td></td>' + render_entry(filtered_data[x][8][y]) + '</tr>\n';
             }
         }
     }
