@@ -119,11 +119,21 @@ function render_results() {
     }
     var pager = '<ul>'
     if(page_size > 0) {
-        for(x = 0; x < filtered_data.length / page_size; x++) {
-            if(x == page) {
-                pager += '<li class="current-page" onClick="goto_page(' + x + ')">' + x + '</li>';
-            } else {
-                pager += '<li onClick="goto_page(' + x + ')"><a href="#">' + x + '</a></li>';
+        let pages = filtered_data.length / page_size;
+        if(pages * page_size < filtered_data.length)
+            pages++;
+        let dots = false;
+        for(x = 0; x < pages; x++) {
+            if(x < 4 || x > pages - 4 || Math.abs(x-page) < 3){
+                if(x == page) {
+                    pager += '<li class="current-page" onClick="goto_page(' + x + ')">' + x + '</li>';
+                } else {
+                    pager += '<li onClick="goto_page(' + x + ')"><a href="#">' + x + '</a></li>';
+                }
+                dots = false;
+            } else if(!dots) {
+                pager += '<li>...</li>';
+                dots = true;
             }
         }
     }
