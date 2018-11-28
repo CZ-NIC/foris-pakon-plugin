@@ -205,7 +205,7 @@ function aggregate_data() {
     let i;
     let proto = ""
     aggregated_data = [];
-    for(i = 1; i < tmp.length; i++) {
+    for(i = 0; i < tmp.length; i++) {
         cur_entry = tmp[i];
         if(cur_entry[2] == last_entry[2] && cur_entry[3] == last_entry[3]) {
             if(proto != cur_entry[4])
@@ -232,6 +232,12 @@ function aggregate_data() {
             nd_date = new Date(st_date.getTime() + cur_entry[1] * 1000);
         }
         last_entry = cur_entry;
+    }
+    if(a_entries.length < 2) {
+        if(a_entries.length == 1)
+            aggregated_data.push(a_entries[0]);
+    } else {
+        aggregated_data.push([print_date(st_date), (nd_date.getTime() - st_date.getTime()) / 1000, last_entry[2], last_entry[3], proto, '', send, recv, a_entries]);
     }
     console.log('Aggregated ' + tmp.length + ' -> ' + aggregated_data.length);
     sort_data();
