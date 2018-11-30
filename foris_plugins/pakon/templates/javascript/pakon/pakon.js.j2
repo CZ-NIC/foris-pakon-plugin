@@ -16,9 +16,11 @@ function toogle_lines(line) {
     if($('#line_' + line + ' td.line-toogle i').attr('class') == 'fas fa-plus') {
         $('.extra_' + line).show();
         $('#line_' + line + ' td.line-toogle i').removeClass('fa-plus').addClass('fa-minus');
+        $('#line_' + line).addClass('extra_first');
     } else {
         $('.extra_' + line).hide();
         $('#line_' + line + ' td.line-toogle i').addClass('fa-plus').removeClass('fa-minus');
+        $('#line_' + line).removeClass('extra_first');
     }
 }
 
@@ -101,7 +103,8 @@ function apply() {
 }
 
 function dnd() {
-    $("#spinner").addClass('spinner');
+    Foris.SpinnerDisplay('{% trans %}Loading data...{% endtrans %}');
+    $("#tagcloud").hide();
     $("#tagcloud").css("height", '0px');
     $("#apply-changes").prop("disabled", true);
     $("#pakon-table-data").html('');
@@ -109,7 +112,8 @@ function dnd() {
 
 function available() {
     $("#apply-changes").prop("disabled", false);
-    $("#spinner").removeClass('spinner');
+    Foris.SpinnerRemove();
+    $("#tagcloud").fadeIn('slow');
 }
 
 function zp(data) {
@@ -183,7 +187,9 @@ $(document).ready(function () {
                     add_hostname_filter($(this).text());
                 }
             });
+    		$("#tagcloud").fadeIn('slow');
         } else {
+    		$("#tagcloud").hide();
             $("#tagcloud").css("height", '0px');
         }
         if(e.data.sort_by) {

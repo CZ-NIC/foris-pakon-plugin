@@ -58,7 +58,11 @@ function render_entry(data) {
             table += '<td data-sort-value="' + data[y] + '" title="' + data[y] + '">' + shorten(data[y]) +
                      '<a href="#" onClick="add_hostname_filter(\'' + data[y] + '\')"><i class="fas fa-search"/></a>';
             if(data[4] == 'http' || data[4] == 'https') {
-                table += '<a href="' + data[4] + '://' + data[y] + '" target="_blank_"><i class="fas fa-external-link-alt"/></a>';
+                let url=data[y];
+                if(url.match(/:.*:/)) {
+                    url = '[' + url + ']';
+                }
+                table += '<a href="' + data[4] + '://' + url + '" target="_blank_"><i class="fas fa-external-link-alt"/></a>';
             }
             table += '</td>';
             break;
@@ -106,17 +110,30 @@ function render_results() {
         if(filtered_data[x][8]) {
             let y = 0;
             for(y = 0; y < filtered_data[x][8].length; y++) {
-                table += '<tr class="extra_row extra_' + x + ' ' + (y % 2 ? 'odd' : 'even') + '"><td></td>' + render_entry(filtered_data[x][8][y]) + '</tr>\n';
+                let extra_class = ' ';
+                if(y == filtered_data[x][8].length - 1)
+                    extra_class = ' extra_last ';
+                table += '<tr class="extra_row extra_' + x + extra_class + (y % 2 ? 'odd' : 'even') + '"><td></td>' + render_entry(filtered_data[x][8][y]) + '</tr>\n';
             }
         }
     }
     var pager = '<ul>'
     if(page_size > 0) {
-        for(x = 0; x < filtered_data.length / page_size; x++) {
-            if(x == page) {
-                pager += '<li class="current-page" onClick="goto_page(' + x + ')">' + x + '</li>';
-            } else {
-                pager += '<li onClick="goto_page(' + x + ')"><a href="#">' + x + '</a></li>';
+        let pages = filtered_data.length / page_size;
+        if(pages * page_size < filtered_data.length)
+            pages++;
+        let dots = false;
+        for(x = 0; x < pages; x++) {
+            if(x < 4 || x > pages - 4 || Math.abs(x-page) < 3){
+                if(x == page) {
+                    pager += '<li class="current-page" onClick="goto_page(' + x + ')">' + x + '</li>';
+                } else {
+                    pager += '<li onClick="goto_page(' + x + ')"><a href="#">' + x + '</a></li>';
+                }
+                dots = false;
+            } else if(!dots) {
+                pager += '<li>...</li>';
+                dots = true;
             }
         }
     }
@@ -188,7 +205,7 @@ function aggregate_data() {
     let i;
     let proto = ""
     aggregated_data = [];
-    for(i = 1; i < tmp.length; i++) {
+    for(i = 0; i < tmp.length; i++) {
         cur_entry = tmp[i];
         if(cur_entry[2] == last_entry[2] && cur_entry[3] == last_entry[3]) {
             if(proto != cur_entry[4])
@@ -215,6 +232,12 @@ function aggregate_data() {
             nd_date = new Date(st_date.getTime() + cur_entry[1] * 1000);
         }
         last_entry = cur_entry;
+    }
+    if(a_entries.length < 2) {
+        if(a_entries.length == 1)
+            aggregated_data.push(a_entries[0]);
+    } else {
+        aggregated_data.push([print_date(st_date), (nd_date.getTime() - st_date.getTime()) / 1000, last_entry[2], last_entry[3], proto, '', send, recv, a_entries]);
     }
     console.log('Aggregated ' + tmp.length + ' -> ' + aggregated_data.length);
     sort_data();

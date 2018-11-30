@@ -1,25 +1,3 @@
-@keyframes spinner {
-    from {transform:rotate(0deg);}
-    to {transform: rotate(360deg);}
-}
-    
-.spinner:after {
-    content: '';
-    box-sizing: border-box;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 150px;
-    height: 150px;
-    margin-top: -75px;
-    margin-left: -75px;
-    border-radius: 50%;
-    border: 5px solid #ccc;
-    border-top-color: #00a2e2;
-    animation: spinner .6s linear infinite;
-    z-index: 100;
-}
-
 i {
     padding-left: 5px;
     padding-right: 5px;
@@ -27,16 +5,18 @@ i {
 #pakon-pager-page li {
     display: inline;
     margin: 5px;
-    text-decoration: underline;
 }
 #pakon-pager-page li.current-page {
-    text-decoration: none;
     font-weight: bold;
 }
 
-.extra_row {
+#pakon-results .extra_row {
     display: none;
     font-style: italic;
+}
+
+#pakon-results .extra_row td {
+    padding-left: 20px;
 }
 
 #date-from, #date-to, #time-from, #time-to, #apply-changes {
@@ -82,13 +62,13 @@ label {
     font-weight: bold;
 }
 
-tr.odd, tr.even, tr.extra_row.even, tr.extra_row.odd {
-    border-style: none none solid none;
-    border-width: 1px;
-    border-color: rgba(255,255,255,0);
+tr.odd, tr.even {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255,255,255,0);
 }
 
-tr.odd:hover, tr.even:hover, tr.extra_row.even:hover, tr.extra_row.odd:hover {
+tr.odd:hover, tr.even:hover {
     border-color: rgba(0,162,226,1);
 }
 
@@ -97,12 +77,6 @@ tr.odd {
 }
 tr.even {
     background: #FFF;
-}
-tr.extra_row.even {
-    background: #DDD;
-}
-tr.extra_row.odd {
-    background: #EEE;
 }
 
 td:nth-child(7), td:nth-child(8), th:nth-child(7), th:nth-child(8) {
@@ -122,4 +96,24 @@ td:nth-child(7), td:nth-child(8), th:nth-child(7), th:nth-child(8) {
 #pakon-pager-pagesize {
     display: inline-block;
     width: 10em;
+}
+
+tr.extra_row {
+    border-right-width: 1px;
+    border-right-style: dotted;
+    border-right-color: black;
+    border-left-width: 1px;
+    border-left-style: dotted;
+    border-left-color: black;
+}
+
+tr.extra_last, tr.extra_first {
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
+    border-bottom-color: black;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 1px;
 }
