@@ -315,7 +315,7 @@ onmessage = function (e) {
             full_data = [];
             console.log('Updating interval to ' + e.data.date_from + ' - ' + e.data.date_to);
             let req = new XMLHttpRequest();
-            let query = '{"aggregate": false, "start":' + e.data.date_from + (e.data.date_to ? ',",end":' + e.data.date_to + '}' : '}');
+            let query = '{"aggregate": false, "start":' + e.data.date_from + (e.data.date_to ? ',"end":' + e.data.date_to + '}' : '}');
             console.log('Getting response to ' + query);
             req.open('GET', e.data.ajax_url + '?action=perform_query&query=' + query, true);
             req.responseType = 'json';
