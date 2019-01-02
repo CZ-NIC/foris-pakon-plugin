@@ -5,11 +5,14 @@ var page_size = 200;
 var limit = 20;
 var filtered_data = [];
 var aggregated_data = [];
+var sorted_data = [];
 var filter_hosts = [];
 var filter_clients = [];
 var aggregate_by = 'hostname';
 var word_list = {};
 var word_list_txt = [];
+var word_index = 3;
+var word_value_index = 1;
 
 function format_data(data) {
     const BASE = 1024;
@@ -85,7 +88,7 @@ function render_entry(data) {
 
 function render_results() {
     console.log('Rendering data');
-    if(filtered_data == null) {
+    if(sorted_data == null) {
         return {
             'table': '<tr><td></td><td colspan=7 id="no-data">No data</td></tr>',
             'word_list': '',
@@ -98,29 +101,29 @@ function render_results() {
     let x = 0;
     let wordcloud = {};
     for(x = page * page_size;
-        (x < filtered_data.length) && ((page_size == 0) || (x < (page + 1) * page_size)); x++) {
+        (x < sorted_data.length) && ((page_size == 0) || (x < (page + 1) * page_size)); x++) {
         table += '<tr id="line_' + x + '" class="' + (x % 2 ? 'odd' : 'even') + '">';
-        if(filtered_data[x][8]) {
+        if(sorted_data[x][8]) {
             table += '<td class="line-toogle" onClick="toogle_lines(' + x + ')"><i class="fas fa-plus"></i></td>';
         } else {
             table += '<td></td>';
         }
-        table += render_entry(filtered_data[x]);
+        table += render_entry(sorted_data[x]);
         table += '</tr>\n';
-        if(filtered_data[x][8]) {
+        if(sorted_data[x][8]) {
             let y = 0;
-            for(y = 0; y < filtered_data[x][8].length; y++) {
+            for(y = 0; y < sorted_data[x][8].length; y++) {
                 let extra_class = ' ';
-                if(y == filtered_data[x][8].length - 1)
+                if(y == sorted_data[x][8].length - 1)
                     extra_class = ' extra_last ';
-                table += '<tr class="extra_row extra_' + x + extra_class + (y % 2 ? 'odd' : 'even') + '"><td></td>' + render_entry(filtered_data[x][8][y]) + '</tr>\n';
+                table += '<tr class="extra_row extra_' + x + extra_class + (y % 2 ? 'odd' : 'even') + '"><td></td>' + render_entry(sorted_data[x][8][y]) + '</tr>\n';
             }
         }
     }
     var pager = '<ul>'
     if(page_size > 0) {
-        let pages = filtered_data.length / page_size;
-        if(pages * page_size < filtered_data.length)
+        let pages = sorted_data.length / page_size;
+        if(pages * page_size < sorted_data.length)
             pages++;
         let dots = false;
         for(x = 0; x < pages; x++) {
@@ -155,8 +158,6 @@ function get_word_list() {
     word_list = {};
     if(filtered_data == null)
         return;
-    let word_index = 3;
-    let word_value_index = 1;
     for(x in filtered_data) {
         word_list[filtered_data[x][3]] = (word_list[filtered_data[x][3]] ? word_list[filtered_data[x][3]] : 0) + filtered_data[x][word_value_index];
     }
@@ -169,10 +170,27 @@ function get_word_list() {
     }
 }
 
+function sorting_function(a, b) {
+    let sorting_field = sort_by[0];
+    if(sort_by[0] > 4) sorting_field++;
+    if(sort_by[1] < 0) {
+        if(a[sorting_field] == b[sorting_field]) {
+            return 0;
+        }
+        return (a[sorting_field] > b[sorting_field]) ? -1 : 1;
+    } else {
+        if(a[sorting_field] == b[sorting_field]) {
+            return 0;
+        }
+        return (a[sorting_field] < b[sorting_field]) ? -1 : 1;
+    }
+}
+
 function aggregate_data() {
     console.log('Aggregating data');
     if((aggregate_by == 'none') || (filtered_data == null)) {
         aggregated_data = filtered_data;
+        sort_data();
         return
     }
     let index = 3;
@@ -187,12 +205,16 @@ function aggregate_data() {
     }
     let tmp = filtered_data.sort(function (a, b) {
         if(a[index] == b[index]) {
-            return a[other_index] < b[other_index]
+            if(a[other_index] == b[other_index]) {
+                return sorting_function(a,b);
+            } else {
+                return (a[other_index] < b[other_index]) ? -1 : 1;
+            }
         } else {
-            return a[index] < b[index];
+            return (a[index] < b[index]) ? -1 : 1;
         }
     });
-    console.log('Aggregating data (' + tmp.length + ')');
+    console.log('Aggregating data (' + tmp.length + ') by ' + aggregate_by);
     aggregated_data = [];
     let cur_entry = ['', '', '', '', '', '', ''];
     let a_entries = [];
@@ -207,7 +229,7 @@ function aggregate_data() {
     aggregated_data = [];
     for(i = 0; i < tmp.length; i++) {
         cur_entry = tmp[i];
-        if(cur_entry[2] == last_entry[2] && cur_entry[3] == last_entry[3]) {
+        if(cur_entry[index] == last_entry[index] && cur_entry[other_index] == last_entry[other_index]) { // Are we aggregating?
             if(proto != cur_entry[4])
                 proto = "";
             send += cur_entry[6];
@@ -218,11 +240,11 @@ function aggregate_data() {
             if(tmp_date > nd_date) nd_date = tmp_date;
             a_entries.push(cur_entry);
         } else {
-            if(a_entries.length < 2) {
-                if(a_entries.length == 1)
-                    aggregated_data.push(a_entries[0]);
+            if(a_entries.length < 2) { // We haven't aggregated much
+                if(a_entries.length == 1) // Are we starting or what?
+                    aggregated_data.push(a_entries[0]); // Oh, we aggregated one entry, that doesn't count
             } else {
-                aggregated_data.push([print_date(st_date), (nd_date.getTime() - st_date.getTime()) / 1000, last_entry[2], last_entry[3], proto, '', send, recv, a_entries]);
+                aggregated_data.push([print_date(st_date), (nd_date.getTime() - st_date.getTime()) / 1000, last_entry[2], last_entry[3], proto, '', send, recv, a_entries]); // Let's create an aggregated entry
             }
             send = cur_entry[6];
             recv = cur_entry[7];
@@ -233,6 +255,7 @@ function aggregate_data() {
         }
         last_entry = cur_entry;
     }
+    // Now flush the leftovers
     if(a_entries.length < 2) {
         if(a_entries.length == 1)
             aggregated_data.push(a_entries[0]);
@@ -243,15 +266,29 @@ function aggregate_data() {
     sort_data();
 }
 
+function sorting_function(a, b) {
+    let sorting_field = sort_by[0];
+    if(sort_by[0] > 4) sorting_field++;
+    if(sort_by[1] < 0) {
+        if(a[sorting_field] == b[sorting_field]) {
+            return 0;
+        }
+        return (a[sorting_field] > b[sorting_field]) ? -1 : 1;
+    } else {
+        if(a[sorting_field] == b[sorting_field]) {
+            return 0;
+        }
+        return (a[sorting_field] < b[sorting_field]) ? -1 : 1;
+    }
+}
+
 function sort_data() {
     console.log(`Sorting data by ${sort_by[0]} direction ${sort_by[1]}`);
-    if(aggregated_data == null)
+    if(aggregated_data == null) {
+        sorted_data = null;
         return;
-    if(sort_by[0] > 4) sort_by[0]++;
-    filtered_data = aggregated_data.sort(function (a, b) {
-        return sort_by[1] < 0 ? a[sort_by[0]] < b[sort_by[0]] : a[sort_by[0]] > b[sort_by[0]]
-    });
-    if(sort_by[0] > 4) sort_by[0]--;
+    }
+    sorted_data = aggregated_data.sort(sorting_function);
 }
 
 function filter_data() {
@@ -292,22 +329,32 @@ function filter_data() {
 
 onmessage = function (e) {
     console.log('Message "' + e.data.command + '" received from main script');
-    let render = false;
+    let to_filter = false;
+    let to_aggregate = false;
     switch (e.data.command) {
     case "change":
         page = 0;
         if(e.data.filter_hosts) {
             console.log("Updating host filters");
-            filter_hosts = e.data.filter_hosts;
+            if(filter_hosts != e.data.filter_hosts) {
+                to_filter = true;
+                filter_hosts = e.data.filter_hosts;
+            }
             console.log(filter_hosts);
         }
         if(e.data.filter_clients) {
             console.log("Updating client filters");
-            filter_clients = e.data.filter_clients;
+            if(filter_clients != e.data.filter_clients) {
+                to_filter = true;
+                filter_clients = e.data.filter_clients;
+            }
             console.log(filter_clients);
         }
         if(e.data.aggregate) {
-            aggregate_by = 'hostname';
+            if(aggregate_by != e.data.aggregate) {
+                aggregate_by = e.data.aggregate;
+                to_aggregate = true;
+            }
         } else {
             aggregate_by = 'none';
         }
@@ -329,8 +376,13 @@ onmessage = function (e) {
             };
             req.send();
         } else {
-            filter_data();
-            sort_data();
+            if(to_filter) {
+                filter_data();
+                to_aggregate = false;
+            }
+            if(to_aggregate) {
+                aggregate_data();
+            }
             postMessage(render_results());
         }
         break;

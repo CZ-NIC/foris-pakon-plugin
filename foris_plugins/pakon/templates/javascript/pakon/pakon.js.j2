@@ -87,7 +87,7 @@ function apply() {
         'command': 'change'
     };
     command.ajax_url = '{{ url("config_ajax", page_name="pakon") }}';
-    command.aggregate = $('#aggregate').val();
+    command.aggregate = $('#aggregate').prop('checked') ? 'hostname' : 'none';
     if(filter_changed) {
         command.filter_hosts = hosts;
         command.filter_clients = clients;
