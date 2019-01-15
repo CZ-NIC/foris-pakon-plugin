@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Foris Pakon Plugin 2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2018-08-16 11:46+0200\n"
-"PO-Revision-Date: 2018-11-30 00:09+0000\n"
-"Last-Translator: ChrisDeath <chris.death@web.de>\n"
+"PO-Revision-Date: 2018-12-03 14:15+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/turris/"
 "foris-pakon-plugin/de/>\n"
 "Language: de\n"
@@ -18,65 +18,67 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 "Generated-By: Babel 2.6.0\n"
 
 msgid "pakon"
-msgstr ""
+msgstr "pakon"
 
 msgid "Pakon"
-msgstr ""
+msgstr "Pakon"
 
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
+"Ihr Browser unterstützt keine Webworker, holen Sie sich einen Browser aus "
+"diesem Jahrtausend."
 
 msgid "Filtering:"
-msgstr ""
+msgstr "Filterung:"
 
 msgid "From:"
-msgstr ""
+msgstr "Von:"
 
 msgid "To:"
-msgstr ""
+msgstr "An:"
 
 msgid "Aggregation by hostname:"
-msgstr ""
+msgstr "Aggregation nach Hostname:"
 
 msgid "Only following hostnames:"
-msgstr ""
+msgstr "Nur nach Hostnamen:"
 
 msgid "Only following clients:"
-msgstr ""
+msgstr "Nur folgende Clients:"
 
 msgid "Overview"
-msgstr ""
+msgstr "Übersicht"
 
 msgid "Results"
-msgstr ""
+msgstr "Ergebnisse"
 
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 msgid "Duration"
-msgstr ""
+msgstr "Dauer"
 
 msgid "Client"
 msgstr "Client"
 
 msgid "Hostname"
-msgstr ""
+msgstr "Rechnername"
 
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgid "Sent"
-msgstr ""
+msgstr "Gesendet"
 
 msgid "Received"
-msgstr ""
+msgstr "Empfangen"
 
 msgid "per page"
-msgstr ""
+msgstr "pro Seite"
 
 msgid "everything"
-msgstr ""
+msgstr "alles"
