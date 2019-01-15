@@ -8,17 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Foris Pakon Plugin 2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-08-16 11:46+0200\n"
+"POT-Creation-Date: 2019-01-15 12:51+0100\n"
 "PO-Revision-Date: 2018-12-03 14:15+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/turris/"
-"foris-pakon-plugin/de/>\n"
 "Language: de\n"
+"Language-Team: German <https://hosted.weblate.org/projects/turris/foris-"
+"pakon-plugin/de/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
 "Generated-By: Babel 2.6.0\n"
 
 msgid "pakon"
@@ -29,8 +28,11 @@ msgstr "Pakon"
 
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
-"Ihr Browser unterstützt keine Webworker, holen Sie sich einen Browser aus "
-"diesem Jahrtausend."
+"Ihr Browser unterstützt keine Webworker, holen Sie sich einen Browser aus"
+" diesem Jahrtausend."
+
+msgid "Loading data..."
+msgstr ""
 
 msgid "Filtering:"
 msgstr "Filterung:"
@@ -47,8 +49,17 @@ msgstr "Aggregation nach Hostname:"
 msgid "Only following hostnames:"
 msgstr "Nur nach Hostnamen:"
 
+msgid "All hostnames if empty"
+msgstr ""
+
 msgid "Only following clients:"
 msgstr "Nur folgende Clients:"
+
+msgid "All clients if empty"
+msgstr ""
+
+msgid "Apply changes"
+msgstr ""
 
 msgid "Overview"
 msgstr "Übersicht"
@@ -82,3 +93,4 @@ msgstr "pro Seite"
 
 msgid "everything"
 msgstr "alles"
+

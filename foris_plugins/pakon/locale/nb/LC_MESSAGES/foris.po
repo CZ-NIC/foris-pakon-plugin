@@ -1,4 +1,4 @@
-# Translations template for Foris Pakon Plugin.
+# Norwegian Bokmål translations for Foris Pakon Plugin.
 # Copyright (C) 2018 ORGANIZATION
 # This file is distributed under the same license as the Foris Pakon Plugin
 # project.
@@ -8,17 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Foris Pakon Plugin 2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-08-16 11:46+0200\n"
+"POT-Creation-Date: 2019-01-15 12:51+0100\n"
 "PO-Revision-Date: 2018-10-16 04:34+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/turris/"
-"foris-pakon-plugin/nb/>\n"
 "Language: nb\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/turris/foris-pakon-plugin/nb/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2.1\n"
 "Generated-By: Babel 2.6.0\n"
 
 msgid "pakon"
@@ -29,8 +28,11 @@ msgstr "Pakon"
 
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
-"Nettleseren din støtter ikke nettarbeidere, skaff deg en nettleser fra dette "
-"årtusenet."
+"Nettleseren din støtter ikke nettarbeidere, skaff deg en nettleser fra "
+"dette årtusenet."
+
+msgid "Loading data..."
+msgstr ""
 
 msgid "Filtering:"
 msgstr "Filtrering:"
@@ -48,8 +50,17 @@ msgstr "Resultatmengdefunksjon etter vertsnavn:"
 msgid "Only following hostnames:"
 msgstr "Kun følgende vertsnavn:"
 
+msgid "All hostnames if empty"
+msgstr ""
+
 msgid "Only following clients:"
 msgstr "Kun følgende klienter:"
+
+msgid "All clients if empty"
+msgstr ""
+
+msgid "Apply changes"
+msgstr ""
 
 msgid "Overview"
 msgstr "Oversikt"
@@ -83,3 +94,4 @@ msgstr "per side"
 
 msgid "everything"
 msgstr "alt"
+

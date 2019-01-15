@@ -27,15 +27,15 @@
     <label for="hostname-filter">
         {% trans %}Only following hostnames:{% endtrans %}
         <br>
-        <textarea name="hostname-filter" id="hostname-filter" placeholder="All hostnames if empty" onChange="filter_changed=true;"></textarea>
+        <textarea name="hostname-filter" id="hostname-filter" placeholder="{% trans %}All hostnames if empty{% endtrans %}" onChange="filter_changed=true;"></textarea>
     </label>
     <label for="srcMAC-filter">
         {% trans %}Only following clients:{% endtrans %}
         <br>
-        <textarea name="client-filter" id="client-filter" placeholder="All clients if empty" onChange="filter_changed=true;"></textarea>
+        <textarea name="client-filter" id="client-filter" placeholder="{% trans %}All clients if empty{% endtrans %}" onChange="filter_changed=true;"></textarea>
     </label>
     <label for="apply-changes">
-        <input id="apply-changes" class="button" onClick="apply()" value="Apply changes" type="submit">
+        <input id="apply-changes" class="button" onClick="apply()" value="{% trans %}Apply changes{% endtrans %}" type="submit">
     </label>
 </fieldset>
 </div>

@@ -1,15 +1,15 @@
 # Translations template for Foris Pakon Plugin.
-# Copyright (C) 2018 ORGANIZATION
+# Copyright (C) 2019 ORGANIZATION
 # This file is distributed under the same license as the Foris Pakon Plugin
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Foris Pakon Plugin 2\n"
+"Project-Id-Version: Foris Pakon Plugin 2.5.2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-08-16 11:46+0200\n"
+"POT-Creation-Date: 2019-01-15 12:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,6 +27,9 @@ msgstr ""
 msgid "Your browser doesn't support web workers, get a browser from this milenia."
 msgstr ""
 
+msgid "Loading data..."
+msgstr ""
+
 msgid "Filtering:"
 msgstr ""
 
@@ -42,7 +45,16 @@ msgstr ""
 msgid "Only following hostnames:"
 msgstr ""
 
+msgid "All hostnames if empty"
+msgstr ""
+
 msgid "Only following clients:"
+msgstr ""
+
+msgid "All clients if empty"
+msgstr ""
+
+msgid "Apply changes"
 msgstr ""
 
 msgid "Overview"
