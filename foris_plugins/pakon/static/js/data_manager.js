@@ -234,7 +234,7 @@ function aggregate_data() {
                 proto = "";
             send += cur_entry[6];
             recv += cur_entry[7];
-            tmp_date = new Date(Date.parse(cur_entry[0]));
+            tmp_date = new Date(Date.parse(cur_entry[0].replace(' ','T')));
             if(tmp_date < st_date) st_date = tmp_date;
             tmp_date = new Date(tmp_date.getTime() + cur_entry[1] * 1000);
             if(tmp_date > nd_date) nd_date = tmp_date;
@@ -250,7 +250,7 @@ function aggregate_data() {
             recv = cur_entry[7];
             proto = cur_entry[4];
             a_entries = [cur_entry];
-            st_date = new Date(Date.parse(cur_entry[0]));
+            st_date = new Date(Date.parse(cur_entry[0].replace(' ','T')));
             nd_date = new Date(st_date.getTime() + cur_entry[1] * 1000);
         }
         last_entry = cur_entry;

@@ -70,13 +70,13 @@ function get_time_vars() {
         $('#time-from').val('00:00:00.00');
         time_from = "00:00:00";
     }
-    from = Date.parse($('#date-from').val() + ' ' + time_from);
+    from = Date.parse($('#date-from').val() + 'T' + time_from);
     let time_to = $('#time-to').val();
     if(time_to == "") {
         $('#time-to').val('00:00:00.00');
         time_to = "00:00:00";
     }
-    to = Date.parse($('#date-to').val() + ' ' + time_to);
+    to = Date.parse($('#date-to').val() + 'T' + time_to);
 }
 
 function apply() {
