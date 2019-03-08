@@ -20,7 +20,7 @@ class BuildCmd(build_py):
 
 setup(
     name="Foris Pakon Plugin",
-    version="2.5.3",
+    version="2.6",
     description="Pakon plugin for foris web interfce",
     author="CZ.NIC, z. s. p. o.",
     author_email="stepan.henek@nic.cz",
