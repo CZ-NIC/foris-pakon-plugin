@@ -40,6 +40,16 @@
 </fieldset>
 </div>
 
+<div>
+    <p id="pakon-pager-topwords"></p>
+      <select id="pakon-pager-topwords" onChange="dnd(); top_n_words = this.value; wrk.postMessage({'command': 'page', 'top_n_words': this.value, 'page': 0});">
+        <option value="50">Top 50 {% trans %}hosts{% endtrans %}</option>
+        <option value="100">Top 100 {% trans %}hosts{% endtrans %}</option>
+        <option value="200">Top 200 {% trans %}hosts{% endtrans %}</option>
+        <option value="500">Top 500 {% trans %}hosts{% endtrans %}</option>
+        <option value="0">{% trans %}Everything{% endtrans %}</option>
+      </select>
+</div>
     <h3>{% trans %}Overview{% endtrans %}</h3>
 <div id="tagcloud"></div>
 

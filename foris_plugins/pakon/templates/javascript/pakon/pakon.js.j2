@@ -8,6 +8,7 @@ var hosts = [];
 var from;
 var to;
 var page_size = 25;
+var top_n_words = 50
 var clients = [];
 var filter_changed = true;
 var date_changed = true;
@@ -170,13 +171,26 @@ $(document).ready(function () {
             $("pakon-pager-pagesize").val(e.data.page_size);
             page_size = e.data.page_size;
         }
-        if(e.data.word_list && e.data.word_list[0]) {
+        if(e.data.top_n_words) {
+            $("pakon-pager-topwords").val(e.data.top_n_words;
+            top_n_words = e.data.top_n_words;
+        }
+        
+        var subset;
+        if (top_n_words == 0) {
+            subset = e.data.word_list;
+        } else {
+            /* sort descending */
+            const filtered = e.data.word_list.sort( (a, b) => b - a);
+            subset = filtered.slice(0, top_n_words);
+        }
+        if(subset && subset[0]) {
             $("#tagcloud").css("height", '750px');
             $("#tagcloud").css("width", '750px');
             $("#tagcloud").css("margin-left", '-375px');
             $("#tagcloud").css("left", '50%');
             $('#tagcloud').jQWCloud({
-                words: e.data.word_list,
+                words: subset,
                 word_mouseOver: function () {
                     $(this).css("text-decoration", "underline");
                 },
