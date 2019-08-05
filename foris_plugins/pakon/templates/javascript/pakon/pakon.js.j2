@@ -170,6 +170,13 @@ $(document).ready(function () {
             $("pakon-pager-pagesize").val(e.data.page_size);
             page_size = e.data.page_size;
         }
+        if(e.data.sort_by) {
+            available();
+            sort_by = e.data.sort_by;
+            $(".sortable i").removeClass("fa-sort-up").removeClass("fa-sort-down").addClass("fa-sort");
+            $("th.sortable:eq(" + sort_by[0] + ") i").removeClass("fa-sort").addClass(sort_by[1] < 0 ? "fa-sort-down" : "fa-sort-up");
+        }
+
         if(e.data.word_list && e.data.word_list[0]) {
             $("#tagcloud").css("height", '750px');
             $("#tagcloud").css("width", '750px');
@@ -187,16 +194,14 @@ $(document).ready(function () {
                     add_hostname_filter($(this).text());
                 }
             });
-    		$("#tagcloud").fadeIn('slow');
+            $("#nodata").hide();
+            $("#pakon-results").show();
+            $("#tagcloud").fadeIn('slow');
         } else {
-    		$("#tagcloud").hide();
+            $("#tagcloud").hide();
             $("#tagcloud").css("height", '0px');
-        }
-        if(e.data.sort_by) {
-            available();
-            sort_by = e.data.sort_by;
-            $(".sortable i").removeClass("fa-sort-up").removeClass("fa-sort-down").addClass("fa-sort");
-            $("th.sortable:eq(" + sort_by[0] + ") i").removeClass("fa-sort").addClass(sort_by[1] < 0 ? "fa-sort-down" : "fa-sort-up");
+            $("#pakon-results").hide();
+            $("#nodata").fadeIn('slow');
         }
         if(e.data.table) {
             $("#pakon-table-data").html(e.data.table);
